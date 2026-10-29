@@ -1,8 +1,8 @@
-// description: 
+// description:
 // 1. It will get uops from mac Reservation station and execute this uop.
 //
 // feature list:
-// 1. 
+// 1.
 
 `ifndef HDL_VERILOG_RVV_DESIGN_RVV_SVH
 `include "rvv_backend.svh"
@@ -10,12 +10,12 @@
 
 module rvv_backend_mac_unit (
   // Outputs
-  mac2rob_uop_valid, 
+  mac2rob_uop_valid,
   mac2rob_uop_data,
   // Inputs
-  clk, 
-  rst_n, 
-  rs2mac_uop_valid, 
+  clk,
+  rst_n,
+  rs2mac_uop_valid,
   rs2mac_uop_data,
   mac_pipe_vld_en,
   mac_pipe_data_en,
@@ -168,10 +168,10 @@ assign mac_uop_pc        = rs2mac_uop_data.uop_pc;
 
 // Global EU control
 always@(*) begin
-  case ({rs2mac_uop_valid,mac_uop_funct3}) 
+  case ({rs2mac_uop_valid,mac_uop_funct3})
     {1'b1,OPMVV} : begin
       is_vv = 1'b1;
-      case (mac_uop_funct6) 
+      case (mac_uop_funct6)
         VMACC : begin
           mac_src2           = mac_uop_vs2_data;
           mac_src1           = mac_uop_vs1_data;
@@ -340,7 +340,7 @@ always@(*) begin
           is_vsmul           = 1'b0;
           is_vmac            = 1'b0;
         end
-        default : begin 
+        default : begin
           mac_src2           = 'b0;
           mac_src1           = 'b0;
           mac_addsrc         = 'b0;
@@ -356,7 +356,7 @@ always@(*) begin
     end//end OPMVV
     {1'b1,OPMVX} : begin
       is_vv = 1'b0;
-      case (mac_uop_funct6) 
+      case (mac_uop_funct6)
         VMACC : begin
           mac_src2           = mac_uop_vs2_data;
           mac_src1           = {(`VLEN-`XLEN)'('b0),mac_uop_rs1_data}; //use rs1
@@ -537,7 +537,7 @@ always@(*) begin
           is_vsmul           = 1'b0;
           is_vmac            = 1'b0;
         end
-        default : begin 
+        default : begin
           mac_src2           = 'b0;
           mac_src1           = 'b0;
           mac_addsrc         = 'b0;
@@ -547,13 +547,13 @@ always@(*) begin
           mac_keep_low_bits  = 'b0;
           mac_mul_reverse    = 'b0;
           is_vsmul           = 'b0;
-          is_vmac            = 'b0;        
+          is_vmac            = 'b0;
         end//end default
       endcase
     end//end OPMVX
     {1'b1,OPIVV} : begin
       is_vv = 1'b1;
-      case (mac_uop_funct6) 
+      case (mac_uop_funct6)
         VSMUL_VMVNRR : begin
           mac_src2           = mac_uop_vs2_data;
           mac_src1           = mac_uop_vs1_data;
@@ -566,7 +566,7 @@ always@(*) begin
           is_vsmul           = 1'b1;
           is_vmac            = 1'b0;
         end
-        default : begin 
+        default : begin
           mac_src2           = 'b0;
           mac_src1           = 'b0;
           mac_addsrc         = 'b0;
@@ -576,13 +576,13 @@ always@(*) begin
           mac_keep_low_bits  = 'b0;
           mac_mul_reverse    = 'b0;
           is_vsmul           = 'b0;
-          is_vmac            = 'b0;  
+          is_vmac            = 'b0;
         end//end default
       endcase//end funct6
     end//end OPIVV
     {1'b1,OPIVX} : begin
       is_vv = 1'b0;
-      case (mac_uop_funct6) 
+      case (mac_uop_funct6)
         VSMUL_VMVNRR : begin
           mac_src2           = mac_uop_vs2_data;
           mac_src1           = {(`VLEN-`XLEN)'('b0),mac_uop_rs1_data}; //use rs1
@@ -605,7 +605,7 @@ always@(*) begin
           mac_keep_low_bits  = 'b0;
           mac_mul_reverse    = 'b0;
           is_vsmul           = 'b0;
-          is_vmac            = 'b0;          
+          is_vmac            = 'b0;
         end//end default
       endcase//end funct6
     end//end OPIVX
@@ -625,12 +625,12 @@ always@(*) begin
   endcase//end funct3
 end
 
-// Before using mac alu, 
+// Before using mac alu,
 //  1.group sub-elements' sign bit
 always@(*) begin
   mac_src2_mux                  = mac_src2;
-  
-  case (mac_top_vs_eew) 
+
+  case (mac_top_vs_eew)
     EEW16 : begin
       mac_src1_mux              = is_vv ? mac_src1 : {(`VLENH){mac_src1[`HWORD_WIDTH-1:0]}};
       mac_src2_is_signed_extend = {(`VLENH){mac_src2_is_signed,1'b0}};
@@ -663,7 +663,7 @@ end
 always_comb begin
   mac8_en = 'b0;
 
-  case (mac_top_vs_eew) 
+  case (mac_top_vs_eew)
     EEW8: begin
       for(int i=0;i<`VLENW;i++) begin
         mac8_en[16*i]    = mac_pipe_data_en;
@@ -690,27 +690,27 @@ end
 
 // mul alus with d1_reg
 // `VLEN/32 tiles
-generate 
+generate
   for (z=0; z<`VLENW; z=z+1) begin: cnt_tiles
     for (x=0; x<`WORD_WIDTH/`BYTE_WIDTH; x=x+1) begin: cnt_src0_axis
       for (y=0; y<`WORD_WIDTH/`BYTE_WIDTH; y=y+1) begin: cnt_src1_axis
-        rvv_backend_mul_unit_mul8 
+        rvv_backend_mul_unit_mul8
         u_mul8 (
           .res            (mac8_out[z*16+y*4+x]     ), //16bit out
-          .src0           (mac8_in0[z*4+x]          ), 
+          .src0           (mac8_in0[z*4+x]          ),
           .src0_is_signed (mac8_in0_is_signed[z*4+x]),
-          .src1           (mac8_in1[z*4+y]          ), 
+          .src1           (mac8_in1[z*4+y]          ),
           .src1_is_signed (mac8_in1_is_signed[z*4+y])
         );
 
         edff #(
           .T              (logic [`HWORD_WIDTH-1:0])
-        ) 
+        )
         u_mul8_delay (
-          .q              (mac8_out_d1[z*16+y*4+x]  ), 
-          .clk            (clk                      ), 
-          .rst_n          (rst_n                    ), 
-          .e              (mac8_en[z*16+y*4+x]      ),     
+          .q              (mac8_out_d1[z*16+y*4+x]  ),
+          .clk            (clk                      ),
+          .rst_n          (rst_n                    ),
+          .e              (mac8_en[z*16+y*4+x]      ),
           .d              (mac8_out[z*16+y*4+x]     )
         );
       end
@@ -752,52 +752,52 @@ edff #(.T(logic [`PC_WIDTH-1:0]))         u_PC_delay (
 /////////////////////////////////////////////////
 
 //when widen, copy low half to high, for widen add
-assign mac_addsrc_widen_d1 = {2{mac_addsrc_d1}}; 
+assign mac_addsrc_widen_d1 = {2{mac_addsrc_d1}};
 
 // After mac, calculte eew8, eew16, eew32 results
 //eew8
 //full rslt is 16bit
 always@(*) begin
   for (i=0; i<`VLENW; i=i+1) begin: tiles_eew8
-    for (j=0; j<`WORD_WIDTH/`BYTE_WIDTH; j=j+1) begin // 
+    for (j=0; j<`WORD_WIDTH/`BYTE_WIDTH; j=j+1) begin //
       mac_rslt_full_eew8_d1[i*4+j]                                   = mac8_out_d1[i*16+j*5];
       mac_rslt_eew8_widen_d1[2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH] = mac_rslt_full_eew8_d1[i*4+j];//widen, and convert to [255:0]
-      mac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]  = mac_keep_low_bits_d1 ? 
-                                                                       mac_rslt_full_eew8_d1[i*4+j][0          +:`BYTE_WIDTH] : 
+      mac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]  = mac_keep_low_bits_d1 ?
+                                                                       mac_rslt_full_eew8_d1[i*4+j][0          +:`BYTE_WIDTH] :
                                                                        mac_rslt_full_eew8_d1[i*4+j][`BYTE_WIDTH+:`BYTE_WIDTH];
       //Below are for rounding mul (vsmul.vv, vsmul.vx)
       //right shift bit is 7 not 8 !
       case(mac_uop_xrm_d1)
         ROD: vsmul_round_incr_eew8_d1[i*4+j] = !mac_rslt_full_eew8_d1[i*4+j][7] && (|mac_rslt_full_eew8_d1[i*4+j][6:0]);
-        RDN: vsmul_round_incr_eew8_d1[i*4+j] = 'b0; 
-        RNE: begin 
-             vsmul_round_incr_eew8_d1[i*4+j] = mac_rslt_full_eew8_d1[i*4+j][6] && 
+        RDN: vsmul_round_incr_eew8_d1[i*4+j] = 'b0;
+        RNE: begin
+             vsmul_round_incr_eew8_d1[i*4+j] = mac_rslt_full_eew8_d1[i*4+j][6] &&
                                                ( (|mac_rslt_full_eew8_d1[i*4+j][5:0]) || mac_rslt_full_eew8_d1[i*4+j][7] );
         end
         //RNU
         default: vsmul_round_incr_eew8_d1[i*4+j] = mac_rslt_full_eew8_d1[i*4+j][6];
       endcase
-      
+
       // saturating
       vsmul_sat_eew8_d1[i*4+j] = mac_rslt_full_eew8_d1[i*4+j][15:14] == 2'b01;
-      vsmul_rslt_eew8_d1[`BYTE_WIDTH*(i*4+j)+:`BYTE_WIDTH] = vsmul_sat_eew8_d1[i*4+j] ? 8'h7f : //saturate 
+      vsmul_rslt_eew8_d1[`BYTE_WIDTH*(i*4+j)+:`BYTE_WIDTH] = vsmul_sat_eew8_d1[i*4+j] ? 8'h7f : //saturate
                                    //right shift 7bit then +"1"
                                    mac_rslt_full_eew8_d1[i*4+j][(`BYTE_WIDTH-1)+:`BYTE_WIDTH] + {7'b0,vsmul_round_incr_eew8_d1[i*4+j]};
 
       //Below are for vmac related instructions
-      vmac_mul_add_eew8_no_widen_d1[i*4+j] = {1'b0,mac_addsrc_d1[            `BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} + 
+      vmac_mul_add_eew8_no_widen_d1[i*4+j] = {1'b0,mac_addsrc_d1[            `BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} +
                                              {1'b0,mac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} ; //9bit
-      vmac_mul_sub_eew8_no_widen_d1[i*4+j] = {1'b0,mac_addsrc_d1[            `BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} - 
+      vmac_mul_sub_eew8_no_widen_d1[i*4+j] = {1'b0,mac_addsrc_d1[            `BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} -
                                              {1'b0,mac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH]} ;
-      vmac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH] = mac_mul_reverse_d1 ? 
+      vmac_rslt_eew8_no_widen_d1[`BYTE_WIDTH*(i*4+j) +: `BYTE_WIDTH] = mac_mul_reverse_d1 ?
                                                                          vmac_mul_sub_eew8_no_widen_d1[i*4+j][`BYTE_WIDTH-1:0] :
                                                                          vmac_mul_add_eew8_no_widen_d1[i*4+j][`BYTE_WIDTH-1:0] ;
 
-      vmac_mul_add_eew8_widen_d1[i*4+j] = {1'b0,mac_addsrc_widen_d1[   2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} + 
+      vmac_mul_add_eew8_widen_d1[i*4+j] = {1'b0,mac_addsrc_widen_d1[   2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} +
                                           {1'b0,mac_rslt_eew8_widen_d1[2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} ; //17bit
-      vmac_mul_sub_eew8_widen_d1[i*4+j] = {1'b0,mac_addsrc_widen_d1[   2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} - 
+      vmac_mul_sub_eew8_widen_d1[i*4+j] = {1'b0,mac_addsrc_widen_d1[   2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} -
                                           {1'b0,mac_rslt_eew8_widen_d1[2*`BYTE_WIDTH*(i*4+j) +: 2*`BYTE_WIDTH]} ;
-      vmac_rslt_eew8_widen_d1[`HWORD_WIDTH*(i*4+j) +: `HWORD_WIDTH] = mac_mul_reverse_d1 ? 
+      vmac_rslt_eew8_widen_d1[`HWORD_WIDTH*(i*4+j) +: `HWORD_WIDTH] = mac_mul_reverse_d1 ?
                                                                         vmac_mul_sub_eew8_widen_d1[i*4+j][2*`BYTE_WIDTH-1:0] :
                                                                         vmac_mul_add_eew8_widen_d1[i*4+j][2*`BYTE_WIDTH-1:0] ;
     end
@@ -821,26 +821,26 @@ assign update_vxsat_eew8_d1 = vsmul_sat_eew8_d1;
 //full rslt is 32bit
 always@(*) begin
   for (i=0; i<`VLENW; i=i+1) begin: tiles_eew16
-    for (j=0; j<`WORD_WIDTH/`HWORD_WIDTH; j=j+1) begin // 
-      mac_rslt_part16_eew16_d1[2*i+j] = {{2{mac8_out_d1[i*16+j*10+4][15]&&mac_src1_is_signed_d1}},mac8_out_d1[i*16+j*10+4]} + 
+    for (j=0; j<`WORD_WIDTH/`HWORD_WIDTH; j=j+1) begin //
+      mac_rslt_part16_eew16_d1[2*i+j] = {{2{mac8_out_d1[i*16+j*10+4][15]&&mac_src1_is_signed_d1}},mac8_out_d1[i*16+j*10+4]} +
                                         {{2{mac8_out_d1[i*16+j*10+1][15]&&mac_src2_is_signed_d1}},mac8_out_d1[i*16+j*10+1]} ;
 
-      mac_rslt_full_eew16_d1[2*i+j] = {mac8_out_d1[i*16+j*10+5],mac8_out_d1[i*16+j*10]} + 
+      mac_rslt_full_eew16_d1[2*i+j] = {mac8_out_d1[i*16+j*10+5],mac8_out_d1[i*16+j*10]} +
                                       {{6{mac_rslt_part16_eew16_d1[2*i+j][17]}},mac_rslt_part16_eew16_d1[2*i+j],8'b0};
 
       mac_rslt_eew16_widen_d1[2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH] = mac_rslt_full_eew16_d1[i*2+j];  //widen, and convert to [255:0]
-      mac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]  = mac_keep_low_bits_d1 ? 
-                                                                            mac_rslt_full_eew16_d1[i*2+j][0           +:`HWORD_WIDTH] : 
+      mac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]  = mac_keep_low_bits_d1 ?
+                                                                            mac_rslt_full_eew16_d1[i*2+j][0           +:`HWORD_WIDTH] :
                                                                             mac_rslt_full_eew16_d1[i*2+j][`HWORD_WIDTH+:`HWORD_WIDTH];
       //Below are for rounding mac (vsmul.vv, vsmul.vx)
       //right shift bit is 16-1=15 not 16 !
       case(mac_uop_xrm_d1)
         ROD: vsmul_round_incr_eew16_d1[i*2+j] = !mac_rslt_full_eew16_d1[i*2+j][15] && (|mac_rslt_full_eew16_d1[i*2+j][14:0]);
-        RDN: vsmul_round_incr_eew16_d1[i*2+j] = 'b0; 
-        RNE: begin 
-             vsmul_round_incr_eew16_d1[i*2+j] = mac_rslt_full_eew16_d1[i*2+j][14] && 
+        RDN: vsmul_round_incr_eew16_d1[i*2+j] = 'b0;
+        RNE: begin
+             vsmul_round_incr_eew16_d1[i*2+j] = mac_rslt_full_eew16_d1[i*2+j][14] &&
                                                 ( (|mac_rslt_full_eew16_d1[i*2+j][13:0]) || mac_rslt_full_eew16_d1[i*2+j][15]);
-             
+
         end
         //RNU
         default: vsmul_round_incr_eew16_d1[i*2+j] = mac_rslt_full_eew16_d1[i*2+j][14];
@@ -851,23 +851,23 @@ always@(*) begin
 
       vsmul_rslt_eew16_d1[16*(i*2+j) +:16]= vsmul_sat_eew16_d1[i*2+j] ? 16'h7fff :        //saturate
                                               //right shift 15bit then +"1"
-                                              mac_rslt_full_eew16_d1[i*2+j][(`HWORD_WIDTH-1)+:`HWORD_WIDTH] + 
-                                              {15'b0,vsmul_round_incr_eew16_d1[i*2+j]} ;  
+                                              mac_rslt_full_eew16_d1[i*2+j][(`HWORD_WIDTH-1)+:`HWORD_WIDTH] +
+                                              {15'b0,vsmul_round_incr_eew16_d1[i*2+j]} ;
 
       //Below are for vmac related instructions
-      vmac_mul_add_eew16_no_widen_d1[i*2+j] = {1'b0,mac_addsrc_d1[             `HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} + 
+      vmac_mul_add_eew16_no_widen_d1[i*2+j] = {1'b0,mac_addsrc_d1[             `HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} +
                                               {1'b0,mac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} ; //17bit
-      vmac_mul_sub_eew16_no_widen_d1[i*2+j] = {1'b0,mac_addsrc_d1[             `HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} - 
+      vmac_mul_sub_eew16_no_widen_d1[i*2+j] = {1'b0,mac_addsrc_d1[             `HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} -
                                               {1'b0,mac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +: `HWORD_WIDTH]} ;
-      vmac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +:`HWORD_WIDTH] = mac_mul_reverse_d1 ? 
+      vmac_rslt_eew16_no_widen_d1[`HWORD_WIDTH*(i*2+j) +:`HWORD_WIDTH] = mac_mul_reverse_d1 ?
                                                                            vmac_mul_sub_eew16_no_widen_d1[i*2+j][`HWORD_WIDTH-1:0] :
                                                                            vmac_mul_add_eew16_no_widen_d1[i*2+j][`HWORD_WIDTH-1:0] ;
-                                                                           
-      vmac_mul_add_eew16_widen_d1[i*2+j] = {1'b0,mac_addsrc_widen_d1[    2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} + 
+
+      vmac_mul_add_eew16_widen_d1[i*2+j] = {1'b0,mac_addsrc_widen_d1[    2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} +
                                            {1'b0,mac_rslt_eew16_widen_d1[2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} ; //33bit
-      vmac_mul_sub_eew16_widen_d1[i*2+j] = {1'b0,mac_addsrc_widen_d1[    2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} - 
+      vmac_mul_sub_eew16_widen_d1[i*2+j] = {1'b0,mac_addsrc_widen_d1[    2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} -
                                            {1'b0,mac_rslt_eew16_widen_d1[2*`HWORD_WIDTH*(i*2+j) +: 2*`HWORD_WIDTH]} ;
-      vmac_rslt_eew16_widen_d1[`WORD_WIDTH*(i*2+j) +: `WORD_WIDTH] = mac_mul_reverse_d1 ? 
+      vmac_rslt_eew16_widen_d1[`WORD_WIDTH*(i*2+j) +: `WORD_WIDTH] = mac_mul_reverse_d1 ?
                                                                        vmac_mul_sub_eew16_widen_d1[i*2+j][2*`HWORD_WIDTH-1:0] :
                                                                        vmac_mul_add_eew16_widen_d1[i*2+j][2*`HWORD_WIDTH-1:0];
     end
@@ -887,7 +887,7 @@ end
 
 always_comb begin
   for(int i=0;i<`VLENH;i++) begin
-    update_vxsat_eew16_d1[2*i +: 2] = {vsmul_sat_eew16_d1[i],1'b0}; 
+    update_vxsat_eew16_d1[2*i +: 2] = {vsmul_sat_eew16_d1[i],1'b0};
   end
 end
 
@@ -920,53 +920,53 @@ assign mac_rslt_eew32_d1 = mac_is_widen_d1 ? mac_rslt_eew32_widen_d1[`VLEN-1:0] 
 always@(*) begin
   for (i=0; i<`VLENW; i=i+1) begin //z
     mac_rslt_part16_eew32_d1[i] = {{2{mac8_out_d1[i*16+12][15]&&mac_src1_is_signed_d1}},mac8_out_d1[i*16+12]} +
-                                  {{2{mac8_out_d1[i*16+3 ][15]&&mac_src2_is_signed_d1}},mac8_out_d1[i*16+3 ]} ;    
+                                  {{2{mac8_out_d1[i*16+3 ][15]&&mac_src2_is_signed_d1}},mac8_out_d1[i*16+3 ]} ;
     mac_rslt_part32_eew32_d1[i] = {{2{mac8_out_d1[i*16+13][15]&&mac_src1_is_signed_d1}},mac8_out_d1[i*16+13],mac8_out_d1[i*16+5]} +
                                   {{2{mac8_out_d1[i*16+7 ][15]&&mac_src2_is_signed_d1}},mac8_out_d1[i*16+7 ],mac8_out_d1[i*16+8]} ;
     mac_rslt_part48_eew32_d1[i] = {{2{mac8_out_d1[i*16+14][15]&&mac_src1_is_signed_d1}},mac8_out_d1[i*16+14],mac8_out_d1[i*16+6],mac8_out_d1[i*16+4]} +
                                   {{2{mac8_out_d1[i*16+11][15]&&mac_src2_is_signed_d1}},mac8_out_d1[i*16+11],mac8_out_d1[i*16+9],mac8_out_d1[i*16+1]} ;
 
-    mac_rslt_full_eew32_d1[i] = 
-      {mac8_out_d1[i*16+15],mac8_out_d1[i*16+10],mac8_out_d1[i*16+2],mac8_out_d1[i*16]} + 
+    mac_rslt_full_eew32_d1[i] =
+      {mac8_out_d1[i*16+15],mac8_out_d1[i*16+10],mac8_out_d1[i*16+2],mac8_out_d1[i*16]} +
       {{22{mac_rslt_part16_eew32_d1[i][17]}},mac_rslt_part16_eew32_d1[i],24'b0} +
       {{14{mac_rslt_part32_eew32_d1[i][33]}},mac_rslt_part32_eew32_d1[i],16'b0} +
       {{6{mac_rslt_part48_eew32_d1[i][49]}},mac_rslt_part48_eew32_d1[i],8'b0} ;
 
     mac_rslt_eew32_widen_d1[2*`WORD_WIDTH*i +: 2*`WORD_WIDTH] = mac_rslt_full_eew32_d1[i];//widen, and convert to [255:0]
     mac_rslt_eew32_no_widen_d1[`WORD_WIDTH*i +: `WORD_WIDTH]  = mac_keep_low_bits_d1 ?
-                                                                  mac_rslt_full_eew32_d1[i][0           +: `WORD_WIDTH] : 
-                                                                  mac_rslt_full_eew32_d1[i][`WORD_WIDTH +: `WORD_WIDTH] ; 
+                                                                  mac_rslt_full_eew32_d1[i][0           +: `WORD_WIDTH] :
+                                                                  mac_rslt_full_eew32_d1[i][`WORD_WIDTH +: `WORD_WIDTH] ;
     //Below are for rounding mac (vsmul.vv, vsmul.vx)
     //right shift bit is 32-1=31 not 32 !
     case(mac_uop_xrm_d1)
       ROD: vsmul_round_incr_eew32_d1[i] = !mac_rslt_full_eew32_d1[i][31] && (|mac_rslt_full_eew32_d1[i][30:0]);
-      RDN: vsmul_round_incr_eew32_d1[i] = 'b0; 
-      RNE: begin 
-           vsmul_round_incr_eew32_d1[i] = mac_rslt_full_eew32_d1[i][30] && 
+      RDN: vsmul_round_incr_eew32_d1[i] = 'b0;
+      RNE: begin
+           vsmul_round_incr_eew32_d1[i] = mac_rslt_full_eew32_d1[i][30] &&
                                           ((|mac_rslt_full_eew32_d1[i][29:0]) || mac_rslt_full_eew32_d1[i][31]);
       end
       //RNU
       default: vsmul_round_incr_eew32_d1[i] = mac_rslt_full_eew32_d1[i][30];
     endcase
 
-    // saturating  
+    // saturating
     vsmul_sat_eew32_d1[i] = mac_rslt_full_eew32_d1[i][63:62] == 2'b01;
     vsmul_rslt_eew32_d1[`WORD_WIDTH*i +: `WORD_WIDTH] = vsmul_sat_eew32_d1[i] ? 32'h7fff_ffff : //saturate
                                                           //right shift 31bit then +"1"
-                                                          mac_rslt_full_eew32_d1[i][(`WORD_WIDTH-1)+:`WORD_WIDTH] + 
+                                                          mac_rslt_full_eew32_d1[i][(`WORD_WIDTH-1)+:`WORD_WIDTH] +
                                                           {31'b0,vsmul_round_incr_eew32_d1[i]};
 
     //Below are for vmac related instructions
-    vmac_mul_add_eew32_no_widen_d1[i] = {1'b0,mac_addsrc_d1[             `WORD_WIDTH*i +: `WORD_WIDTH]} + 
+    vmac_mul_add_eew32_no_widen_d1[i] = {1'b0,mac_addsrc_d1[             `WORD_WIDTH*i +: `WORD_WIDTH]} +
                                         {1'b0,mac_rslt_eew32_no_widen_d1[`WORD_WIDTH*i +: `WORD_WIDTH]} ;  //33bit
-    vmac_mul_sub_eew32_no_widen_d1[i] = {1'b0,mac_addsrc_d1[             `WORD_WIDTH*i +: `WORD_WIDTH]} - 
+    vmac_mul_sub_eew32_no_widen_d1[i] = {1'b0,mac_addsrc_d1[             `WORD_WIDTH*i +: `WORD_WIDTH]} -
                                         {1'b0,mac_rslt_eew32_no_widen_d1[`WORD_WIDTH*i +: `WORD_WIDTH]} ;
     vmac_rslt_eew32_no_widen_d1[32*i +:32] = mac_mul_reverse_d1 ? vmac_mul_sub_eew32_no_widen_d1[i][`WORD_WIDTH-1:0] :
                                                                   vmac_mul_add_eew32_no_widen_d1[i][`WORD_WIDTH-1:0] ;
 
-    vmac_mul_add_eew32_widen_d1[i] = {1'b0,mac_addsrc_widen_d1[    2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} + 
+    vmac_mul_add_eew32_widen_d1[i] = {1'b0,mac_addsrc_widen_d1[    2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} +
                                      {1'b0,mac_rslt_eew32_widen_d1[2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} ; //65bit
-    vmac_mul_sub_eew32_widen_d1[i] = {1'b0,mac_addsrc_widen_d1[    2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} - 
+    vmac_mul_sub_eew32_widen_d1[i] = {1'b0,mac_addsrc_widen_d1[    2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} -
                                      {1'b0,mac_rslt_eew32_widen_d1[2*`WORD_WIDTH*i +: 2*`WORD_WIDTH]} ;
     vmac_rslt_eew32_widen_d1[64*i +: 64] = mac_mul_reverse_d1 ? vmac_mul_sub_eew32_widen_d1[i][2*`WORD_WIDTH-1:0] :
                                                                 vmac_mul_add_eew32_widen_d1[i][2*`WORD_WIDTH-1:0] ;
@@ -987,7 +987,7 @@ end
 `endif
 always_comb begin
   for(int i=0;i<`VLENW;i++) begin
-    update_vxsat_eew32_d1[4*i +: 4] = {vsmul_sat_eew32_d1[i],3'b0}; 
+    update_vxsat_eew32_d1[4*i +: 4] = {vsmul_sat_eew32_d1[i],3'b0};
   end
 end
 
@@ -1006,15 +1006,15 @@ end
 always_comb begin
   case(mac_top_vs_eew_d1)
     EEW32: begin
-      mac2rob_uop_data.w_data = mac_rslt_eew32_d1; 
+      mac2rob_uop_data.w_data = mac_rslt_eew32_d1;
       update_vxsat            = update_vxsat_eew32_d1;
     end
     EEW16: begin
-      mac2rob_uop_data.w_data = mac_rslt_eew16_d1; 
+      mac2rob_uop_data.w_data = mac_rslt_eew16_d1;
       update_vxsat            = update_vxsat_eew16_d1;
     end
     default: begin  // EEW8
-      mac2rob_uop_data.w_data = mac_rslt_eew8_d1; 
+      mac2rob_uop_data.w_data = mac_rslt_eew8_d1;
       update_vxsat            = update_vxsat_eew8_d1;
     end
   endcase

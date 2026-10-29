@@ -7,15 +7,15 @@
 // and pass results from these submodules to ROB
 
 module rvv_backend_falu( 
-  clk, 
-  rst_n,          
-  pop,            
+  clk,
+  rst_n,
+  pop,
   uop_valid,
-  uop,     
+  uop,
   result_valid,
-  result,  
+  result,
   result_ready,
-  trap_flush_rvv 
+  trap_flush_rvv
 );
 
   // global signal
@@ -23,14 +23,14 @@ module rvv_backend_falu(
   input   logic                         rst_n;
   // FALU RS to FALU unit
   output  logic       [`NUM_FALU-1:0]   pop;
-  input   logic       [`NUM_FALU-1:0]   uop_valid;    
+  input   logic       [`NUM_FALU-1:0]   uop_valid;
   input   FALU_RS_t   [`NUM_FALU-1:0]   uop;
   // submit FALU
   output  logic       [`NUM_FALU-1:0]   result_valid;
   output  PU2ROB_t    [`NUM_FALU-1:0]   result;
   input   logic       [`NUM_FALU-1:0]   result_ready;
   // trap-flush
-  input   logic                         trap_flush_rvv; 
+  input   logic                         trap_flush_rvv;
 
 //
 // internal signals
@@ -78,7 +78,7 @@ module rvv_backend_falu(
   //if not
   //  check if unit1 available for uop0
   //    if so, further check if unit0 available for uop1
-  //    if not, block all dispatched uop  
+  //    if not, block all dispatched uop
   always_comb
   begin
     falu_uop      = '0;
@@ -91,7 +91,7 @@ module rvv_backend_falu(
       falu_uop[0]         = uop[0];
       falu_uop_vld[0]     = uop_valid[0];
       falu_uop_type[0]    = uop_type[0];
-      pop[0]              = uop_valid[0];           
+      pop[0]              = uop_valid[0];
       //unit1 ready for uo1
       if(|(uop_type[1]&falu_uop_rdy[1])) begin
         falu_uop[1]       = uop[1];
@@ -106,7 +106,7 @@ module rvv_backend_falu(
         falu_uop[1]         = uop[0];
         falu_uop_vld[1]     = uop_valid[0];
         falu_uop_type[1]    = uop_type[0];
-        pop[0]              = uop_valid[0];           
+        pop[0]              = uop_valid[0];
         //check unit0 ready for uop1
         if(|(uop_type[1]&falu_uop_rdy[0])) begin
           falu_uop[0]       = uop[1];

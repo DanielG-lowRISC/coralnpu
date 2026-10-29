@@ -79,7 +79,7 @@ module rvv_backend_pmtrdt
 
       assign result_valid_ex2rob[i] = pmtrdt_res_valid[i];
       assign result_ex2rob[i]       = pmtrdt_res[i];
-      assign pmtrdt_res_ready[i]    = result_ready_rob2ex[i]; 
+      assign pmtrdt_res_ready[i]    = result_ready_rob2ex[i];
     end
   endgenerate
 

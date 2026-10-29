@@ -43,14 +43,14 @@ module rvv_backend_alu_unit_shift
   logic   [`ROB_DEPTH_WIDTH-1:0]  rob_entry;
   FUNCT6_u                        uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]     uop_funct3;
-  RVVXRM                          vxrm;       
+  RVVXRM                          vxrm;
   logic   [`VLEN-1:0]             vs1_data;           
   logic   [`VLEN-1:0]             vs2_data;	        
   EEW_e                           vs2_eew;
   logic   [`XLEN-1:0] 	          rs1_data;        
-  logic   [$clog2(`EMUL_MAX)-1:0] uop_index;          
+  logic   [$clog2(`EMUL_MAX)-1:0] uop_index;
 
-  // execute 
+  // execute
   // add and sub instructions
   logic   [`VLENB/2-1:0][`BYTE_WIDTH-1:0]           src2_data8;
   logic   [`VLENH/2-1:0][`HWORD_WIDTH-1:0]          src2_data16;
@@ -82,12 +82,12 @@ module rvv_backend_alu_unit_shift
   logic   [`VLENB-1:0]                              underoverflow;
   logic   [`VLEN-1:0]                               result_data; 
   logic   [1:0]                                     shift_mode;
-  
+
   // for-loop
   genvar                                            j;
 
 //
-// prepare source data to calculate    
+// prepare source data to calculate
 //
   // split ALU_RS_t struct
   assign  rob_entry      = alu_uop.rob_entry;
@@ -99,16 +99,16 @@ module rvv_backend_alu_unit_shift
   assign  vs2_data       = alu_uop.vs2_data;
   assign  vs2_eew        = alu_uop.vs2_eew;
   assign  uop_index      = alu_uop.uop_index;
-  
-//  
-// prepare source data 
+
 //
-  // prepare valid signal 
+// prepare source data
+//
+  // prepare valid signal
   always_comb begin
     // initial the data
     result_valid   = 'b0;
 
-    case(uop_funct3) 
+    case(uop_funct3)
       OPIVV,
       OPIVX,
       OPIVI: begin
@@ -139,7 +139,7 @@ module rvv_backend_alu_unit_shift
     shift_amount16 = 'b0;
     shift_amount32 = 'b0;
 
-    case(uop_funct3) 
+    case(uop_funct3)
       OPIVV: begin
         case(uop_funct6.ari_funct6)
           VSLL,
@@ -154,7 +154,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENB/2;i<`VLENB*3/4;i=i+1) begin
                   src2_data16[   i-`VLENB/2] = {8'b0,vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount16[i-`VLENB/2] = {1'b0,vs1_data[i*`BYTE_WIDTH +: $clog2(`BYTE_WIDTH)]};
-                end         
+                end
                 for(int i=`VLENB*3/4;i<`VLENB;i=i+1) begin
                   src2_data32[   i-`VLENB*3/4] = {24'b0,vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount32[i-`VLENB*3/4] = {2'b0, vs1_data[i*`BYTE_WIDTH +: $clog2(`BYTE_WIDTH)]};
@@ -168,7 +168,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {16'b0,vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0, vs1_data[i*`HWORD_WIDTH +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -190,7 +190,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENB/2;i<`VLENB*3/4;i=i+1) begin
                   src2_data16[   i-`VLENB/2] = {{8{vs2_data[(i+1)*`BYTE_WIDTH-1]}},vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount16[i-`VLENB/2] = {1'b0,vs1_data[i*`BYTE_WIDTH +: $clog2(`BYTE_WIDTH)]};
-                end         
+                end
                 for(int i=`VLENB*3/4;i<`VLENB;i=i+1) begin
                   src2_data32[   i-`VLENB*3/4] = {{24{vs2_data[(i+1)*`BYTE_WIDTH-1]}},vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount32[i-`VLENB*3/4] = {2'b0,vs1_data[i*`BYTE_WIDTH +: $clog2(`BYTE_WIDTH)]};
@@ -204,7 +204,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {{16{vs2_data[(i+1)*`HWORD_WIDTH-1]}},vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0,vs1_data[i*`HWORD_WIDTH +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -212,7 +212,7 @@ module rvv_backend_alu_unit_shift
                   shift_amount32[i] = vs1_data[i*`WORD_WIDTH +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase         
+            endcase
           end
 
           VNSRL,
@@ -232,7 +232,7 @@ module rvv_backend_alu_unit_shift
                     shift_amount32[i-`VLENH/2] = {1'b0, vs1_data[i*`BYTE_WIDTH  +: $clog2(`HWORD_WIDTH)]};
                   else
                     shift_amount32[i-`VLENH/2] = {1'b0, vs1_data[`VLEN/2+i*`BYTE_WIDTH  +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -263,7 +263,7 @@ module rvv_backend_alu_unit_shift
                     shift_amount32[i-`VLENH/2] = {1'b0, vs1_data[i*`BYTE_WIDTH +: $clog2(`HWORD_WIDTH)]};
                   else
                     shift_amount32[i-`VLENH/2] = {1'b0, vs1_data[`VLEN/2+i*`BYTE_WIDTH +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -274,7 +274,7 @@ module rvv_backend_alu_unit_shift
                     shift_amount32[i] = vs1_data[`VLEN/2+i*`HWORD_WIDTH +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase  
+            endcase
           end
         endcase
       end
@@ -294,7 +294,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENB/2;i<`VLENB*3/4;i=i+1) begin
                   src2_data16[   i-`VLENB/2] = {8'b0,vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount16[i-`VLENB/2] = {1'b0,rs1_data[0             +: $clog2(`BYTE_WIDTH)]};
-                end         
+                end
                 for(int i=`VLENB*3/4;i<`VLENB;i=i+1) begin
                   src2_data32[   i-`VLENB*3/4] = {24'b0,vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount32[i-`VLENB*3/4] = {2'b0, rs1_data[0             +: $clog2(`BYTE_WIDTH)]};
@@ -308,7 +308,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {16'b0,vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0, rs1_data[0              +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -316,7 +316,7 @@ module rvv_backend_alu_unit_shift
                   shift_amount32[i] = rs1_data[0             +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase       
+            endcase
           end
 
           VSRA,
@@ -330,7 +330,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENB/2;i<`VLENB*3/4;i=i+1) begin
                   src2_data16[   i-`VLENB/2] = {{8{vs2_data[(i+1)*`BYTE_WIDTH-1]}},vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount16[i-`VLENB/2] = {1'b0,rs1_data[0 +: $clog2(`BYTE_WIDTH)]};
-                end         
+                end
                 for(int i=`VLENB*3/4;i<`VLENB;i=i+1) begin
                   src2_data32[   i-`VLENB*3/4] = {{24{vs2_data[(i+1)*`BYTE_WIDTH-1]}},vs2_data[i*`BYTE_WIDTH +: `BYTE_WIDTH]};
                   shift_amount32[i-`VLENB*3/4] = {2'b0,rs1_data[0 +: $clog2(`BYTE_WIDTH)]};
@@ -344,7 +344,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {{16{vs2_data[(i+1)*`HWORD_WIDTH-1]}},vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0,rs1_data[0 +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -352,7 +352,7 @@ module rvv_backend_alu_unit_shift
                   shift_amount32[i] = rs1_data[0 +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase          
+            endcase
           end
 
           VNSRL,
@@ -366,7 +366,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {16'b0,vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0, rs1_data[0              +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -374,7 +374,7 @@ module rvv_backend_alu_unit_shift
                   shift_amount32[i] = rs1_data[0             +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase  
+            endcase
           end
 
           VNSRA,
@@ -388,7 +388,7 @@ module rvv_backend_alu_unit_shift
                 for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
                   src2_data32[   i-`VLENH/2] = {{16{vs2_data[(i+1)*`HWORD_WIDTH-1]}},vs2_data[i*`HWORD_WIDTH +: `HWORD_WIDTH]};
                   shift_amount32[i-`VLENH/2] = {1'b0,rs1_data[0 +: $clog2(`HWORD_WIDTH)]};
-                end   
+                end
               end
               EEW32: begin
                 for(int i=0;i<`VLENW;i=i+1) begin
@@ -396,7 +396,7 @@ module rvv_backend_alu_unit_shift
                   shift_amount32[i] = rs1_data[0 +: $clog2(`WORD_WIDTH)];
                 end
               end
-            endcase 
+            endcase
           end
         endcase
       end
@@ -409,11 +409,11 @@ module rvv_backend_alu_unit_shift
     shift_mode = SHIFT_SLL;
 
     // prepare source data
-    case(uop_funct3) 
+    case(uop_funct3)
       OPIVV,
       OPIVX,
       OPIVI: begin
-        case(uop_funct6.ari_funct6)    
+        case(uop_funct6.ari_funct6)
           VSLL: begin
             shift_mode = SHIFT_SLL;
           end
@@ -434,7 +434,7 @@ module rvv_backend_alu_unit_shift
     endcase
   end
 
-//    
+//
 // calculate the result
 //
   // shift instructions
@@ -443,10 +443,10 @@ module rvv_backend_alu_unit_shift
       barrel_shifter #(
         .DATA_WIDTH   (`BYTE_WIDTH*2)
       ) shifter8 (
-        .din          ({src2_data8[j],`BYTE_WIDTH'b0}),            
+        .din          ({src2_data8[j],`BYTE_WIDTH'b0}),
         .shift_amount ({1'b0,shift_amount8[j]}),
-        .shift_mode   (shift_mode),     
-        .dout         ({product8_tmp[j], round_bits8_tmp[j]}) 
+        .shift_mode   (shift_mode),
+        .dout         ({product8_tmp[j], round_bits8_tmp[j]})
       );
     end
   
@@ -454,10 +454,10 @@ module rvv_backend_alu_unit_shift
       barrel_shifter #(
         .DATA_WIDTH   (`HWORD_WIDTH*2)
       ) shifter16 (
-        .din          ({src2_data16[j],`HWORD_WIDTH'b0}),            
+        .din          ({src2_data16[j],`HWORD_WIDTH'b0}),
         .shift_amount ({1'b0,shift_amount16[j]}),
-        .shift_mode   (shift_mode),     
-        .dout         ({product16_tmp[j], round_bits16_tmp[j]}) 
+        .shift_mode   (shift_mode),
+        .dout         ({product16_tmp[j], round_bits16_tmp[j]})
       );
     end
 
@@ -465,14 +465,14 @@ module rvv_backend_alu_unit_shift
       barrel_shifter #(
         .DATA_WIDTH   (`WORD_WIDTH*2)
       ) shifter32 (
-        .din          ({src2_data32[j],`WORD_WIDTH'b0}),            
+        .din          ({src2_data32[j],`WORD_WIDTH'b0}),
         .shift_amount ({1'b0,shift_amount32[j]}),
-        .shift_mode   (shift_mode),     
-        .dout         ({product32_tmp[j], round_bits32_tmp[j]}) 
+        .shift_mode   (shift_mode),
+        .dout         ({product32_tmp[j], round_bits32_tmp[j]})
       );
     end
-  endgenerate 
-  
+  endgenerate
+
   always_comb begin
     product8    = 'b0;
     round_bits8 = 'b0;
@@ -484,13 +484,13 @@ module rvv_backend_alu_unit_shift
     for(int i=`VLENB/2;i<`VLENB*3/4;i=i+1) begin
       product8[i]    = product16_tmp[   i-`VLENB/2][0           +: `BYTE_WIDTH];
       round_bits8[i] = round_bits16_tmp[i-`VLENB/2][`BYTE_WIDTH +: `BYTE_WIDTH];
-    end         
+    end
     for(int i=`VLENB*3/4;i<`VLENB;i=i+1) begin
       product8[i]    = product32_tmp[   i-`VLENB*3/4][0             +: `BYTE_WIDTH];
       round_bits8[i] = round_bits32_tmp[i-`VLENB*3/4][3*`BYTE_WIDTH +: `BYTE_WIDTH];
     end
   end
- 
+
   always_comb begin
     product16    = 'b0;
     round_bits16 = 'b0;
@@ -502,7 +502,7 @@ module rvv_backend_alu_unit_shift
     for(int i=`VLENH/2;i<`VLENH;i=i+1) begin
       product16[i]    = product32_tmp[   i-`VLENH/2][0            +: `HWORD_WIDTH];
       round_bits16[i] = round_bits32_tmp[i-`VLENH/2][`HWORD_WIDTH +: `HWORD_WIDTH];
-    end   
+    end
   end
 
   always_comb begin
@@ -520,7 +520,7 @@ module rvv_backend_alu_unit_shift
     for (j=0;j<`VLENB;j++) begin: INCREMENT8
       always_comb begin
         round_increment8[j] = 'b0;
-        
+
         case(vxrm)
           RNU: begin
             round_increment8[j] = round_bits8[j][`BYTE_WIDTH-1];
@@ -543,7 +543,7 @@ module rvv_backend_alu_unit_shift
     for (j=0;j<`VLENH;j++) begin: INCREMENT16
       always_comb begin
         round_increment16[j] = 'b0;
-        
+
         case(vxrm)
           RNU: begin
             round_increment16[j] = round_bits16[j][`HWORD_WIDTH-1];
@@ -566,7 +566,7 @@ module rvv_backend_alu_unit_shift
     for (j=0;j<`VLENW;j++) begin: INCREMENT32
       always_comb begin
         round_increment32[j] = 'b0;
-        
+
         case(vxrm)
           RNU: begin
             round_increment32[j] = round_bits32[j][`WORD_WIDTH-1];
@@ -591,18 +591,18 @@ module rvv_backend_alu_unit_shift
       if (shift_mode == SHIFT_SLL)
         round8[i] = 'b0;
       else
-        round8[i] = round_increment8[i] ? product8[i]+'b1 : product8[i]; 
+        round8[i] = round_increment8[i] ? product8[i]+'b1 : product8[i];
     end
   end
 
   always_comb begin
     for(int i=0;i<`VLENH;i++) begin: ROUND16
       if (shift_mode == SHIFT_SRL)
-        {cout16[i], round16[i]} = round_increment16[i] ? {1'b0, product16[i]}+'b1 : {1'b0, product16[i]}; 
+        {cout16[i], round16[i]} = round_increment16[i] ? {1'b0, product16[i]}+'b1 : {1'b0, product16[i]};
       else if (shift_mode == SHIFT_SRA)
-        {cout16[i], round16[i]} = round_increment16[i] ? {product16[i][`HWORD_WIDTH-1], product16[i]}+'b1 : {product16[i][`HWORD_WIDTH-1], product16[i]}; 
+        {cout16[i], round16[i]} = round_increment16[i] ? {product16[i][`HWORD_WIDTH-1], product16[i]}+'b1 : {product16[i][`HWORD_WIDTH-1], product16[i]};
       else begin
-        cout16[i]  = 'b0; 
+        cout16[i]  = 'b0;
         round16[i] = 'b0;
       end
     end
@@ -611,18 +611,18 @@ module rvv_backend_alu_unit_shift
   always_comb begin
     for(int i=0;i<`VLENW;i++) begin: ROUND32
       if (shift_mode == SHIFT_SRL)
-        {cout32[i], round32[i]} = round_increment32[i] ? {1'b0, product32[i]}+'b1 : {1'b0, product32[i]}; 
+        {cout32[i], round32[i]} = round_increment32[i] ? {1'b0, product32[i]}+'b1 : {1'b0, product32[i]};
       else if (shift_mode == SHIFT_SRA)
-        {cout32[i], round32[i]} = round_increment32[i] ? {product32[i][`WORD_WIDTH-1], product32[i]}+'b1 : {product32[i][`WORD_WIDTH-1], product32[i]}; 
+        {cout32[i], round32[i]} = round_increment32[i] ? {product32[i][`WORD_WIDTH-1], product32[i]}+'b1 : {product32[i][`WORD_WIDTH-1], product32[i]};
       else begin
-        cout32[i]  = 'b0; 
+        cout32[i]  = 'b0;
         round32[i] = 'b0;
       end
     end
   end
 
-  // overflow check for vnclipu and vnclip 
-  generate 
+  // overflow check for vnclipu and vnclip
+  generate
     for (j=0;j<`VLENW/2;j++) begin: GET_OVERFLOW
       always_comb begin
         // initial
@@ -752,7 +752,7 @@ module rvv_backend_alu_unit_shift
  
     for(int i=0;i<`VLENW;i++) begin
       // calculate result data
-      case(uop_funct3) 
+      case(uop_funct3)
         OPIVV,
         OPIVX,
         OPIVI: begin
@@ -772,7 +772,7 @@ module rvv_backend_alu_unit_shift
                 end
               endcase
             end
-  
+
             VNSRL,
             VNSRA: begin
               case(vs2_eew)
@@ -998,7 +998,7 @@ module rvv_backend_alu_unit_shift
     result.fpexp     = 'b0;
   `endif
 
-    case(uop_funct3) 
+    case(uop_funct3)
       OPIVV,
       OPIVX,
       OPIVI: begin

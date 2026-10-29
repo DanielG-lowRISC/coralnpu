@@ -57,11 +57,11 @@ typedef enum logic [2:0] {
 
 // Floating-point Exception
 typedef struct packed {
-  logic nv;   
-  logic dz; 
-  logic of;   
-  logic uf;   
-  logic nx;   
+  logic nv;
+  logic dz;
+  logic of;
+  logic uf;
+  logic nx;
 } RVFEXP_t;
 
 // The architectural configuration state of the RVV core.
@@ -71,7 +71,7 @@ typedef struct packed {
   logic [`VSTART_WIDTH-1:0]     vstart;
   logic [`VTYPE_VMA_WIDTH-1:0]  ma;        // 0:inactive element undisturbed, 1:inactive element agnostic
   logic [`VTYPE_VTA_WIDTH-1:0]  ta;        // 0:tail undisturbed, 1:tail agnostic
-  RVVXRM                        xrm;       
+  RVVXRM                        xrm;
   logic [`VCSR_VXSAT_WIDTH-1:0] xsat;   // rvv dont need this bit, but output this to rvs
 `ifdef ZVE32F_ON
   RVFRM                         frm;
@@ -136,14 +136,14 @@ typedef enum logic [3:0] {
   EMUL5,
   EMUL6,
   EMUL7,
-  EMUL_NONE     // it means this is not supported 
+  EMUL_NONE     // it means this is not supported
 } EMUL_e;
 
 // Effective Element Width
 typedef enum logic [2:0] {
-  EEW_NONE,    // it means this is not supported 
+  EEW_NONE,    // it means this is not supported
   EEW1,
-  EEW8, 
+  EEW8,
   EEW16,
   EEW32,
   EEW64
@@ -163,8 +163,8 @@ typedef struct packed {
   EMUL_e                          emul_vs2;
   EMUL_e                          emul_vd;
   EMUL_e                          emul_max;
-  logic   [`UOP_INDEX_WIDTH-1:0]  uop_vstart;         
-  logic   [`UOP_INDEX_WIDTH-1:0]  uop_index_max;         
+  logic   [`UOP_INDEX_WIDTH-1:0]  uop_vstart;
+  logic   [`UOP_INDEX_WIDTH-1:0]  uop_index_max;
   logic   [`VL_WIDTH-1:0]         evl;
   logic                           force_vma_agnostic;
   logic                           force_vta_agnostic;
@@ -215,10 +215,10 @@ typedef enum logic [1:0] {
   US_FF          // Faul-only-First load
 } LSU_UMOP_e;
 
-// segment load/store 
+// segment load/store
 typedef enum logic [0:0] {
   IS_SEGMENT,
-  NONE      
+  NONE
 } LSU_IS_SEG_e;
 
 // combine those signals to LSU_TYPE
@@ -261,48 +261,48 @@ typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]         uop_pc;
 `endif
-  logic                           res_updating_end; 
+  logic                           res_updating_end;
   logic   [`ROB_TAG_WIDTH-1:0]    rob_tag;
   logic   [`FUNCT3_WIDTH-1:0]     uop_funct3;
   FUNCT6_u                        uop_funct6;
-  EXE_UNIT_e                      uop_exe_unit; 
-  UOP_CLASS_e                     uop_class;   
+  EXE_UNIT_e                      uop_exe_unit;
+  UOP_CLASS_e                     uop_class;
   logic                           lsu_is_store;
-  RVVConfigState                  vector_csr;  
-  logic   [`VL_WIDTH-1:0]         vs_evl;             
+  RVVConfigState                  vector_csr;
+  logic   [`VL_WIDTH-1:0]         vs_evl;
   logic                           ignore_vma;
   logic                           ignore_vta;
-  logic                           force_vma_agnostic; 
-  logic                           force_vta_agnostic; 
-  logic                           vm;                 
-  logic                           v0_valid;           
+  logic                           force_vma_agnostic;
+  logic                           force_vta_agnostic;
+  logic                           vm;
+  logic                           v0_valid;
   logic   [`REGIDX_WIDTH-1:0]     dst_index;
-  EEW_e                           vd_eew;  
+  EEW_e                           vd_eew;
   logic                           vd_valid;
-  logic                           vs3_valid;          
-  logic                           xd_valid; 
+  logic                           vs3_valid;
+  logic                           xd_valid;
 `ifdef ZVE32F_ON
-  logic                           fd_valid; 
+  logic                           fd_valid;
 `endif
 `ifdef ZVT_ON
-  logic                           mt_valid; 
+  logic                           mt_valid;
   EEW_e                           mt_eew;
 `endif
-  logic   [`REGIDX_WIDTH-1:0]     vs1;              
-  EEW_e                           vs1_eew;            
+  logic   [`REGIDX_WIDTH-1:0]     vs1;
+  EEW_e                           vs1_eew;
   logic                           vs1_valid;
-  logic   [`REGIDX_WIDTH-1:0]     vs2_index; 	        
+  logic   [`REGIDX_WIDTH-1:0]     vs2_index;
   EEW_e                           vs2_eew;
   logic                           vs2_valid;
-  logic   [`XLEN-1:0] 	          rs1_data;           
-  logic        	                  rs1_data_valid;    
-  logic   [`UOP_INDEX_WIDTH-1:0]  uop_index;          
-  logic                           first_uop_valid;    
-  logic                           last_uop_valid;     
-  logic   [$clog2(`EMUL_MAX)-1:0] seg_field_index;    
-  logic                           pshrob_valid;       
+  logic   [`XLEN-1:0] 	          rs1_data;
+  logic        	                  rs1_data_valid;
+  logic   [`UOP_INDEX_WIDTH-1:0]  uop_index;
+  logic                           first_uop_valid;
+  logic                           last_uop_valid;
+  logic   [$clog2(`EMUL_MAX)-1:0] seg_field_index;
+  logic                           pshrob_valid;
   logic                           pshlsu_valid;
-} UOP_QUEUE_t;    
+} UOP_QUEUE_t;
 
 // specify whether the current byte belongs to 'prestart' or 'body-inactive' or 'body-active' or 'tail'
 typedef enum logic [1:0] {
@@ -314,8 +314,8 @@ typedef enum logic [1:0] {
 
 // trap handle
 typedef enum logic [1:0] {
-  TRAP_LSU,           
-  TRAP_LSU_FF       
+  TRAP_LSU,
+  TRAP_LSU_FF
 } TRAP_INFO_e;
 
 // the max number of byte in a vector register is VLENB
@@ -326,29 +326,29 @@ typedef struct packed {
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
-  FUNCT6_u                            uop_funct6;  
+  FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
   logic                               is_cmp;
   logic   [`VSTART_WIDTH-1:0]         vstart;
-  logic   [`VL_WIDTH-1:0]             vl;       
-  logic                               vm;               
-  RVVXRM                              vxrm;       
+  logic   [`VL_WIDTH-1:0]             vl;
+  logic                               vm;
+  RVVXRM                              vxrm;
   logic   [`VLEN-1:0]                 v0_data;
   logic                               v0_data_valid;
   logic   [`VLEN-1:0]                 vd_data;
   logic                               vd_data_valid;
-  EEW_e                               vd_eew;  
-  logic   [`REGIDX_WIDTH-1:0]  vs1;              
-  logic   [`VLEN-1:0]                 vs1_data;           
-  logic                               vs1_data_valid; 
-  logic        	                      rs1_data_valid;                                   
-  logic   [`VLEN-1:0]                 vs2_data;	        
-  logic                               vs2_data_valid;  
+  EEW_e                               vd_eew;
+  logic   [`REGIDX_WIDTH-1:0]  vs1;
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
+  logic        	                      rs1_data_valid;
+  logic   [`VLEN-1:0]                 vs2_data;
+  logic                               vs2_data_valid;
   EEW_e                               vs2_eew;
-  logic                               first_uop_valid;     
+  logic                               first_uop_valid;
   logic                               last_uop_valid;
-  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;      
-} ALU_RS_t;    
+  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;
+} ALU_RS_t;
 
 // DIV reservation station struct
 typedef struct packed {
@@ -359,17 +359,17 @@ typedef struct packed {
   FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
   logic                               is_div;
-  logic   [`VLEN-1:0]                 vs1_data;           
-  logic                               vs1_data_valid; 
-  logic        	                      rs1_data_valid;      
-  logic   [`VLEN-1:0]                 vs2_data;	        
-  logic                               vs2_data_valid;  
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
+  logic        	                      rs1_data_valid;
+  logic   [`VLEN-1:0]                 vs2_data;
+  logic                               vs2_data_valid;
   EEW_e                               vs2_eew;
 `ifdef ZVE32F_ON
   RVFRM                               frm;
-  logic   [`REGIDX_WIDTH-1:0]         vs1;              
+  logic   [`REGIDX_WIDTH-1:0]         vs1;
 `endif
-} DIV_RS_t; 
+} DIV_RS_t;
 
 // DIV reservation station struct
 typedef struct packed {
@@ -379,116 +379,116 @@ typedef struct packed {
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
   FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
-  logic   [`VLEN-1:0]                 vs1_data;           
-  logic                               vs1_data_valid; 
-  logic        	                      rs1_data_valid;      
-  logic   [`VLEN-1:0]                 vs2_data;	        
-  logic                               vs2_data_valid;  
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
+  logic        	                      rs1_data_valid;
+  logic   [`VLEN-1:0]                 vs2_data;
+  logic                               vs2_data_valid;
   EEW_e                               vs2_eew;
 `ifdef ZVE32F_ON
   RVFRM                               frm;
-  logic   [`REGIDX_WIDTH-1:0]         vs1;              
+  logic   [`REGIDX_WIDTH-1:0]         vs1;
 `endif
 } DIV_SUB_t;
 
 // MUL and MAC reservation station struct
-typedef struct packed {   
+typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
   FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
-  RVVXRM                              vxrm;       
-  logic   [`VLEN-1:0]                 vs1_data;           
-  logic                               vs1_data_valid; 
-  logic          	                    rs1_data_valid;   
-  logic   [`VLEN-1:0]                 vs2_data;	        
-  logic                               vs2_data_valid; 
-  EEW_e                               vs2_eew; 
-  logic   [`VLEN-1:0]                 vs3_data;	
-  logic                               vs3_data_valid; 
+  RVVXRM                              vxrm;
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
+  logic          	                    rs1_data_valid;
+  logic   [`VLEN-1:0]                 vs2_data;
+  logic                               vs2_data_valid;
+  EEW_e                               vs2_eew;
+  logic   [`VLEN-1:0]                 vs3_data;
+  logic                               vs3_data_valid;
   logic                               uop_index;
-} MUL_RS_t;    
+} MUL_RS_t;
 
 // PMT and RDT reservation station struct
-typedef struct packed {   
+typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
-  EXE_UNIT_e                          uop_exe_unit; 
+  EXE_UNIT_e                          uop_exe_unit;
   FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
-  logic   [`VL_WIDTH-1:0]             vl;       
+  logic   [`VL_WIDTH-1:0]             vl;
   logic                               vm;
-  logic   [`VL_WIDTH-1:0]             vlmax;       
+  logic   [`VL_WIDTH-1:0]             vlmax;
   logic   [`VLEN-1:0]                 v0_data;
   EEW_e                               vs1_eew;
-  logic   [`VLEN-1:0]                 vs1_data;          
-  logic                               vs1_data_valid; 
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
   EEW_e                               vs2_eew;
-  logic   [`VLEN-1:0]                 vs2_data;	        
+  logic   [`VLEN-1:0]                 vs2_data;
   BYTE_TYPE_t                         vs2_type;
   logic   [`REGIDX_WIDTH-1:0]         vs2_index;
-  EEW_e                               vd_eew;  
+  EEW_e                               vd_eew;
   logic   [`REGIDX_WIDTH-1:0]         dst_index;
-  logic   [`XLEN-1:0] 	              rs1_data;         
-  logic                               first_uop_valid;     
-  logic                               last_uop_valid;     
-  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;      
+  logic   [`XLEN-1:0] 	              rs1_data;
+  logic                               first_uop_valid;
+  logic                               last_uop_valid;
+  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;
 `ifdef ZVE32F_ON
   RVFRM                               frm;
 `endif
-} PMT_RDT_RS_t;    
+} PMT_RDT_RS_t;
 
 // LSU reservation station struct
-typedef struct packed {   
+typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
-  logic                               vidx_valid; 
+  logic                               vidx_valid;
   logic   [`REGIDX_WIDTH-1:0]         vidx_addr;
-  logic   [`VLEN-1:0]                 vidx_data;            // vs2        
-  logic                               vregfile_read_valid; 
+  logic   [`VLEN-1:0]                 vidx_data;            // vs2
+  logic                               vregfile_read_valid;
   logic   [`REGIDX_WIDTH-1:0]         vregfile_read_addr;
-  logic   [`VLEN-1:0]                 vregfile_read_data;   // vs3       
+  logic   [`VLEN-1:0]                 vregfile_read_data;   // vs3
   logic                               v0_valid;
-  logic   [`VLENB-1:0]                v0_data;              // byte strobe signal for mask load/store. 
-                                                            // v0[i]=1 means vd/vs3[8*i +: 8] data is valid. 
-} UOP_RVV2LSU_t;    
+  logic   [`VLENB-1:0]                v0_data;              // byte strobe signal for mask load/store.
+//            v0[i]=1 means vd/vs3[8*i +: 8] data is valid.
+} UOP_RVV2LSU_t;
 
- // FMA reservation station struct
-typedef struct packed {   
+// FMA reservation station struct
+typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
   FUNCT6_u                            uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]         uop_funct3;
-  EXE_UNIT_e                          uop_exe_unit; 
+  EXE_UNIT_e                          uop_exe_unit;
   logic   [`VSTART_WIDTH-1:0]         vstart;
-  logic   [`VL_WIDTH-1:0]             vl;       
-  logic                               vm;               
+  logic   [`VL_WIDTH-1:0]             vl;
+  logic                               vm;
   RVFRM                               frm;
   logic   [`VLENW*`EMUL_MAX-1:0]      v0_data;
   logic                               v0_data_valid;
-  logic   [`REGIDX_WIDTH-1:0]         vs1;              
-  logic   [`VLEN-1:0]                 vs1_data;           
-  logic                               vs1_data_valid; 
-  logic   [`VLEN-1:0]                 vs2_data;	        
-  logic                               vs2_data_valid; 
-  EEW_e                               vs2_eew; 
-  logic   [`VLEN-1:0]                 vs3_data;	
-  logic                               vs3_data_valid; 
-  logic   [`XLEN-1:0] 	              rs1_data;          
-  logic          	                    rs1_data_valid;   
+  logic   [`REGIDX_WIDTH-1:0]         vs1;
+  logic   [`VLEN-1:0]                 vs1_data;
+  logic                               vs1_data_valid;
+  logic   [`VLEN-1:0]                 vs2_data;
+  logic                               vs2_data_valid;
+  EEW_e                               vs2_eew;
+  logic   [`VLEN-1:0]                 vs3_data;
+  logic                               vs3_data_valid;
+  logic   [`XLEN-1:0] 	              rs1_data;
+  logic          	                    rs1_data_valid;
   logic                               last_uop_valid;
-  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;      
-} FALU_RS_t;  
+  logic   [`UOP_INDEX_WIDTH_ALU-1:0]  uop_index;
+} FALU_RS_t;
 
 //
-// EX stage, 
+// EX stage,
 //
 // send PU's result to ROB
 typedef struct packed {
@@ -502,40 +502,40 @@ typedef struct packed {
 `ifdef ZVE32F_ON
   RVFEXP_t  [`VLENB-1:0]              fpexp;
 `endif
-} PU2ROB_t;  
+} PU2ROB_t;
 
 // lsu uop info to remap rob_entry for UOP_LSU2RVV_t
-typedef struct packed {   
+typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic                               valid;
   logic   [`ROB_DEPTH_WIDTH-1:0]      rob_entry;
   logic                               lsu_is_store;
-  logic	  [`REGIDX_WIDTH-1:0]         vregfile_write_addr;  
-} LSU_MAP_INFO_t; 
+  logic	  [`REGIDX_WIDTH-1:0]         vregfile_write_addr;
+} LSU_MAP_INFO_t;
 
 // LSU feedback to RVV
-typedef struct packed {   
+typedef struct packed {
 `ifdef TB_SUPPORT
   // To trace wave
   logic   [`PC_WIDTH-1:0]             uop_pc;
-  logic   [`UOP_INDEX_WIDTH-1:0]      uop_index;         
+  logic   [`UOP_INDEX_WIDTH-1:0]      uop_index;
 `endif
   // For load data
   logic                               vregfile_write_valid;
-  logic	  [`REGIDX_WIDTH-1:0] 	      vregfile_write_addr;  
-  logic	  [`VLEN-1:0] 			          vregfile_write_data;  	// vd   
+  logic	  [`REGIDX_WIDTH-1:0] 	      vregfile_write_addr;
+  logic	  [`VLEN-1:0] 			          vregfile_write_data;  	// vd
   // vregfile_write_data[`VLEN-1:ff_tail_index*8] is treated as TAIL.
   logic   [$clog2(`VLENB):0]          ff_tail_index;
   // Store done signal to help ROB retire the store uop
   logic                               lsu_vstore_last;
-} UOP_LSU2RVV_t;  
+} UOP_LSU2RVV_t;
 
-typedef struct packed {   
+typedef struct packed {
   UOP_LSU2RVV_t                       uop_lsu2rvv;
   logic                               trap_valid;
-} UOP_LSU_t;  
+} UOP_LSU_t;
 
 typedef struct packed {
 `ifdef TB_SUPPORT
@@ -556,7 +556,7 @@ typedef struct packed {
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic   [`ROB_TAG_WIDTH-1:0]        rob_tag;
-  logic                               res_updating_end; 
+  logic                               res_updating_end;
   logic   [`REGIDX_WIDTH-1:0]         w_index;            //wr addr
   W_DATA_TYPE_e                       w_type;             //write type: 0 for VRF, 1 for XRF
   BYTE_TYPE_t                         byte_type;          //wr Byte mask
@@ -584,7 +584,7 @@ typedef struct packed {
   logic   [`PC_WIDTH-1:0]             uop_pc;
 `endif
   logic [`ROB_TAG_WIDTH-1:0]          rob_tag;
-  logic                               res_updating_end; 
+  logic                               res_updating_end;
   logic                               last_uop_valid;
   logic                               w_valid;            //entry valid
   logic   [`REGIDX_WIDTH-1:0]         w_index;            //wr addr
@@ -597,7 +597,7 @@ typedef struct packed {
 `ifdef ZVE32F_ON
   RVFEXP_t  [`VLENB-1:0]              fpexp;
 `endif
-} ROB2RT_t;  
+} ROB2RT_t;
 
 // the rob struct stored in ROB
 typedef struct packed {
@@ -620,8 +620,8 @@ typedef struct packed {
   logic   [`PC_WIDTH-1:0]       uop_pc;
 `endif
   logic   [`ROB_TAG_WIDTH-1:0]  rob_tag;
-  logic   [`REGIDX_WIDTH-1:0]   rt_index; 
-  logic   [`XLEN-1:0]           rt_data; 
+  logic   [`REGIDX_WIDTH-1:0]   rt_index;
+  logic   [`XLEN-1:0]           rt_data;
 }RT2RVS_t;
 
 // write back to VRF
@@ -629,27 +629,27 @@ typedef struct packed {
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]       uop_pc;
 `endif
-  logic   [`REGIDX_WIDTH-1:0]   rt_index; 
+  logic   [`REGIDX_WIDTH-1:0]   rt_index;
   logic   [`VLEN-1:0]           rt_data;
-  logic   [`VLENB-1:0]          rt_strobe; 
+  logic   [`VLENB-1:0]          rt_strobe;
 }RT2VRF_t;
 
 // ZVT
 `ifdef ZVT_ON
 typedef struct packed {
 `ifdef TB_SUPPORT
-  logic [`PC_WIDTH-1:0]    		  uop_pc;		
-  logic [2:0]	                  uop_index;	
+  logic [`PC_WIDTH-1:0]    		  uop_pc;
+  logic [2:0]	                  uop_index;
 `endif
-  logic [`VLEN-1:0]   			    r_data;		
+  logic [`VLEN-1:0]   			    r_data;
 } UOP_VME2LSU_t;
 
 typedef struct packed {
 `ifdef TB_SUPPORT
-  logic [`PC_WIDTH-1:0]    		  uop_pc;		
-  logic [2:0]	                  uop_index;	
+  logic [`PC_WIDTH-1:0]    		  uop_pc;
+  logic [2:0]	                  uop_index;
 `endif
-  logic [`VLEN-1:0]   			    w_data;		
+  logic [`VLEN-1:0]   			    w_data;
 } UOP_LSU2VME_t;
 
 typedef struct packed {
@@ -659,7 +659,7 @@ typedef struct packed {
 } TSS_t;
 
 typedef enum logic [1:0] {
-  FPMUL,        // src2 is fp 
+  FPMUL,        // src2 is fp
   INTMUL,       // src2 is signed int
   UINTMUL       // src2 is unsigned int
 } PEOPCODE_e;
@@ -670,7 +670,7 @@ typedef struct packed {
 `endif
   logic   [`ROB_TAG_WIDTH-1:0]    rob_tag;
   logic   [`ROB_DEPTH_WIDTH-1:0]  rob_entry;
-  FUNCT6_u                        uop_funct6;  
+  FUNCT6_u                        uop_funct6;
   logic   [`FUNCT3_WIDTH-1:0]     uop_funct3;
   logic   [`REGIDX_WIDTH-1:0]     vs2;
   logic                           is_lsu;
@@ -679,18 +679,18 @@ typedef struct packed {
   logic                           altfmt;
   logic   [1:0]                   mtwiden;
   logic   [13:0]                  tm;
-  logic   [$clog2(`TE):0]         vl;      
+  logic   [$clog2(`TE):0]         vl;
   logic   [2:0]                   tk;
   RVVSEW                          sew;
   EEW_e                           eew_mt;
-  fpnew_pkg::roundmode_e          rndMode; 
+  fpnew_pkg::roundmode_e          rndMode;
   TSS_t                           tss;
-  logic   [`VLEN-1:0]             vs1_data;           
-  logic   [`VLEN-1:0]             vs2_data;	        
+  logic   [`VLEN-1:0]             vs1_data;
+  logic   [`VLEN-1:0]             vs2_data;
   logic   [`REGIDX_WIDTH-1:0]     dst_index;
   logic                           first_uop_valid;
   logic                           last_uop_valid;
-  logic   [$clog2(`EMUL_MAX)-1:0] uop_index; 
+  logic   [$clog2(`EMUL_MAX)-1:0] uop_index;
 } ZVT_RS_t;
 
 typedef struct packed {
@@ -698,22 +698,22 @@ typedef struct packed {
   logic [`PC_WIDTH-1:0]                         uop_pc;
 `endif
   logic [`TE/2*`COMPRATIO-1:0][`WORD_WIDTH-1:0] va;
-  logic [`TE/2*`COMPRATIO-1:0][3:0]             vaMask;    
+  logic [`TE/2*`COMPRATIO-1:0][3:0]             vaMask;
   fpnew_pkg::roundmode_e                        rndMode;
-  PEOPCODE_e                                    op;    
+  PEOPCODE_e                                    op;
   logic                                         opMod;
   fpnew_pkg::fp_format_e                        fsrcFmt;
-  fpnew_pkg::int_format_e                       isrcFmt; 
-  fpnew_pkg::fp_format_e                        fdstFmt; 
-  fpnew_pkg::int_format_e                       idstFmt;    
-  logic [$clog2(`NUM_MT)-1:0]                   readMtIdx; 
-  logic [$clog2(`PROCESS_DELAY)-1:0]            readMtId;        
+  fpnew_pkg::int_format_e                       isrcFmt;
+  fpnew_pkg::fp_format_e                        fdstFmt;
+  fpnew_pkg::int_format_e                       idstFmt;
+  logic [$clog2(`NUM_MT)-1:0]                   readMtIdx;
+  logic [$clog2(`PROCESS_DELAY)-1:0]            readMtId;
   logic                                         lastUopVld;
 } PEVAINFO_t;
 
 typedef struct packed {
   logic [`TE/2-1:0][`WORD_WIDTH-1:0]            vb;
-  logic [`TE/2-1:0][3:0]                        vbMask;       
+  logic [`TE/2-1:0][3:0]                        vbMask;
 } PEVBINFO_t;
 
 typedef struct packed {
@@ -726,19 +726,19 @@ typedef struct packed {
   logic [`PC_WIDTH-1:0]                         uop_pc;
 `endif
   fpnew_pkg::roundmode_e                        rndMode;
-  PEOPCODE_e                                    op;   
-  fpnew_pkg::fp_format_e                        fdstFmt; 
-  fpnew_pkg::int_format_e                       idstFmt; 
-  logic [$clog2(`NUM_MT)-1:0]                   readMtIdx; 
+  PEOPCODE_e                                    op;
+  fpnew_pkg::fp_format_e                        fdstFmt;
+  fpnew_pkg::int_format_e                       idstFmt;
+  logic [$clog2(`NUM_MT)-1:0]                   readMtIdx;
   logic [$clog2(`PROCESS_DELAY)-1:0]            readMtId;
   logic                                         lastUopVld;
 } MULBULKTAG_t;
 
 typedef struct packed {
   logic [`TE/2*`COMPRATIO-1:0][`TE/2-1:0][`WORD_WIDTH-1:0]  res;
-  logic [`TE/2*`COMPRATIO-1:0][`TE/2-1:0][3:0]              resMask;  
+  logic [`TE/2*`COMPRATIO-1:0][`TE/2-1:0][3:0]              resMask;
   fpnew_pkg::status_t                                       status;
-  MULBULKTAG_t                                              tag; 
+  MULBULKTAG_t                                              tag;
 } MULBULKRES_t;
 
 typedef struct packed {
@@ -776,7 +776,7 @@ typedef struct packed {
   logic [3:0][`NUM_SUBTILE/2-1:0]                           rvviSubVld;
   logic [3:0][`NUM_SUBTILE/2-1:0][$clog2(`NUM_SUBTILE)-1:0] rvviSubIdx;
   logic [3:0][`NUM_SUBTILE/2-1:0][`SUBTILE_SIZE*8-1:0]      rvviData;
-`endif  
+`endif
 } MT_INFO_t;
 
 `ifdef RVVI_ON
@@ -802,9 +802,9 @@ typedef struct packed {
   logic [$clog2(`NUM_MT)-1:0]                         mtIdx;
 `ifdef RVVI_ON
   fpnew_pkg::status_t                                 status;
-  logic [3:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0]  mtData;       
+  logic [3:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0]  mtData;
 `endif
 } VMERT_t;
-`endif  // ZVT_ON 
+`endif  // ZVT_ON
 
 `endif  // HDL_VERILOG_RVV_DESIGN_RVV_SVH

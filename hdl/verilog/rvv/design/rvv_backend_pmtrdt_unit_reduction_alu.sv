@@ -93,7 +93,7 @@ module rvv_backend_pmtrdt_unit_reduction_alu
           //VREDMAXU, VREDMINU,
           //VMUNARY0, VWRXUNARY0, VREDSUM, VWREDSUMU,
           //VWREDSUM, VREDAND, VREDOR, VREDXOR
-          default: src2_tmp[i] = {1'b0, src2[i]}; 
+          default: src2_tmp[i] = {1'b0, src2[i]};
         endcase
       end
     end
@@ -110,7 +110,7 @@ module rvv_backend_pmtrdt_unit_reduction_alu
           VREDMINU: src1_tmp[i] = ~{1'b0, src1[i]};
           //VMUNARY0, VWRXUNARY0, VREDSUM, VWREDSUMU,
           //VWREDSUM, VREDAND, VREDOR, VREDXOR
-          default: src1_tmp[i] = {1'b0, src1[i]}; 
+          default: src1_tmp[i] = {1'b0, src1[i]};
         endcase
       end
     end
@@ -123,10 +123,10 @@ module rvv_backend_pmtrdt_unit_reduction_alu
         VREDMAXU,
         VREDMAX,
         VREDMINU,
-        VREDMIN: cin[0] = ~1'b0; 
+        VREDMIN: cin[0] = ~1'b0;
         //VMUNARY0, VWRXUNARY0, VREDSUM, VWREDSUMU,
         //VWREDSUM, VREDAND, VREDOR, VREDXOR
-        default: cin[0] = 1'b0; 
+        default: cin[0] = 1'b0;
       endcase
     end
     for (i=1; i<ALU_BYTE; i++) begin : gen_cin

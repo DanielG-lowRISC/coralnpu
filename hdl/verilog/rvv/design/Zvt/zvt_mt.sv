@@ -12,8 +12,8 @@ module zvt_mt (
   rvviMtIdx,
   rvviSubIdx,
   rvviReadData,
-`endif 
-  writeEn, 
+`endif
+  writeEn,
   writeMtIdx,
   writeSubIdx,
   writeData
@@ -22,23 +22,23 @@ module zvt_mt (
 // interface signals
   input  logic clk;
   input  logic rst_n;
-  // read subtile     
+  // read subtile
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_MT)-1:0]      readMtIdx;
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_SUBTILE)-1:0] readSubIdx;
   output logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE*8-1:0]      readData;
 `ifdef RVVI_ON
-  // rvvi read subtile     
+  // rvvi read subtile
   input  logic [`NUM_BLK-1:0][3:0][$clog2(`NUM_MT)-1:0]                          rvviMtIdx;
   input  logic [`NUM_BLK-1:0][3:0][`NUM_SUBTILE/2-1:0][$clog2(`NUM_SUBTILE)-1:0] rvviSubIdx;
   output logic [`NUM_BLK-1:0][3:0][`NUM_SUBTILE/2-1:0][`SUBTILE_SIZE*8-1:0]      rvviReadData;
-`endif 
+`endif
   // write subtile
-  input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE-1:0]        writeEn;  
+  input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE-1:0]        writeEn;
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_MT)-1:0]      writeMtIdx;
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_SUBTILE)-1:0] writeSubIdx;
-  input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE*8-1:0]      writeData;    
+  input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE*8-1:0]      writeData;
 
-// -------------- code start --------------------    
+// -------------- code start --------------------
 `ifdef FPGA_XILINX
   zvt_mt_fpga u_zvt_mt_fpga (.*);
 `else
@@ -71,7 +71,7 @@ module zvt_mt (
   end
 
 `ifdef RVVI_ON
-  // rvvi read subtile     
+  // rvvi read subtile
   always_comb begin
     for(int i=0;i<`NUM_BLK;i++) begin
       for(int j=0;j<4;j++) begin
@@ -81,7 +81,7 @@ module zvt_mt (
       end
     end
   end
-`endif 
+`endif
 
   zvt_mt_reg mtReg (
     .clk    (clk),

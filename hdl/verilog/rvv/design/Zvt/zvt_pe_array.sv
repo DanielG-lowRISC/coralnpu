@@ -17,7 +17,7 @@ module zvt_pe_array (
   readPc,
   writePc,
 `endif
-  writeEn,  
+  writeEn,
   writeMtIdx,
   writeSubIdx,
   writeData,
@@ -62,7 +62,7 @@ module zvt_pe_array (
 `ifdef RVVI_ON
   output PE_RTINFO_t [`NUM_BLK-1:0]         peRtInfo;
 `endif
-  // control&status  
+  // control&status
   input  logic                              flush;
   output logic                              busy;
 
@@ -156,11 +156,11 @@ module zvt_pe_array (
           vaGroupHi[i] = {peCmd[3].vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH],
                           peCmd[1].vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
           vbGroupHi[i] = {peCmd[3].vs1_data[i*`HWORD_WIDTH+:`HWORD_WIDTH],
-                          peCmd[1].vs1_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};            
-        end         
+                          peCmd[1].vs1_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
+        end
       end
       // SEW32
-      default: begin    
+      default: begin
         vaGroupHi = {peCmd[3].vs2_data,
                      peCmd[2].vs2_data};
         vaGroupLo = {peCmd[1].vs2_data,
@@ -173,11 +173,11 @@ module zvt_pe_array (
       end
     endcase
   end
-  
+
   // control logic
   logic        [`NUM_BLK-1:0][ADDERPIPENUM:1] mulbulkTagOutVld;
   MULBULKTAG_t [`NUM_BLK-1:0][ADDERPIPENUM:1] mulbulkTagOut;
-  logic                                       hitRaw; 
+  logic                                       hitRaw;
   logic                                       canStart;
   logic [$clog2(`TE):0]                       tmsub1, tnsub1;
   logic [$clog2(`PROCESS_DELAY)-1:0]          cnt, cntMax00, cntMax10;
@@ -196,14 +196,14 @@ module zvt_pe_array (
   always_comb begin
     hitRaw = 'b0;
     for (int i=1;i<=ADDERPIPENUM;i++) begin
-      hitRaw = hitRaw ||(cnt == 'b0) && 
+      hitRaw = hitRaw ||(cnt == 'b0) &&
                          mulbulkTagOutVld[0][i] &&
                         (mulbulkTagOut[0][i].readMtIdx == peCmd[0].dst_index[4:1]) &&
                         (mulbulkTagOut[0][i].readMtId == 'b0);
     end
   end
 
-  // ready to start up. 
+  // ready to start up.
   assign canStart = &peCmdVld[3:0] && peCmd[0].first_uop_valid && peCmd[3].last_uop_valid & !hitRaw;
   assign peCmdRdy = {4{canStart && cntCr}};
 
@@ -233,7 +233,7 @@ module zvt_pe_array (
 `ifdef TB_SUPPORT
   assign vaInfoLo.uop_pc     = peCmd[0].uop_pc;
   assign vaInfoHi.uop_pc     = peCmd[0].uop_pc;
-`endif 
+`endif
   assign vaInfoLo.rndMode    = peCmd[0].rndMode;
   assign vaInfoHi.rndMode    = peCmd[0].rndMode;
   assign vaInfoLo.readMtIdx  = peCmd[0].dst_index[4:1];
@@ -271,7 +271,7 @@ module zvt_pe_array (
         vaInfoHi.isrcFmt = fpnew_pkg::INT8;
       `endif
         vaInfoLo.idstFmt = fpnew_pkg::INT32;
-        vaInfoHi.idstFmt = fpnew_pkg::INT32;        
+        vaInfoHi.idstFmt = fpnew_pkg::INT32;
       end
       OPFVV: begin
         vaInfoLo.op      = FPMUL;
@@ -288,7 +288,7 @@ module zvt_pe_array (
       end
     endcase
   end
-  
+
   // M-direction stripmining: vaInfo.va only carries ROWS_PER_CNT = TE/2*COMPRATIO
   // rows per cycle. The pe_array advances cnt to walk through tm rows in
   // ROWS_PER_CNT-sized chunks; this mux picks the correct chunk of vaGroup{Lo,Hi}
@@ -307,7 +307,7 @@ module zvt_pe_array (
   assign vbInfoLo.vbMask = vbMaskLo;
   assign vbInfoHi.vb     = vbGroupHi;
   assign vbInfoHi.vbMask = vbMaskHi;
-  
+
   // systolic pipeline register
   dff regLaVld  (.q(pipeLaVld ), .clk(clk), .rst_n(rst_n), .d(pipeLaEn));
   dff regHa0Vld (.q(pipeHa0Vld), .clk(clk), .rst_n(rst_n), .d(pipeHa0En));
@@ -358,15 +358,15 @@ module zvt_pe_array (
       .mulbulkTagOut    (mulbulkTagOut[i]),
       .readMtIdx        (readMtIdx[i]),
       .readSubIdx       (readSubIdx[i]),
-      .readData         (readData[i]),  
+      .readData         (readData[i]),
     `ifdef TB_SUPPORT
       .readPc           (readPc[i]),
       .writePc          (writePc[i]),
     `endif
-      .writeEn          (writeEn[i]),  
+      .writeEn          (writeEn[i]),
       .writeMtIdx       (writeMtIdx[i]),
       .writeSubIdx      (writeSubIdx[i]),
-      .writeData        (writeData[i]),  
+      .writeData        (writeData[i]),
       .fpexpVld         (fpexpBlkVld[i]),
       .fpexp            (fpexpBlk[i]),
       .fpexpRdy         (fpexpRdy),

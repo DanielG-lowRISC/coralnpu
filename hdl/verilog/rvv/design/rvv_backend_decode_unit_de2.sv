@@ -21,7 +21,7 @@ module rvv_backend_decode_unit_de2
   input   logic                           lcmd_valid;
   input   LCMD_t                          lcmd;
   input   logic   [`UOP_INDEX_WIDTH-1:0]  uop_index_remain;
-  
+
   // Decoder unit to Uops Queue signals
   output  logic       [`NUM_DE_UOP-1:0]   uop_valid;
   output  UOP_QUEUE_t [`NUM_DE_UOP-1:0]   uop;
@@ -44,15 +44,15 @@ module rvv_backend_decode_unit_de2
   // decode opcode
   assign valid_lsu  = lcmd_valid & ((lcmd.cmd.opcode==LOAD) | (lcmd.cmd.opcode==STORE));
   assign valid_ari  = lcmd_valid & (lcmd.cmd.opcode==RVV);
-  
-  // decode LSU instruction 
+
+  // decode LSU instruction
   rvv_backend_decode_unit_lsu_de2 u_lsu_decode_de2
   (
     .lcmd_valid         (valid_lsu),
     .lcmd               (lcmd),
     .uop_index_remain   (uop_index_remain),
     .uop_valid          (uop_valid_lsu),
-    .uop                (uop_lsu)  
+    .uop                (uop_lsu)
   );
 
   // decode arithmetic instruction
@@ -62,20 +62,20 @@ module rvv_backend_decode_unit_de2
     .lcmd               (lcmd),
     .uop_index_remain   (uop_index_remain),
     .uop_valid          (uop_valid_ari),
-    .uop                (uop_ari)  
+    .uop                (uop_ari)
   );
 
   // output
-  always_comb begin 
+  always_comb begin
     uop_valid     = 'b0;
     uop           = 'b0;
-    
+
     case(1'b1)
       valid_lsu: begin
         uop_valid = uop_valid_lsu;
         uop       = uop_lsu;
       end
-  
+
       valid_ari: begin
         uop_valid = uop_valid_ari;
         uop       = uop_ari;

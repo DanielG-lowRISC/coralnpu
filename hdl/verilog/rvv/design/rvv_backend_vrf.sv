@@ -4,23 +4,23 @@
 `endif
 
 module rvv_backend_vrf(/*AUTOARG*/
-  clk, 
-  rst_n, 
-  dp2vrf_rd_index, 
-  vrf2dp_rd_data, 
-  vrf2dp_v0_data, 
+  clk,
+  rst_n,
+  dp2vrf_rd_index,
+  vrf2dp_rd_data,
+  vrf2dp_v0_data,
   pmt2vrf_rd_index,
   vrf2pmt_rd_data,
-  rt2vrf_wr_valid, 
+  rt2vrf_wr_valid,
   rt2vrf_wr_data
 `ifdef RVVI_ON
   ,vrf_data
 `endif
-);  
+);
 // global signal
 input   logic                   clk;
 input   logic                   rst_n;
-    
+
 // Dispatch unit to VRF unit
 // Vs_data would be return from VRF at the current cycle.
 input   logic     [`NUM_DP_VRF-1:0][`REGIDX_WIDTH-1:0] dp2vrf_rd_index;
@@ -64,7 +64,7 @@ for (genvar j=0;j<`NUM_RT_UOP;j++) begin: GET_WT_DATA
   assign wr_addr[j]  = rt2vrf_wr_data[j].rt_index;
   assign wr_data[j]  = rt2vrf_wr_data[j].rt_data;
   assign wr_we[j]    = rt2vrf_wr_data[j].rt_strobe;
-  
+
   // generate write bit-enable
   for(genvar k=0;k<`VLENB;k++) begin: GET_WE_BIT
     assign wr_web[j][k*`BYTE_WIDTH +: `BYTE_WIDTH] = {`BYTE_WIDTH{wr_we[j][k]}};
@@ -99,11 +99,11 @@ end
 rvv_backend_vrf_reg 
 vrf_reg (
   //Outputs
-  .vreg   (vrf_rd_data_full), 
+  .vreg   (vrf_rd_data_full),
   //Inputs
-  .clk    (clk), 
+  .clk    (clk),
   .rst_n  (rst_n),
-  .wen    (vrf_wr_wen_full), 
+  .wen    (vrf_wr_wen_full),
   .wdata  (vrf_wr_data_full)
 );
 

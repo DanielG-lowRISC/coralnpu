@@ -27,7 +27,7 @@ module rvv_backend_retire_waw(
 // internal signals
 //
   logic   [UOP_NUM-1:0] vd_hit;
-    
+
   always_comb begin
     res         = 'b0;
     res_strobe  = 'b0;
@@ -44,6 +44,6 @@ module rvv_backend_retire_waw(
       end
     end
   end
-  
-  assign waw = (`NUM_RT_UOP)'(vd_hit[UOP_NUM-2:0]); 
+
+  assign waw = (`NUM_RT_UOP)'(vd_hit[UOP_NUM-2:0]);
 endmodule

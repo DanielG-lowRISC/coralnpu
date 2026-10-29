@@ -172,7 +172,7 @@ module rvv_backend_pmtrdt_unit
   endgenerate
 `endif
 
-// Permutation unit 
+// Permutation unit
   generate
     if (GEN_PMT == 1'b1) begin
       rvv_backend_pmtrdt_unit_permutation u_pmt (
@@ -219,7 +219,7 @@ module rvv_backend_pmtrdt_unit
     .grant    (pmtrdt_grant),
     .grantData(pmtrdt_res)
   );
-  
+
   assign pmtrdt_res_valid = |pmtrdt_req;
 
   always_comb begin

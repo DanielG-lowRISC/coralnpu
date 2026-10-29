@@ -55,7 +55,7 @@ module rvv_backend_dispatch_operand
             vrf_byp[2].vd  = rd_data_vrf2dp[0];
           end
 
-          VVV: begin 
+          VVV: begin
             case(uop_uop2dp[1].uop_class)
               XXV,
               XVV: begin
@@ -76,7 +76,7 @@ module rvv_backend_dispatch_operand
           end
         endcase
       end
-      
+
       XVV,
       VVX: begin
         case(uop_uop2dp[0].uop_class)
@@ -119,7 +119,7 @@ module rvv_backend_dispatch_operand
                 vrf_byp[2].vs1 = rd_data_vrf2dp[3];
                 vrf_byp[2].vs2 = rd_data_vrf2dp[5];
                 vrf_byp[2].vd  = rd_data_vrf2dp[3];
-              end   
+              end
 
               VVX: begin
                 vrf_byp[2].vs1 = rd_data_vrf2dp[3];
@@ -135,7 +135,7 @@ module rvv_backend_dispatch_operand
             endcase
           end
 
-          VVV: begin 
+          VVV: begin
             case(uop_uop2dp[1].uop_class)
               XXX,
               VXX: begin
@@ -191,7 +191,7 @@ module rvv_backend_dispatch_operand
             vrf_byp[2].vs2 = rd_data_vrf2dp[1];
             vrf_byp[2].vd  = rd_data_vrf2dp[2];
           end
-          
+
           {XXV,XXV},
           {XXV,XVX},
           {XXV,XVV}: begin
@@ -199,7 +199,7 @@ module rvv_backend_dispatch_operand
             vrf_byp[2].vs2 = rd_data_vrf2dp[1];
             vrf_byp[2].vd  = rd_data_vrf2dp[2];
           end
-          
+
           {XVX,VXX},
           {XVX,VVX}: begin
             vrf_byp[2].vs1 = rd_data_vrf2dp[0];
@@ -268,7 +268,7 @@ module rvv_backend_dispatch_operand
         endcase
       end
     endcase
-  end   
+  end
 
 `else // DISPATCH2
   always_comb begin
@@ -286,7 +286,7 @@ module rvv_backend_dispatch_operand
         vrf_byp[0].vd  = rd_data_vrf2dp[3];
         vrf_byp[0].vs1 = rd_data_vrf2dp[1];
         vrf_byp[0].vs2 = rd_data_vrf2dp[0];
-      end                       
+      end
       XVV: begin
         vrf_byp[0].vs1 = rd_data_vrf2dp[1];
         vrf_byp[0].vs2 = rd_data_vrf2dp[0];

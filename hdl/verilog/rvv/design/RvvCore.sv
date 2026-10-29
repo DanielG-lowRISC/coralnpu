@@ -18,7 +18,7 @@ module RvvCore #(parameter N = 4,
                  type VRegDataT=logic [127:0],
                  type RegAddrT=logic [4:0],
                  type MaskT=logic [15:0]
-                 )
+)
 (
   input clk,
   input rstn,

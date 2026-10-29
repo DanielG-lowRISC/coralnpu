@@ -1,10 +1,10 @@
 // rvv_vrf_reg - 32 vector regsiter for V standard extention
 
 module rvv_vrf_reg (
-  vreg, 
-  we, 
-  wdata, 
-  clk, 
+  vreg,
+  we,
+  wdata,
+  clk,
   rst_n
   );
 

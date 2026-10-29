@@ -30,26 +30,26 @@ module rvv_backend_decode_unit_ari_de2
 // internal signals
 //
   // split INST_t struct signals
-  logic   [`FUNCT6_WIDTH-1:0]                 inst_funct6;      // inst original encoding[31:26]  
-  logic   [`VM_WIDTH-1:0]                     inst_vm;          // inst original encoding[25]      
+  logic   [`FUNCT6_WIDTH-1:0]                 inst_funct6;      // inst original encoding[31:26]
+  logic   [`VM_WIDTH-1:0]                     inst_vm;          // inst original encoding[25]
   logic   [`REGIDX_WIDTH-1:0]                 inst_vs2;         // inst original encoding[24:20]
   logic   [`REGIDX_WIDTH-1:0]                 inst_vs1;         // inst original encoding[19:15]
   logic   [`IMM_WIDTH-1:0]                    inst_imm;         // inst original encoding[19:15]
   logic   [`FUNCT3_WIDTH-1:0]                 inst_funct3;      // inst original encoding[14:12]
   logic   [`REGIDX_WIDTH-1:0]                 inst_vd;          // inst original encoding[11:7]
   logic   [`REGIDX_WIDTH-1:0]                 inst_rd;          // inst original encoding[11:7]
-  logic   [`UOP_INDEX_WIDTH-1:0]              uop_vstart;         
+  logic   [`UOP_INDEX_WIDTH-1:0]              uop_vstart;
   logic   [`XLEN-1:0]                         rs1;
   logic   [`REGIDX_WIDTH-1:0]                 vs1_opcode;
   logic   [`REGIDX_WIDTH-1:0]                 vs2_opcode;
   RVVConfigState                              vector_csr_ari;
   logic   [`VSTART_WIDTH-1:0]                 csr_vstart;
-  logic   [`UOP_INDEX_WIDTH-1:0]              uop_index_max;         
-  EMUL_e                                      emul_vd;          
-  EMUL_e                                      emul_vs2;          
-  EMUL_e                                      emul_vs1;          
-  EMUL_e                                      emul_max; 
-  EEW_e                                       eew_max; 
+  logic   [`UOP_INDEX_WIDTH-1:0]              uop_index_max;
+  EMUL_e                                      emul_vd;
+  EMUL_e                                      emul_vs2;
+  EMUL_e                                      emul_vs1;
+  EMUL_e                                      emul_max;
+  EEW_e                                       eew_max;
 
   logic   [`NUM_DE_UOP-1:0]                   res_updating_end;
   logic                                       valid_opi;
@@ -57,38 +57,38 @@ module rvv_backend_decode_unit_ari_de2
 `ifdef ZVE32F_ON
   logic                                       valid_opf;
 `endif
-  logic   [`UOP_INDEX_WIDTH-1:0]                      uop_index_base;         
-  logic   [`NUM_DE_UOP-1:0][`UOP_INDEX_WIDTH:0]       uop_index_current;   
-  logic   [`NUM_DE_UOP-1:0]                           first_uop_valid;    
-  logic   [`NUM_DE_UOP-1:0]                           last_uop_valid; 
-  EXE_UNIT_e                                          uop_exe_unit; 
-  UOP_CLASS_e     [`NUM_DE_UOP-1:0]                   uop_class;   
-  RVVConfigState  [`NUM_DE_UOP-1:0]                   vector_csr; 
+  logic   [`UOP_INDEX_WIDTH-1:0]                      uop_index_base;
+  logic   [`NUM_DE_UOP-1:0][`UOP_INDEX_WIDTH:0]       uop_index_current;
+  logic   [`NUM_DE_UOP-1:0]                           first_uop_valid;
+  logic   [`NUM_DE_UOP-1:0]                           last_uop_valid;
+  EXE_UNIT_e                                          uop_exe_unit;
+  UOP_CLASS_e     [`NUM_DE_UOP-1:0]                   uop_class;
+  RVVConfigState  [`NUM_DE_UOP-1:0]                   vector_csr;
   logic                                               ignore_vma;
-  logic                                               ignore_vta;  
-  logic   [`NUM_DE_UOP-1:0]                           v0_valid;           
-  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vd_index;           
+  logic                                               ignore_vta;
+  logic   [`NUM_DE_UOP-1:0]                           v0_valid;
+  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vd_index;
   logic   [`NUM_DE_UOP-1:0][$clog2(`EMUL_MAX)-1:0]    vd_offset;
   logic   [`NUM_DE_UOP-1:0]                           vd_valid;
-  logic   [`NUM_DE_UOP-1:0]                           vs3_valid;          
-  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vs1;              
+  logic   [`NUM_DE_UOP-1:0]                           vs3_valid;
+  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vs1;
   logic   [`NUM_DE_UOP-1:0][$clog2(`EMUL_MAX)-1:0]    vs1_offset;
   logic   [`NUM_DE_UOP-1:0]                           vs1_valid;
-  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vs2_index; 	        
+  logic   [`NUM_DE_UOP-1:0][`REGIDX_WIDTH-1:0]        vs2_index;
   logic   [`NUM_DE_UOP-1:0][$clog2(`EMUL_MAX)-1:0]    vs2_offset;
   logic   [`NUM_DE_UOP-1:0]                           vs2_valid;
-  logic                                               xd_valid; 
+  logic                                               xd_valid;
 `ifdef ZVE32F_ON
-  logic                                               fd_valid; 
+  logic                                               fd_valid;
 `endif
 `ifdef ZVT_ON
-  logic                                               mt_valid; 
+  logic                                               mt_valid;
 `endif
   logic   [`XLEN-1:0] 	                              rs1_data;           
-  logic        	                                      rs1_data_valid;     
-  logic   [`NUM_DE_UOP-1:0][`UOP_INDEX_WIDTH-1:0]     uop_index;          
+  logic        	                                      rs1_data_valid;
+  logic   [`NUM_DE_UOP-1:0][`UOP_INDEX_WIDTH-1:0]     uop_index;
   logic   [`NUM_DE_UOP-1:0][$clog2(`EMUL_MAX)-1:0]    seg_field_index;
-  logic   [`NUM_DE_UOP-1:0]                           pshrob_valid;  
+  logic   [`NUM_DE_UOP-1:0]                           pshrob_valid;
 
 //
 // decode
@@ -108,7 +108,7 @@ module rvv_backend_decode_unit_ari_de2
   assign rs1            = lcmd_valid ? lcmd.cmd.rs1 : 'b0;
   assign uop_vstart     = lcmd_valid ? lcmd.uop_vstart : 'b0;
   assign uop_index_max  = lcmd_valid ? lcmd.uop_index_max : 'b0;
-  assign emul_vd        = lcmd_valid ? lcmd.emul_vd : EMUL_NONE; 
+  assign emul_vd        = lcmd_valid ? lcmd.emul_vd : EMUL_NONE;
   assign emul_vs2       = lcmd_valid ? lcmd.emul_vs2 : EMUL_NONE;
   assign emul_vs1       = lcmd_valid ? lcmd.emul_vs1 : EMUL_NONE;
   assign emul_max       = lcmd_valid ? lcmd.emul_max : EMUL_NONE;
@@ -120,7 +120,7 @@ module rvv_backend_decode_unit_ari_de2
     valid_opm = 'b0;
     `ifdef ZVE32F_ON
     valid_opf = 'b0;
-    `endif    
+    `endif
 
     case(inst_funct3)
       OPIVV,
@@ -131,9 +131,9 @@ module rvv_backend_decode_unit_ari_de2
     `ifdef ZVE32F_ON
       OPFVV,
       OPFVF: valid_opf = lcmd_valid;
-    `endif    
+    `endif
     endcase
-  end 
+  end
 
 //
 // split instruction to uops
@@ -173,13 +173,13 @@ module rvv_backend_decode_unit_ari_de2
     endcase
   end
 
-  // calculate the uop_index used in decoding uops 
+  // calculate the uop_index used in decoding uops
   for(genvar j=0;j<`NUM_DE_UOP;j++) begin: GET_UOP_INDEX
     assign uop_index_current[j] = {1'b0, uop_index_base} + j[`UOP_INDEX_WIDTH:0];
   end
 
   // generate uop valid
-  always_comb begin        
+  always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_UOP_VALID
       uop_valid[i] = lcmd_valid & ({1'b1, uop_index_base} <= ({1'b1,uop_index_max}-i[`UOP_INDEX_WIDTH:0]));
     end
@@ -187,9 +187,9 @@ module rvv_backend_decode_unit_ari_de2
 
   // update first_uop valid
   always_comb begin
-    // initial 
+    // initial
     first_uop_valid = 'b0;
-    
+
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_UOP_FIRST
       first_uop_valid[i] = uop_index_current[i][`UOP_INDEX_WIDTH-1:0] == uop_vstart;
 
@@ -233,7 +233,7 @@ module rvv_backend_decode_unit_ari_de2
   always_comb begin
     // initial
     uop_exe_unit = VEU_ALU;
-    
+
     case(1'b1)
       valid_opi: begin
         // allocate OPI* uop to execution unit
@@ -265,8 +265,8 @@ module rvv_backend_decode_unit_ari_de2
           VNCLIPU,
           VNCLIP: begin
             uop_exe_unit = VEU_ALU;
-          end 
-          
+          end
+
           VMADC,
           VMSBC,
           VMSEQ,
@@ -279,7 +279,7 @@ module rvv_backend_decode_unit_ari_de2
           VMSGT:begin
             uop_exe_unit = VEU_CMP;
           end
-          
+
           VWREDSUMU,
           VWREDSUM: begin
             uop_exe_unit = VEU_RDT;
@@ -346,7 +346,7 @@ module rvv_backend_decode_unit_ari_de2
           VREM: begin
             uop_exe_unit = VEU_DIV;
           end
-          
+
           VMACC,
           VNMSAC,
           VMADD,
@@ -383,7 +383,7 @@ module rvv_backend_decode_unit_ari_de2
               endcase
             end
           end
-          
+
           VMUNARY0: begin
             uop_exe_unit = (vs1_opcode==VIOTA) ? VEU_MISC : VEU_ALU;
           end
@@ -412,21 +412,21 @@ module rvv_backend_decode_unit_ari_de2
           VFWMACCBF16,
           `endif
           VFADD,
-          VFSUB,      
-          VFRSUB,     
-          VFMUL,      
-          VFMACC,     
-          VFNMACC,    
-          VFMSAC,     
-          VFNMSAC,    
-          VFMADD,     
-          VFNMADD,    
-          VFMSUB,     
+          VFSUB,
+          VFRSUB,
+          VFMUL,
+          VFMACC,
+          VFNMACC,
+          VFMSAC,
+          VFNMSAC,
+          VFMADD,
+          VFNMADD,
+          VFMSUB,
           VFNMSUB: begin
             uop_exe_unit = VEU_FMA;
           end
 
-          VFDIV,      
+          VFDIV,
           VFRDIV: begin
             uop_exe_unit = VEU_FDIV;
           end
@@ -474,13 +474,13 @@ module rvv_backend_decode_unit_ari_de2
               VFNCVTBF16,
               VFWCVTBF16,
               `endif
-              VFCVT_XUFV, 
+              VFCVT_XUFV,
               VFCVT_XFV,
               VFCVT_RTZXUFV,
               VFCVT_RTZXFV,
               VFCVT_FXUV,
               VFCVT_FXV,
-              VFWCVTFXU, 
+              VFWCVTFXU,
               VFWCVTFX,
               VFNCVTXUF,
               VFNCVTXF,
@@ -510,16 +510,16 @@ module rvv_backend_decode_unit_ari_de2
         `endif
         endcase
       end
-      `endif  
+      `endif
     endcase
   end
 
   // update uop class
   always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_UOP_CLASS
-      // initial 
+      // initial
       uop_class[i] = XXX;
-      
+
       case(1'b1)
         valid_opi: begin
           // OPI*
@@ -592,7 +592,7 @@ module rvv_backend_decode_unit_ari_de2
             VRGATHER: begin
               if(inst_funct3==OPIVV)
                 uop_class[i] = XXV;
-              else   
+              else
                 uop_class[i] = XXX;
             end
 
@@ -654,8 +654,8 @@ module rvv_backend_decode_unit_ari_de2
             VSLIDE1UP,
             VSLIDE1DOWN: begin
                 uop_class[i] = XXX;
-            end 
-            
+            end
+
             VXUNARY0: begin
               uop_class[i]  = XVX;
             end
@@ -725,12 +725,12 @@ module rvv_backend_decode_unit_ari_de2
         valid_opf: begin
           // OPF* instruction
           case(inst_funct6)
-            VFADD,          
-            VFSUB,      
+            VFADD,
+            VFSUB,
             VFRSUB,
-            VFMUL,      
-            VFDIV,      
-            VFRDIV,     
+            VFMUL,
+            VFDIV,
+            VFRDIV,
             VFMIN,
             VFMAX,
             VFSGNJ,
@@ -742,18 +742,18 @@ module rvv_backend_decode_unit_ari_de2
                 uop_class[i] = XVV;
               else
                 uop_class[i] = XVX;
-            end 
+            end
 
             `ifdef ZVFBFWMA_ON
             VFWMACCBF16,
             `endif
-            VFMACC,     
-            VFNMACC,    
-            VFMSAC,     
-            VFNMSAC,    
-            VFMADD,     
-            VFNMADD,    
-            VFMSUB,     
+            VFMACC,
+            VFNMACC,
+            VFMSAC,
+            VFNMSAC,
+            VFMADD,
+            VFNMADD,
+            VFMSUB,
             VFNMSUB:begin
               if(inst_funct3==OPFVV)
                 uop_class[i] = VVV;
@@ -782,7 +782,7 @@ module rvv_backend_decode_unit_ari_de2
             VMFLE,
             VMFGT,
             VMFGE: begin
-              if(last_uop_valid[i]) 
+              if(last_uop_valid[i])
                 uop_class[i] = inst_funct3==OPFVV ? VVV : VVX;
               else
                 uop_class[i] = inst_funct3==OPFVV ? XVV : XVX;
@@ -839,7 +839,7 @@ module rvv_backend_decode_unit_ari_de2
               VWREDSUM: begin
                 vector_csr[i].vstart = vector_csr_ari.vstart;
               end
-              default: begin 
+              default: begin
                 case(eew_max)
                   EEW8: begin
                     vector_csr[i].vstart  = {uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0],{($clog2(`VLENB)){1'b0}}};
@@ -868,7 +868,7 @@ module rvv_backend_decode_unit_ari_de2
               VCOMPRESS_VTMVTV: begin
                 vector_csr[i].vstart = vector_csr_ari.vstart;
               end
-              default: begin 
+              default: begin
                 case(eew_max)
                   EEW8: begin
                     vector_csr[i].vstart  = {uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0],{($clog2(`VLENB)){1'b0}}};
@@ -900,7 +900,7 @@ module rvv_backend_decode_unit_ari_de2
               VFREDMIN: begin
                 vector_csr[i].vstart = vector_csr_ari.vstart;
               end
-              default: begin 
+              default: begin
                 case(eew_max)
                   EEW8: begin
                     vector_csr[i].vstart  = {uop_index_current[i][`UOP_INDEX_WIDTH-1:0],{($clog2(`VLENB)){1'b0}}};
@@ -925,11 +925,11 @@ module rvv_backend_decode_unit_ari_de2
   // some instructions use vm as an extra opcode, so it needs ignore vma policy.
   // the instructions whose EEW_vd=1b can write the result to TAIL elements, so it needs ignore vta policy.
   always_comb begin
-    // initial 
+    // initial
     ignore_vma = 'b0;
     ignore_vta = 'b0;
-      
-    case(inst_funct3) 
+
+    case(inst_funct3)
       OPIVV,
       OPIVX,
       OPIVI: begin
@@ -1023,12 +1023,12 @@ module rvv_backend_decode_unit_ari_de2
     `endif
     endcase
   end
-  
+
   // some uop need v0 as the vector operand
   always_comb begin
-    // initial 
+    // initial
     v0_valid = 'b0;
-       
+
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_UOP_V0
       case(1'b1)
         valid_opi: begin
@@ -1050,7 +1050,7 @@ module rvv_backend_decode_unit_ari_de2
             VMSLE,
             VMSGTU,
             VMSGT: begin
-              v0_valid[i] = inst_vm ? 'b0 : last_uop_valid[i]; 
+              v0_valid[i] = inst_vm ? 'b0 : last_uop_valid[i];
             end
           endcase
         end
@@ -1087,25 +1087,25 @@ module rvv_backend_decode_unit_ari_de2
             VMFLE,
             VMFGT,
             VMFGE: begin
-              v0_valid[i] = inst_vm ? 'b0 : last_uop_valid[i]; 
+              v0_valid[i] = inst_vm ? 'b0 : last_uop_valid[i];
             end
             VFMERGE_VFMV: begin
               v0_valid[i] = !inst_vm;
             end
           endcase
         end
-        `endif        
+        `endif
       endcase
     end
-  end    
-  
+  end
+
   // update vd_offset and valid
   always_comb begin
     vd_offset        = 'b0;
     vd_valid         = 'b0;
     res_updating_end = '1;
 
-    for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VD_OFFSET  
+    for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VD_OFFSET
       case(1'b1)
         valid_opi: begin
           case(inst_funct6)
@@ -1160,7 +1160,7 @@ module rvv_backend_decode_unit_ari_de2
             VNCLIP: begin
               vd_offset[i]        = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
               vd_valid[i]         = 1'b1;
-              res_updating_end[i] = (emul_max==EMUL1) || (uop_index_max=='b0) || uop_index_current[i][0];              
+              res_updating_end[i] = (emul_max==EMUL1) || (uop_index_max=='b0) || uop_index_current[i][0];
             end
 
             VSLIDEUP_RGATHEREI16: begin
@@ -1178,16 +1178,16 @@ module rvv_backend_decode_unit_ari_de2
                     {EMUL4,EMUL2},
                     {EMUL8,EMUL4}: begin
                       vd_offset[i]        = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-                      vd_valid[i]         = 1'b1;                    
-                      res_updating_end[i] = uop_index_current[i][0];              
+                      vd_valid[i]         = 1'b1;
+                      res_updating_end[i] = uop_index_current[i][0];
                     end
                   endcase
                 end
                 OPIVX,
-                OPIVI: begin  
+                OPIVI: begin
                   vd_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
                   vd_valid[i]  = 1'b1;
-                end 
+                end
               endcase
             end
           endcase
@@ -1232,7 +1232,7 @@ module rvv_backend_decode_unit_ari_de2
             VSLIDE1DOWN: begin
               vd_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
               vd_valid[i]  = 1'b1;
-            end   
+            end
 
             VCOMPRESS_VTMVTV: begin
               if(inst_funct3==OPMVV) begin
@@ -1252,7 +1252,7 @@ module rvv_backend_decode_unit_ari_de2
               vd_offset[i] = 'b0;
               vd_valid[i]  = last_uop_valid[i];
             end
-             
+
             VMAND,
             VMNAND,
             VMANDN,
@@ -1276,14 +1276,14 @@ module rvv_backend_decode_unit_ari_de2
                   `ifdef ZVT_ON
                     VTMVVT: begin
                       vd_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-                      vd_valid[i]  = inst_vs2[0]; 
-                    end   
+                      vd_valid[i]  = inst_vs2[0];
+                    end
                   `endif
                   endcase
                 end
               endcase
             end
-         
+
             VMUNARY0: begin
               case(vs1_opcode)
                 VMSBF,
@@ -1309,20 +1309,20 @@ module rvv_backend_decode_unit_ari_de2
             `ifdef ZVFBFWMA_ON
             VFWMACCBF16,
             `endif
-            VFADD,  
-            VFSUB,      
-            VFRSUB,     
-            VFMUL,      
-            VFDIV,      
-            VFRDIV,     
-            VFMACC,     
-            VFNMACC,    
-            VFMSAC,     
-            VFNMSAC,    
-            VFMADD,     
-            VFNMADD,    
-            VFMSUB,     
-            VFNMSUB,    
+            VFADD,
+            VFSUB,
+            VFRSUB,
+            VFMUL,
+            VFDIV,
+            VFRDIV,
+            VFMACC,
+            VFNMACC,
+            VFMSAC,
+            VFNMSAC,
+            VFMADD,
+            VFNMADD,
+            VFMSUB,
+            VFNMSUB,
             VFUNARY1,
             VFMIN,
             VFMAX,
@@ -1355,13 +1355,13 @@ module rvv_backend_decode_unit_ari_de2
               `ifdef ZVFBFWMA_ON
                 VFWCVTBF16,
               `endif
-                VFCVT_XUFV, 
+                VFCVT_XUFV,
                 VFCVT_XFV,
                 VFCVT_RTZXUFV,
                 VFCVT_RTZXFV,
                 VFCVT_FXUV,
                 VFCVT_FXV,
-                VFWCVTFXU, 
+                VFWCVTFXU,
                 VFWCVTFX: begin
                   vd_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
                   vd_valid[i]  = 1'b1;
@@ -1375,9 +1375,9 @@ module rvv_backend_decode_unit_ari_de2
                 VFNCVTRTZXF: begin
                   vd_offset[i]        = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
                   vd_valid[i]         = 1'b1;
-                  res_updating_end[i] = (emul_max==EMUL1) || (uop_index_max=='b0) || uop_index_current[i][0];              
+                  res_updating_end[i] = (emul_max==EMUL1) || (uop_index_max=='b0) || uop_index_current[i][0];
                 end
-              endcase              
+              endcase
             end
 
             VWRFUNARY0: begin
@@ -1390,12 +1390,12 @@ module rvv_backend_decode_unit_ari_de2
             end
           endcase
         end
-        `endif        
+        `endif
       endcase
     end
   end
 
-  // update vd_index and eew 
+  // update vd_index and eew
   always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VD_OFFSET
       vd_index[i] = inst_vd + {2'b0, vd_offset[i]};
@@ -1492,16 +1492,16 @@ module rvv_backend_decode_unit_ari_de2
             end
           endcase
         end
-        `endif      
+        `endif
       endcase
     end
   end
-  
+
   // update vs1_offset and valid
   always_comb begin
-    vs1_offset = 'b0; 
+    vs1_offset = 'b0;
     vs1_valid  = 'b0;
-      
+
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VS1_OFFSET
       case(inst_funct3)
         OPIVV: begin
@@ -1538,9 +1538,9 @@ module rvv_backend_decode_unit_ari_de2
             VSSRA,
             VRGATHER: begin
               vs1_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs1_valid[i]  = 1'b1;   
+              vs1_valid[i]  = 1'b1;
             end
-            
+
             VNSRL,
             VNSRA,
             VNCLIPU,
@@ -1548,13 +1548,13 @@ module rvv_backend_decode_unit_ari_de2
               vs1_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
               vs1_valid[i]  = 1'b1;
             end
-            
+
             VWREDSUMU,
             VWREDSUM: begin
               vs1_offset[i] = 'b0;
               vs1_valid[i]  = first_uop_valid[i];
-            end        
-            
+            end
+
             VSLIDEUP_RGATHEREI16: begin
               case({emul_max,emul_vs1})
                 {EMUL1,EMUL1},
@@ -1566,7 +1566,7 @@ module rvv_backend_decode_unit_ari_de2
                 end
                 {EMUL2,EMUL1},
                 {EMUL4,EMUL2},
-                {EMUL8,EMUL4}: begin              
+                {EMUL8,EMUL4}: begin
                   vs1_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
                   vs1_valid[i]  = 1'b1;
                 end
@@ -1608,7 +1608,7 @@ module rvv_backend_decode_unit_ari_de2
             VWMACC,
             VWMACCSU: begin
               vs1_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-              vs1_valid[i]  = 1'b1;        
+              vs1_valid[i]  = 1'b1;
             end
 
             VMUL,
@@ -1628,7 +1628,7 @@ module rvv_backend_decode_unit_ari_de2
             VASUBU,
             VASUB: begin
               vs1_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs1_valid[i]  = 1'b1;        
+              vs1_valid[i]  = 1'b1;
             end
 
             // reduction
@@ -1658,33 +1658,33 @@ module rvv_backend_decode_unit_ari_de2
 
             VCOMPRESS_VTMVTV: begin
               vs1_offset[i] = 'b0;
-              vs1_valid[i]  = first_uop_valid[i];        
+              vs1_valid[i]  = first_uop_valid[i];
             end
           endcase
         end
-        
+
         `ifdef ZVE32F_ON
         OPFVV: begin
           case(inst_funct6)
             `ifdef ZVFBFWMA_ON
             VFWMACCBF16: begin
               vs1_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-              vs1_valid[i]  = 1'b1;        
+              vs1_valid[i]  = 1'b1;
             end
 
             `endif
-            VFADD,          
-            VFSUB,      
-            VFMUL,      
-            VFDIV,      
-            VFMACC,     
-            VFNMACC,    
-            VFMSAC,     
-            VFNMSAC,    
-            VFMADD,     
-            VFNMADD,    
-            VFMSUB,     
-            VFNMSUB,    
+            VFADD,
+            VFSUB,
+            VFMUL,
+            VFDIV,
+            VFMACC,
+            VFNMACC,
+            VFMSAC,
+            VFNMSAC,
+            VFMADD,
+            VFNMADD,
+            VFMSUB,
+            VFNMSUB,
             VFMIN,
             VFMAX,
             VFSGNJ,
@@ -1697,12 +1697,12 @@ module rvv_backend_decode_unit_ari_de2
             VMFGT,
             VMFGE: begin
               vs1_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs1_valid[i]  = 1'b1;        
+              vs1_valid[i]  = 1'b1;
             end
 
             VFMERGE_VFMV: begin
               vs1_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs1_valid[i]  = !inst_vm;        
+              vs1_valid[i]  = !inst_vm;
             end
 
             VFREDOSUM,
@@ -1734,18 +1734,18 @@ module rvv_backend_decode_unit_ari_de2
   end
 
   // update vs1(index or opcode) and eew
-  always_comb begin 
+  always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VS1
-      vs1[i] = inst_vs1 + {2'b0, vs1_offset[i]}; 
+      vs1[i] = inst_vs1 + {2'b0, vs1_offset[i]};
     end
   end
 
-  // update vs2 offset and valid  
+  // update vs2 offset and valid
   always_comb begin
     // initial
-    vs2_offset = 'b0; 
-    vs2_valid = 'b0; 
-      
+    vs2_offset = 'b0;
+    vs2_valid = 'b0;
+
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VS2_OFFSET
       case(1'b1)
         valid_opi: begin
@@ -1817,7 +1817,7 @@ module rvv_backend_decode_unit_ari_de2
         end
 
         valid_opm: begin
-          // OPM* 
+          // OPM*
           case(inst_funct6)
             VWADDU,
             VWSUBU,
@@ -1831,9 +1831,9 @@ module rvv_backend_decode_unit_ari_de2
             VWMACCSU,
             VWMACCUS: begin
               vs2_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-              vs2_valid[i]  = 1'b1;        
+              vs2_valid[i]  = 1'b1;
             end
-            
+
             VWADDU_W,
             VWSUBU_W,
             VWADD_W,
@@ -1863,12 +1863,12 @@ module rvv_backend_decode_unit_ari_de2
             VREDOR,
             VREDXOR: begin
               vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs2_valid[i]  = 1'b1;        
+              vs2_valid[i]  = 1'b1;
             end
 
             VWRXUNARY0:begin
               vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs2_valid[i]  = 1'b1;        
+              vs2_valid[i]  = 1'b1;
             `ifdef ZVT_ON
               // vtzero/vtmv.v.t (OPMVX) carry an opcode in the vs2 field, not
               // a register. Offsetting it per-uop breaks zvt_ctrl's decode of
@@ -1913,7 +1913,7 @@ module rvv_backend_decode_unit_ari_de2
             VMORN,
             VMXNOR: begin
               vs2_offset[i] = 'b0;
-              vs2_valid[i]  = 1'b1;   
+              vs2_valid[i]  = 1'b1;
             end
 
             VMUNARY0: begin
@@ -1925,7 +1925,7 @@ module rvv_backend_decode_unit_ari_de2
                     VMSOF,
                     VIOTA: begin
                       vs2_offset[i] = 'b0;
-                      vs2_valid[i]  = 1'b1;   
+                      vs2_valid[i]  = 1'b1;
                     end
                   endcase
                 end
@@ -1951,24 +1951,24 @@ module rvv_backend_decode_unit_ari_de2
             `ifdef ZVFBFWMA_ON
             VFWMACCBF16: begin
               vs2_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-              vs2_valid[i]  = 1'b1;        
+              vs2_valid[i]  = 1'b1;
             end
             `endif
 
-            VFADD,          
-            VFSUB,      
-            VFRSUB,     
-            VFMUL,      
-            VFDIV,      
-            VFRDIV,     
-            VFMACC,     
-            VFNMACC,    
-            VFMSAC,     
-            VFNMSAC,    
-            VFMADD,     
-            VFNMADD,    
-            VFMSUB,     
-            VFNMSUB,    
+            VFADD,
+            VFSUB,
+            VFRSUB,
+            VFMUL,
+            VFDIV,
+            VFRDIV,
+            VFMACC,
+            VFNMACC,
+            VFMSAC,
+            VFNMSAC,
+            VFMADD,
+            VFNMADD,
+            VFMSUB,
+            VFNMSUB,
             VFUNARY1,
             VFMIN,
             VFMAX,
@@ -1986,13 +1986,13 @@ module rvv_backend_decode_unit_ari_de2
             VFREDMAX,
             VFREDMIN: begin
               vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-              vs2_valid[i]  = 1'b1;        
+              vs2_valid[i]  = 1'b1;
             end
 
             VFMERGE_VFMV: begin
               if(!inst_vm) begin
                 vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-                vs2_valid[i]  = 1'b1; 
+                vs2_valid[i]  = 1'b1;
               end
             end
 
@@ -2001,13 +2001,13 @@ module rvv_backend_decode_unit_ari_de2
                 `ifdef ZVFBFWMA_ON
                 VFWCVTBF16: begin
                   vs2_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-                  vs2_valid[i]  = 1'b1;        
+                  vs2_valid[i]  = 1'b1;
                 end
 
                 VFNCVTBF16,
                 `endif
                 VFCVT_XUFV,
-                VFCVT_XFV,  
+                VFCVT_XFV,
                 VFCVT_RTZXUFV,
                 VFCVT_RTZXFV,
                 VFCVT_FXUV,
@@ -2017,12 +2017,12 @@ module rvv_backend_decode_unit_ari_de2
                 VFNCVTRTZXUF,
                 VFNCVTRTZXF: begin
                   vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-                  vs2_valid[i]  = 1'b1;        
+                  vs2_valid[i]  = 1'b1;
                 end
-                VFWCVTFXU, 
+                VFWCVTFXU,
                 VFWCVTFX: begin
                   vs2_offset[i] = {1'b0, uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:1]};
-                  vs2_valid[i]  = 1'b1;        
+                  vs2_valid[i]  = 1'b1;
                 end
               endcase
             end
@@ -2030,7 +2030,7 @@ module rvv_backend_decode_unit_ari_de2
             VWRFUNARY0: begin
               if(inst_vm) begin
                 vs2_offset[i] = uop_index_current[i][`UOP_INDEX_WIDTH_ALU-1:0];
-                vs2_valid[i]  = 1'b1; 
+                vs2_valid[i]  = 1'b1;
               end
             end
 
@@ -2054,10 +2054,10 @@ module rvv_backend_decode_unit_ari_de2
     end
   end
 
-  // update vs2 index and eew   
+  // update vs2 index and eew
   always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: GET_VS2
-      vs2_index[i] = inst_vs2 + {2'b0, vs2_offset[i]}; 
+      vs2_index[i] = inst_vs2 + {2'b0, vs2_offset[i]};
     end
   end
 
@@ -2119,12 +2119,12 @@ module rvv_backend_decode_unit_ari_de2
     endcase
   end
 
-  // update rs1_data and rs1_data_valid 
+  // update rs1_data and rs1_data_valid
   always_comb begin
     // initial
     rs1_data       = rs1;
     rs1_data_valid = 'b0;
-      
+
     case(inst_funct3)
       OPIVX: begin
         case(inst_funct6)
@@ -2212,7 +2212,7 @@ module rvv_backend_decode_unit_ari_de2
           end
         endcase
       end
-      
+
       OPMVX: begin
         case(inst_funct6)
         `ifdef ZVT_ON
@@ -2271,20 +2271,20 @@ module rvv_backend_decode_unit_ari_de2
           `ifdef ZVFBFWMA_ON
           VFWMACCBF16,
           `endif
-          VFADD,          
-          VFSUB,      
-          VFRSUB,     
-          VFMUL,      
-          VFDIV,      
-          VFRDIV,     
-          VFMACC,     
-          VFNMACC,    
-          VFMSAC,     
-          VFNMSAC,    
-          VFMADD,     
-          VFNMADD,    
-          VFMSUB,     
-          VFNMSUB,    
+          VFADD,
+          VFSUB,
+          VFRSUB,
+          VFMUL,
+          VFDIV,
+          VFRDIV,
+          VFMACC,
+          VFNMACC,
+          VFMSAC,
+          VFNMSAC,
+          VFMADD,
+          VFNMADD,
+          VFMSUB,
+          VFNMSUB,
           VFMIN,
           VFMAX,
           VFSGNJ,
@@ -2307,7 +2307,7 @@ module rvv_backend_decode_unit_ari_de2
           end
         endcase
       end
-      `endif      
+      `endif
     endcase
   end
 
@@ -2317,7 +2317,7 @@ module rvv_backend_decode_unit_ari_de2
       uop_index[i] = uop_index_current[i][`UOP_INDEX_WIDTH-1:0];
     end
   end
-  
+
   // pshrob_valid decide on whether this uop is pushed into ROB.
   always_comb begin
     for(int i=0;i<`NUM_DE_UOP;i++) begin: PSHROB_VLD
@@ -2345,55 +2345,55 @@ module rvv_backend_decode_unit_ari_de2
   for(genvar j=0;j<`NUM_DE_UOP;j++) begin: ASSIGN_RES
   `ifdef TB_SUPPORT
     assign uop[j].uop_pc                = lcmd.cmd.inst_pc;
-  `endif  
+  `endif
     assign uop[j].res_updating_end      = res_updating_end[j];
     assign uop[j].rob_tag               = lcmd.cmd.rob_tag;
     assign uop[j].uop_funct3            = inst_funct3;
     assign uop[j].uop_funct6.ari_funct6 = inst_funct6;
-    assign uop[j].uop_exe_unit          = uop_exe_unit; 
-    assign uop[j].uop_class             = uop_class[j];   
-    assign uop[j].lsu_is_store          = 'b0;   
-    assign uop[j].vector_csr            = vector_csr[j];  
-    assign uop[j].vs_evl                = lcmd.evl;            
+    assign uop[j].uop_exe_unit          = uop_exe_unit;
+    assign uop[j].uop_class             = uop_class[j];
+    assign uop[j].lsu_is_store          = 'b0;
+    assign uop[j].vector_csr            = vector_csr[j];
+    assign uop[j].vs_evl                = lcmd.evl;
     assign uop[j].ignore_vma            = ignore_vma;
     assign uop[j].ignore_vta            = ignore_vta;
     assign uop[j].force_vma_agnostic    = lcmd.force_vma_agnostic;
     assign uop[j].force_vta_agnostic    = lcmd.force_vta_agnostic;
-    assign uop[j].vm                    = inst_vm;                
-    assign uop[j].v0_valid              = v0_valid[j];          
+    assign uop[j].vm                    = inst_vm;
+    assign uop[j].v0_valid              = v0_valid[j];
     assign uop[j].dst_index             = xd_valid
   `ifdef ZVE32F_ON
-                                          || fd_valid 
+                                          || fd_valid
   `endif
   `ifdef ZVT_ON
                                           || mt_valid
   `endif
-                                          ? inst_vd : vd_index[j];          
-    assign uop[j].vd_eew                = lcmd.eew_vd;  
+                                          ? inst_vd : vd_index[j];
+    assign uop[j].vd_eew                = lcmd.eew_vd;
     assign uop[j].vd_valid              = vd_valid[j];
-    assign uop[j].vs3_valid             = vs3_valid[j];         
-    assign uop[j].xd_valid              = xd_valid; 
+    assign uop[j].vs3_valid             = vs3_valid[j];
+    assign uop[j].xd_valid              = xd_valid;
   `ifdef ZVE32F_ON
-    assign uop[j].fd_valid              = fd_valid; 
+    assign uop[j].fd_valid              = fd_valid;
   `endif
   `ifdef ZVT_ON
     assign uop[j].mt_valid              = mt_valid;
     assign uop[j].mt_eew                = lcmd.eew_mt;
   `endif
-    assign uop[j].vs1                   = vs1[j];              
-    assign uop[j].vs1_eew               = lcmd.eew_vs1;           
+    assign uop[j].vs1                   = vs1[j];
+    assign uop[j].vs1_eew               = lcmd.eew_vs1;
     assign uop[j].vs1_valid             = vs1_valid[j];
-    assign uop[j].vs2_index 	          = vs2_index[j]; 	       
+    assign uop[j].vs2_index 	          = vs2_index[j];
     assign uop[j].vs2_eew               = lcmd.eew_vs2;
     assign uop[j].vs2_valid             = vs2_valid[j];
-    assign uop[j].rs1_data              = rs1_data;           
-    assign uop[j].rs1_data_valid        = rs1_data_valid;    
-    assign uop[j].uop_index             = uop_index[j];         
-    assign uop[j].first_uop_valid       = first_uop_valid[j];   
-    assign uop[j].last_uop_valid        = last_uop_valid[j];    
-    assign uop[j].seg_field_index       = 'b0;   
-    assign uop[j].pshrob_valid          = pshrob_valid[j];   
-    assign uop[j].pshlsu_valid          = 'b0;   
+    assign uop[j].rs1_data              = rs1_data;
+    assign uop[j].rs1_data_valid        = rs1_data_valid;
+    assign uop[j].uop_index             = uop_index[j];
+    assign uop[j].first_uop_valid       = first_uop_valid[j];
+    assign uop[j].last_uop_valid        = last_uop_valid[j];
+    assign uop[j].seg_field_index       = 'b0;
+    assign uop[j].pshrob_valid          = pshrob_valid[j];
+    assign uop[j].pshlsu_valid          = 'b0;
   end
 
 endmodule

@@ -8,7 +8,7 @@ module zvt_acc (
   readAccIdx,
   readSubIdx,
   readData,
-  writeEn, 
+  writeEn,
   writeAccIdx,
   writeSubIdx,
   writeData
@@ -17,7 +17,7 @@ module zvt_acc (
 // interface signals
   input  logic clk;
   input  logic rst_n;
-  // read subtile     
+  // read subtile
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_ACC)-1:0]     readAccIdx;
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_SUBTILE)-1:0] readSubIdx;
   output logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE*8-1:0]      readData;
@@ -27,16 +27,16 @@ module zvt_acc (
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][$clog2(`NUM_SUBTILE)-1:0] writeSubIdx;
   input  logic [`NUM_BLK-1:0][`NUM_BLKPORT-1:0][`SUBTILE_SIZE*8-1:0]      writeData;    
 
-// -------------- code start --------------------    
+// -------------- code start --------------------
   // write data
   logic [`NUM_ACC-1:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE-1:0]   wen;    // byte enable
   logic [`NUM_ACC-1:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0] wdata;
   logic [`NUM_ACC-1:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0] acc;
 
-  always_comb begin 
-    wen      = 'b0; 
+  always_comb begin
+    wen      = 'b0;
     wdata    = 'b0;
-    readData = 'b0; 
+    readData = 'b0;
 
     for(int i=0; i<`NUM_BLK; i++) begin: block_addr
       for(int j=0; j<`NUM_BLKPORT; j++) begin: block_subtile_addr

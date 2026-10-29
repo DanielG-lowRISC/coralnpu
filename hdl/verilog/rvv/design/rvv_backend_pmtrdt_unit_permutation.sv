@@ -206,7 +206,7 @@ module rvv_backend_pmtrdt_unit_permutation
         slidedown_info_t0[i].rs_valid = slidedown_scalar_valid[i];
         slidedown_info_t0[i].index = pmt_uop.vs2_index + slidedown_offset[i][VLENB_WIDTH+:3];
         slidedown_info_t0[i].offset = slidedown_offset[i][0+:VLENB_WIDTH];
-        slidedown_info_t0[i].vs_valid = ~slidedown_scalar_valid[i] & ~slidedown_overflow[i] & 
+        slidedown_info_t0[i].vs_valid = ~slidedown_scalar_valid[i] & ~slidedown_overflow[i] &
                                    ((pmt_uop.uop_funct6 == VSLIDEDOWN) | (pmt_uop.uop_funct6 == VSLIDE1DOWN));
       end
     end
@@ -243,7 +243,7 @@ module rvv_backend_pmtrdt_unit_permutation
           end
           default: begin // vrgather.vv and vrgatheri16.vv instructions
             case (pmt_uop.vs2_eew)
-              EEW32: rgather_offset[i] = ({3'b0, rgather_vs1[i]} << 2) + (i%4); 
+              EEW32: rgather_offset[i] = ({3'b0, rgather_vs1[i]} << 2) + (i%4);
               EEW16: rgather_offset[i] = ({3'b0, rgather_vs1[i]} << 1) + (i%2);
               default: rgather_offset[i] = ({3'b0, rgather_vs1[i]}) + (i%1); // EEW8
             endcase
@@ -312,7 +312,7 @@ module rvv_backend_pmtrdt_unit_permutation
           default: compress_cnt_d = compress_cnt_q + 'b1; // EEW8
         endcase
     end
-    assign compress_cnt_en = compress_overflow | 
+    assign compress_cnt_en = compress_overflow |
                              ((pmt_uop.uop_funct6==VCOMPRESS_VTMVTV) & |(pmt_t0_valid&pmt_t0_ready));
     edff #(.T(logic[VLENB_WIDTH-1:0])) compress_cnt_reg (.q(compress_cnt_q), .d(compress_cnt_d), .e(compress_cnt_en), .clk(clk), .rst_n(rst_n));
     for (i=0; i<`VLENB; i++) begin : gen_compress_info_t0
@@ -358,7 +358,7 @@ module rvv_backend_pmtrdt_unit_permutation
       always_comb begin
         case (pmt_uop.uop_funct6)
           VCOMPRESS_VTMVTV: pmt_info_valid[i] =  compress_info_enable[i] & pmt_go;
-          //VSLIDE1UP, 
+          //VSLIDE1UP,
           //VSLIDE1DOWN,
           //VSLIDEDOWN,
           //VSLIDEUP_RGATHEREI16,
@@ -368,7 +368,7 @@ module rvv_backend_pmtrdt_unit_permutation
       end
       assign pmt_t0_valid[i] = pmt_uop_valid & pmt_info_valid[i];
 
-      handshake_ff #(.T(PMT_INFO_t)) pmt_info_reg (.outdata(pmt_info_t1[i]), .outvalid(pmt_t1_valid[i]), .outready(pmt_info_ready), 
+      handshake_ff #(.T(PMT_INFO_t)) pmt_info_reg (.outdata(pmt_info_t1[i]), .outvalid(pmt_t1_valid[i]), .outready(pmt_info_ready),
                                                    .indata(pmt_info_t0[i]),  .invalid(pmt_t0_valid[i]),  .inready(pmt_t0_ready[i]),
                                                    .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
     end
@@ -400,7 +400,7 @@ module rvv_backend_pmtrdt_unit_permutation
                                                            (pmt_info_t1[i].zero_valid | pmt_info_t1[i].rs_valid | (pmt_info_t1[i].vs_valid & (pmt_info_t1[i].index == rd_index_pmt2vrf)));
   endgenerate
 
-  assign data_clear = pmt_res_valid & pmt_res_ready; 
+  assign data_clear = pmt_res_valid & pmt_res_ready;
   generate
     for (i=0; i<`VLENB; i++) begin : gen_pmt_data
       always_comb begin
@@ -414,7 +414,7 @@ module rvv_backend_pmtrdt_unit_permutation
           pmt_data_t1[i].data = rd_data_vrf2pmt[pmt_info_t1[i].offset];
         else
           pmt_data_t1[i].data = '0;
-        
+
         if (data_clear) pmt_data_t1[i].valid = 1'b0;
         else pmt_data_t1[i].valid = pmt_info_t1[i].rs_valid | pmt_info_t1[i].vs_valid | pmt_info_t1[i].zero_valid;
       end
@@ -423,7 +423,7 @@ module rvv_backend_pmtrdt_unit_permutation
                                                                     .indata(pmt_data_t1[i].data),   .invalid(pmt_t1_valid[i]&data_write_enable[i]),  .inready(pmt_t1_ready[i]),
                                                                     .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
       edff #(.T(logic)) pmt_data_valid_reg (.q(pmt_data_t2[i].valid), .d(pmt_data_t1[i].valid), .e(data_clear|(pmt_t1_valid[i]&data_write_enable[i]&pmt_t1_ready[i])), .clk(clk), .rst_n(rst_n));
-      assign pmt_t2_ready[i] = pmt_res_ready; 
+      assign pmt_t2_ready[i] = pmt_res_ready;
     end
   endgenerate
 
