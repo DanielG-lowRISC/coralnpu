@@ -1,5 +1,8 @@
 
-module rvv_backend_sqrt7_rec7(
+module rvv_backend_sqrt7_rec7#(
+  localparam type RVFRM = RVFRM_e
+)
+(
   clk,
   rst_n,
   // Input signals
