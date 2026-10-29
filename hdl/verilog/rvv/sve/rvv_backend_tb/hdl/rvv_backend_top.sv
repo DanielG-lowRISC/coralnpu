@@ -11,11 +11,11 @@ module rvv_backend_top();
 
   // Clock Generation
   parameter sim_cycle = 10;
-  
+
   // Reset Delay Parameter
   parameter rst_delay = 5;
 
-  always 
+  always
     begin
       #(sim_cycle/2) clk = ~clk;
     end
@@ -35,13 +35,13 @@ module rvv_backend_top();
   vrf_interface vrf_if(clk,rst_n);
 
   rvv_intern_interface rvv_intern_if(clk,rst_n);
-  
-  rvv_backend_tb_mod test(); 
+
+  rvv_backend_tb_mod test();
   
   rvv_backend DUT (
     .clk(clk),
     .rst_n(rst_n),
-    
+
     .insts_valid_rvs2cq       (rvs_if.insts_valid_rvs2cq    ),
     .insts_rvs2cq             (rvs_if.insts_rvs2cq          ),
     .insts_ready_cq2rvs       (rvs_if.insts_ready_cq2rvs    ),
@@ -59,18 +59,18 @@ module rvv_backend_top();
     .uop_lsu_lsu2rvv          (lsu_if.uop_lsu_lsu2rvv       ),
     .uop_lsu_ready_rvv2lsu    (lsu_if.uop_lsu_ready_rvv2lsu ),
 
-    
-    .trap_valid_rvs2rvv       (lsu_if.trap_valid_rvs2rvv    ),
-    .trap_ready_rvv2rvs       (lsu_if.trap_ready_rvv2rvs    ), 
 
-    .wr_vxsat_valid           (), // use internal signal   
-    .wr_vxsat                 (), // use internal signal   
+    .trap_valid_rvs2rvv       (lsu_if.trap_valid_rvs2rvv    ),
+    .trap_ready_rvv2rvs       (lsu_if.trap_ready_rvv2rvs    ),
+
+    .wr_vxsat_valid           (), // use internal signal
+    .wr_vxsat                 (), // use internal signal
     .wr_vxsat_ready           (rvs_if.wr_vxsat_ready),
 
     .vcsr_valid               (rvs_if.vcsr_valid            ),
     .vector_csr               (rvs_if.vector_csr            ),
     .vcsr_ready               (rvs_if.vcsr_ready            ),
-    .rvv_idle                 (rvs_if.rvv_idle              ) 
+    .rvv_idle                 (rvs_if.rvv_idle              )
   );
 
   logic [`NUM_RT_UOP-1:0] rt_uop;
@@ -85,8 +85,8 @@ module rvv_backend_top();
 // rvs interface -----------------------------------------------------
   assign rvs_if.rt_uop      = rt_uop;
   assign rvs_if.rt_last_uop = rt_last_uop;
-  
-  generate 
+
+  generate
     genvar gv_i;
     for(gv_i=0; gv_i<`NUM_DE_INST; gv_i++) begin
       assign rvs_if.inst_correct[gv_i] = `DECODE_PATH.pop_de2cq[gv_i] &&  (|`DECODE_PATH.uop_valid_de2uq[gv_i]);
@@ -95,7 +95,7 @@ module rvv_backend_top();
   endgenerate
   assign rvs_if.inst_pkg_cq2de = `DECODE_PATH.inst_pkg_cq2de;
   
-  // ROB dataout 
+  // ROB dataout
   assign rvs_if.rd_valid_rob2rt = DUT.rd_valid_rob2rt;
   assign rvs_if.rd_rob2rt       = DUT.rd_rob2rt      ;
   assign rvs_if.rd_ready_rt2rob = DUT.rd_ready_rt2rob;
@@ -228,15 +228,15 @@ module rvv_backend_top();
 
   // Trap
   assign rvv_intern_if.trap_valid_rvs2rvv = DUT.trap_valid_rvs2rvv;
-  assign rvv_intern_if.trap_ready_rvv2rvs = DUT.trap_ready_rvv2rvs;  
-  assign rvv_intern_if.vcsr_valid         = DUT.vcsr_valid;        
-  assign rvv_intern_if.vcsr_ready         = DUT.vcsr_ready;        
-  
-  
+  assign rvv_intern_if.trap_ready_rvv2rvs = DUT.trap_ready_rvv2rvs;
+  assign rvv_intern_if.vcsr_valid         = DUT.vcsr_valid;
+  assign rvv_intern_if.vcsr_ready         = DUT.vcsr_ready;
+
+
 // Interface Coverage Collection ----------------------------------------
   rvv_interface_cov rvv_interface_cov(
-    .clk(clk), 
-    .rst_n(rst_n), 
+    .clk(clk),
+    .rst_n(rst_n),
     .rvv_intern_if(rvv_intern_if),
     .rvs_if(rvs_if)
   );

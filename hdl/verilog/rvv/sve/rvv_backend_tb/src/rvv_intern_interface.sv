@@ -59,12 +59,12 @@ interface rvv_intern_interface (input bit clk, input bit rst_n);
   logic [`NUM_DP_UOP-1:0] uop_valid_uop2dp; // Uops wait to be dispatched
   logic [`NUM_DP_UOP-1:0] uop_valid_dp2rob; // Uops dispatched successfully
   logic [`NUM_DP_UOP-1:0] uop_ready_rob2dp; // ROB reserve space
-  ARCH_HAZARD_t           arch_hazard;      
+  ARCH_HAZARD_t           arch_hazard;
 
 // Trap
   // trap signal handshake
   logic                           trap_valid_rvs2rvv;
-  logic                           trap_ready_rvv2rvs;  
+  logic                           trap_ready_rvv2rvs;
 
   // the vcsr of last retired uop in last cycle
   logic                           vcsr_valid;
