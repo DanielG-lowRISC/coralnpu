@@ -69,7 +69,7 @@ class lsu_transaction extends uvm_sequence_item;
   }
 
 // Auto Field ---------------------------------------------------------
-  `uvm_object_utils_begin(lsu_transaction) 
+  `uvm_object_utils_begin(lsu_transaction)
     `uvm_field_string(inst_string,UVM_ALL_ON)
     `uvm_field_enum(kinds_e,kind,UVM_ALL_ON)
     `uvm_field_int(uop_pc,UVM_ALL_ON)
@@ -79,7 +79,7 @@ class lsu_transaction extends uvm_sequence_item;
     `uvm_field_int(total_uops_num,UVM_ALL_ON)
     `uvm_field_int(base_addr,UVM_ALL_ON)
     `uvm_field_int(vstart,UVM_ALL_ON)
-    
+
     `uvm_field_int(vm,UVM_ALL_ON)
 
     `uvm_field_int(data_vreg_idx,UVM_ALL_ON)
@@ -96,7 +96,7 @@ class lsu_transaction extends uvm_sequence_item;
       `uvm_field_int(vidx_vreg_byte_head,UVM_ALL_ON)
       `uvm_field_int(vidx_vreg_byte_tail,UVM_ALL_ON)
       `uvm_field_int(vidx_vreg_valid,UVM_ALL_ON)
-    end 
+    end
     `uvm_field_int(lsu_slot_addr_valid, UVM_ALL_ON)
     `uvm_field_sarray_int(lsu_slot_addr, UVM_ALL_ON)
     `uvm_field_int(lsu_slot_data_valid, UVM_ALL_ON)
@@ -168,11 +168,11 @@ class trap_info_transaction extends uvm_sequence_item;
   int unsigned trap_pc;
   int unsigned vstart;
   int unsigned uop_idx;
-  
+
   rand int unsigned vcsr_ready_delay;
   rand int unsigned gen_inst_after_trap;
-  
-  `uvm_object_utils_begin(trap_info_transaction) 
+
+  `uvm_object_utils_begin(trap_info_transaction)
     `uvm_field_int(trap_pc,UVM_ALL_ON)
     `uvm_field_int(vstart,UVM_ALL_ON)
     `uvm_field_int(uop_idx,UVM_ALL_ON)

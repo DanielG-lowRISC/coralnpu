@@ -6,10 +6,10 @@
 
 interface rvs_interface (input bit clk, ref logic rst_n);
 
-// vector instruction and scalar operand . 
+// vector instruction and scalar operand .
   logic         [`ISSUE_LANE-1:0] insts_valid_rvs2cq;
   RVVCmd        [`ISSUE_LANE-1:0] insts_rvs2cq      ;
-  logic         [`ISSUE_LANE-1:0] insts_ready_cq2rvs;  
+  logic         [`ISSUE_LANE-1:0] insts_ready_cq2rvs;
 
 // ROB dataout
   logic        [`NUM_RT_UOP-1:0]  rd_valid_rob2rt ;

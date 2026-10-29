@@ -45,7 +45,7 @@ class alu_div_zero_seq extends base_sequence;
 endclass: alu_div_zero_seq
 
 class alu_div_zero_test extends rvv_backend_test;
-  
+
   alu_div_zero_seq rvs_seq;
   rvs_last_sequence rvs_last_seq;
 
@@ -83,7 +83,7 @@ class alu_div_zero_test extends rvv_backend_test;
 endclass: alu_div_zero_test
 
 //-----------------------------------------------------------
-// Cov Test: large vstart/vl 
+// Cov Test: large vstart/vl
 //-----------------------------------------------------------
 class alu_large_vstart_seq extends base_sequence;
   `uvm_object_utils(alu_large_vstart_seq)
@@ -106,10 +106,10 @@ class alu_large_vstart_seq extends base_sequence;
 
         inst_type == ALU;
         alu_inst inside {VMAND, VMOR, VMXOR, VMORN, VMNAND, VMNOR, VMANDN, VMXNOR};
-        
+
         if(vlmul[2]) // fraction_lmul
           vlmax == ((`VLENB >> (~vlmul +3'b1)) >> vsew);
-        else  
+        else
           vlmax == ((`VLENB << vlmul) >> vsew);
 
         vl == vlmax_max;
@@ -128,7 +128,7 @@ class alu_large_vstart_seq extends base_sequence;
 endclass: alu_large_vstart_seq
 
 class alu_large_vstart_test extends rvv_backend_test;
-  
+
   alu_large_vstart_seq rvs_seq;
   rvs_last_sequence rvs_last_seq;
 
@@ -303,7 +303,7 @@ class alu_div_overflow_seq extends base_sequence;
 endclass: alu_div_overflow_seq
 
 class alu_div_overflow_test extends rvv_backend_test;
-  
+
   alu_div_overflow_seq rvs_seq;
   rvs_last_sequence rvs_last_seq;
 
@@ -355,24 +355,24 @@ class alu_div_overflow_test extends rvv_backend_test;
     act = vrf_if.get_dut_vrf(3);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(5);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
-    // remainder 
+    // remainder
     exp = 128'h0;
     act = vrf_if.get_dut_vrf(4);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(6);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     repeat(10) @(posedge rvs_if.clk);
 
@@ -401,24 +401,24 @@ class alu_div_overflow_test extends rvv_backend_test;
     act = vrf_if.get_dut_vrf(3);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(5);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
-    // remainder 
+    // remainder
     exp = 128'h0;
     act = vrf_if.get_dut_vrf(4);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(6);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     repeat(10) @(posedge rvs_if.clk);
 
@@ -447,24 +447,24 @@ class alu_div_overflow_test extends rvv_backend_test;
     act = vrf_if.get_dut_vrf(3);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(5);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
-    // remainder 
+    // remainder
     exp = 128'h0;
     act = vrf_if.get_dut_vrf(4);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
     act = vrf_if.get_dut_vrf(6);
     if(act !== exp)
       `uvm_error(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp))
-    else 
+    else
       `uvm_info(get_type_name(), $sformatf("vrf[2]: act == 0x%16x, exp == 0x%16x.", act, exp), UVM_LOW)
 
     repeat(10) @(posedge rvs_if.clk);
@@ -523,7 +523,7 @@ class alu_cont_div_seq extends base_sequence;
 endclass: alu_cont_div_seq
 
 class alu_cont_div_test extends rvv_backend_test;
-  
+
   alu_cont_div_seq rvs_seq;
   rvs_last_sequence rvs_last_seq;
 
@@ -550,7 +550,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq = alu_cont_div_seq::type_id::create("rvs_seq", this);
     set_vrf(0,128'ha5a5_5a5a_a5a5_5a5a_a5a5_5a5a_a5a5_5a5a);
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Unsigned test - sew8
     // vs2
     temp = $urandom_range(0, 8'hFF);
@@ -580,7 +580,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Unsigned test - sew16
     // vs2
     temp = $urandom_range(0, 16'hFFFF);
@@ -610,7 +610,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Unsigned test - sew32
     // vs2
     temp = $urandom_range(0, 32'hFFFFFFFF);
@@ -640,7 +640,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed test - sew8
     // vs2
     temp = $urandom_range(0, 8'hFF);
@@ -670,7 +670,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed test - sew16
     // vs2
     temp = $urandom_range(0, 16'hFFFF);
@@ -700,7 +700,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed test - sew32
     // vs2
     temp = $urandom_range(0, 32'hFFFFFFFF);
@@ -730,7 +730,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.vsew_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed & unsigned mix test - sew8
     // vs2
     temp = $urandom_range(0, 8'h7F);
@@ -760,7 +760,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.inst_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed & unsigned mix test - sew16
     // vs2
     temp = $urandom_range(0, 16'h7FFF);
@@ -790,7 +790,7 @@ class alu_cont_div_test extends rvv_backend_test;
     rvs_seq.inst_set.delete();
     rvs_seq.inst_set.delete();
 
-    //-------------------------------------------------- 
+    //--------------------------------------------------
     // Signed & unsigned mix test - sew32
     // vs2
     temp = $urandom_range(0, 32'h7FFF_FFFF);
@@ -858,7 +858,7 @@ class rvv_reset_test extends rvv_backend_test;
     rvs_seq_lib.selection_mode = UVM_SEQ_LIB_RAND;
     rvs_seq_lib.sequence_count = 100;
     rvs_seq_lib.add_typewide_sequence(rvs_alu_seq.get_type());
-    // FIXME: For now, tb didn't support getting a reset while a store inst 
+    // FIXME: For now, tb didn't support getting a reset while a store inst
     //    having sent the data to lsu but not retire yet.
     // rvs_seq_lib.add_typewide_sequence(rvs_lsu_seq.get_type());
     rvs_seq_lib.init_sequence_library();
@@ -877,7 +877,7 @@ class rvv_reset_test extends rvv_backend_test;
         rvs_if.rst_n = 1;
       end
     join
-    
+
     rvs_last_seq = rvs_last_sequence::type_id::create("rvs_last_seq", this);
     rvs_last_seq.start(env.rvs_agt.rvs_sqr);
   endtask
@@ -992,14 +992,14 @@ class vcpop_viota_vm1_test extends rvv_backend_test;
     rvs_seq_lib.add_typewide_sequence(viota_m_vm1_seq.get_type());
     rvs_seq_lib.add_typewide_sequence(vadd_vx_seq.get_type());
     rvs_seq_lib.init_sequence_library();
-    
+
     `uvm_info(get_type_name(),"Start randomize mem & vrf.", UVM_LOW)
     rand_mem(mem_base, mem_size);
     rand_vrf();
     `uvm_info(get_type_name(), "Randomize done.", UVM_LOW)
 
     rvs_seq_lib.start(env.rvs_agt.rvs_sqr);
-    
+
     rvs_last_seq = rvs_last_sequence::type_id::create("rvs_last_seq", this);
     rvs_last_seq.start(env.rvs_agt.rvs_sqr);
   endtask
@@ -1018,7 +1018,7 @@ class small_evl_test extends rvv_backend_test;
   rvs_random_sequence_library rvs_seq_lib;
 
   inst_rvv_zve32x_vmv_s_x_seq rvs_seq_5;
-  inst_rvv_zve32x_vadd_vv_seq rvs_seq_6;  
+  inst_rvv_zve32x_vadd_vv_seq rvs_seq_6;
 
   rvs_last_sequence rvs_last_seq;
 

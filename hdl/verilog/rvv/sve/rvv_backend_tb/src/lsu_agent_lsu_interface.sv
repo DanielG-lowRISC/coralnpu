@@ -20,7 +20,7 @@ interface lsu_interface (input bit clk, input bit rst_n);
 // exception handler
   // trap signal handshake
   logic                           trap_valid_rvs2rvv;
-  logic                           trap_ready_rvv2rvs;    
+  logic                           trap_ready_rvv2rvs;
   logic             [31:0]        trap_pc;
   logic             [2:0]         trap_uop_index;
 

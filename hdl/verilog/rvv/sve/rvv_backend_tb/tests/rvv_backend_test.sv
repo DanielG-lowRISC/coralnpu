@@ -187,7 +187,7 @@ endclass: tb_debug_test
 
 
 //===========================================================
-// ALU direct instruction tests 
+// ALU direct instruction tests
 //===========================================================
 //-----------------------------------------------------------
 // Smoke test. Each inst will be run once.
@@ -270,7 +270,7 @@ class alu_smoke_test extends rvv_backend_test;
       rvs_vv_seq.run_inst(VNSRL, env.rvs_agt.rvs_sqr);
       rvs_vv_seq.run_inst(VNSRA, env.rvs_agt.rvs_sqr);
     end
- 
+
     if($test$plusargs("case05") || $test$plusargs("all_case")) begin
       // RDT in RTL
       rvs_vv_seq.run_inst(VMSEQ , env.rvs_agt.rvs_sqr, 1);
@@ -356,7 +356,7 @@ class alu_smoke_test extends rvv_backend_test;
     if($test$plusargs("case17") || $test$plusargs("all_case")) begin
       rvs_vv_seq.run_inst(VNCLIPU, env.rvs_agt.rvs_sqr);
       rvs_vv_seq.run_inst(VNCLIP , env.rvs_agt.rvs_sqr);
-    end 
+    end
 
     if($test$plusargs("case18") || $test$plusargs("all_case")) begin
       rvs_vv_seq.run_inst(VMAND , env.rvs_agt.rvs_sqr, 1);
@@ -376,7 +376,7 @@ class alu_smoke_test extends rvv_backend_test;
     if($test$plusargs("case20") || $test$plusargs("all_case")) begin
       rvs_vmunary0_seq.run_inst(VMUNARY0, env.rvs_agt.rvs_sqr);
     end
-    
+
     if($test$plusargs("case21") || $test$plusargs("all_case")) begin
       rvs_vred_seq.run_inst(VREDSUM , env.rvs_agt.rvs_sqr);
       rvs_vred_seq.run_inst(VREDAND , env.rvs_agt.rvs_sqr);
@@ -387,13 +387,13 @@ class alu_smoke_test extends rvv_backend_test;
       rvs_vred_seq.run_inst(VREDMAXU, env.rvs_agt.rvs_sqr);
       rvs_vred_seq.run_inst(VREDMAX , env.rvs_agt.rvs_sqr);
     end
- 
+
     if($test$plusargs("case22") || $test$plusargs("all_case")) begin
       rvs_vred_seq.run_inst(VWREDSUM , env.rvs_agt.rvs_sqr);
       rvs_vred_seq.run_inst(VWREDSUMU, env.rvs_agt.rvs_sqr);
     end
 
-    // Last inst  
+    // Last inst
     rvs_vv_seq.run_inst(VAND, env.rvs_agt.rvs_sqr);
 
 
@@ -515,7 +515,7 @@ class alu_vwaddsub_test extends rvv_backend_test;
     rvs_seq.run_inst_iter(VWSUBU  , env.rvs_agt.rvs_sqr, 1);
     rvs_seq.run_inst_iter(VWSUBU_W, env.rvs_agt.rvs_sqr, 1);
     rvs_seq.run_inst_iter(VWSUB_W , env.rvs_agt.rvs_sqr, 1);
-    
+
     `uvm_info(get_type_name(), "Single inst random part.", UVM_HIGH)
     rvs_seq.run_inst_rand(VWADD   , env.rvs_agt.rvs_sqr, direct_inst_num);
     rvs_seq.run_inst_rand(VWADDU  , env.rvs_agt.rvs_sqr, direct_inst_num);
@@ -541,7 +541,7 @@ class alu_vwaddsub_test extends rvv_backend_test;
 endclass: alu_vwaddsub_test
 
 //-----------------------------------------------------------
-// 32.11.3. Vector Integer Extension 
+// 32.11.3. Vector Integer Extension
 //-----------------------------------------------------------
 class alu_vext_test extends rvv_backend_test;
 
@@ -574,7 +574,7 @@ class alu_vext_test extends rvv_backend_test;
     rvs_seq = alu_iterate_ext_seq::type_id::create("rvs_seq", this);
     rvs_seq.run_inst_iter(VXUNARY0, env.rvs_agt.rvs_sqr, 0);
     rvs_seq.run_inst_iter(VXUNARY0, env.rvs_agt.rvs_sqr, 1);
-    
+
     `uvm_info(get_type_name(), "Single inst random part.", UVM_HIGH)
     rvs_seq.run_inst_rand(VXUNARY0, env.rvs_agt.rvs_sqr, direct_inst_num);
 
@@ -700,7 +700,7 @@ class alu_vmadcsbc_test extends rvv_backend_test;
 endclass: alu_vmadcsbc_test
 
 //-----------------------------------------------------------
-// 32.11.5. Vector Bitwise Logical Instructions 
+// 32.11.5. Vector Bitwise Logical Instructions
 //-----------------------------------------------------------
 class alu_bitlogic_test extends rvv_backend_test;
 
@@ -957,7 +957,7 @@ class alu_vminmax_test extends rvv_backend_test;
 endclass: alu_vminmax_test
 
 //-----------------------------------------------------------
-// 32.11.10. Vector Single-Width Integer Multiply Instructions 
+// 32.11.10. Vector Single-Width Integer Multiply Instructions
 //-----------------------------------------------------------
 class alu_vmul_test extends rvv_backend_test;
 
@@ -1280,7 +1280,7 @@ class alu_vmerge_vmvv_test extends rvv_backend_test;
     rvs_seq.run_inst_iter(VMERGE_VMVV, env.rvs_agt.rvs_sqr, 0); // vmerge
     rvs_seq.run_inst_iter(VMERGE_VMVV, env.rvs_agt.rvs_sqr, 1); // vmv.v
 
-    rvs_seq.run_inst_rand(VMERGE_VMVV, env.rvs_agt.rvs_sqr, direct_inst_num); 
+    rvs_seq.run_inst_rand(VMERGE_VMVV, env.rvs_agt.rvs_sqr, direct_inst_num);
 
     `uvm_info(get_type_name(), "Inst set random part.", UVM_HIGH)
     rvs_rand_seq = alu_random_seq::type_id::create("rvs_rand_seq", this);
@@ -2107,7 +2107,7 @@ class alu_vmvnr_test extends rvv_backend_test;
 endclass: alu_vmvnr_test
 
 //===========================================================
-// LSU direct instruction tests 
+// LSU direct instruction tests
 //===========================================================
 //-----------------------------------------------------------
 // 31.7.4. Vector Unit-Stride Instructions
@@ -2760,4 +2760,3 @@ class lsu_fof_test_trap_en extends lsu_fof_test;
   endfunction
 endclass: lsu_fof_test_trap_en
 `endif // RVV_BACKEND_TEST__SV
-

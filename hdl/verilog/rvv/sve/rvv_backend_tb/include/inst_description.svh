@@ -27,7 +27,7 @@ typedef logic [`VLENB-1:0] vrf_byte_t;
 
 // typedef RVVSEW sew_e;
 typedef enum logic [2:0] {
-  SEW8  = 3'b000, 
+  SEW8  = 3'b000,
   SEW16 = 3'b001,
   SEW32 = 3'b010,
   SEW_LAST = 3'b111
@@ -35,8 +35,8 @@ typedef enum logic [2:0] {
 
 typedef enum int {
   EEW_NONE = 0,
-  EEW1  = 1, 
-  EEW8  = 8, 
+  EEW1  = 1,
+  EEW8  = 8,
   EEW16 = 16,
   EEW32 = 32,
   EEW64 = 64
@@ -70,7 +70,7 @@ typedef struct packed {
   logic [30:8] rsv;
   agnostic_e vma;
   agnostic_e vta;
-  sew_e vsew; 
+  sew_e vsew;
   lmul_e vlmul;
 } vtype_t;
 
@@ -82,8 +82,8 @@ typedef enum logic [1:0] {
 } vxrm_e;
 
 typedef enum logic [6:0] {
-  LD  = 7'b000_0111, 
-  ST  = 7'b010_0111, 
+  LD  = 7'b000_0111,
+  ST  = 7'b010_0111,
   ALU = 7'b101_0111
 } inst_type_e;
 
@@ -95,7 +95,7 @@ typedef enum logic [2:0] {
   OPIVX=3'b100,      // vs2,      rs1, vd.
   OPFVF=3'b101,      // vs2,      rs1, vd. float, not support
   OPMVX=3'b110,      // vs2,      rs1, vd/rd.
-  OPCFG=3'b111       // vset* instructions    
+  OPCFG=3'b111       // vset* instructions
 } alu_type_e;
 
 typedef enum logic [7:0] {
@@ -103,7 +103,7 @@ typedef enum logic [7:0] {
   VADD            =   8'b00_000_000,
   VSUB            =   8'b00_000_010,
   VRSUB           =   8'b00_000_011,
-  
+
   VADC            =   8'b00_010_000,
   VMADC           =   8'b00_010_001,
   VSBC            =   8'b00_010_010,
@@ -140,7 +140,7 @@ typedef enum logic [7:0] {
   VSSUBU          =   8'b00_100_010,
   VSSUB           =   8'b00_100_011,
 
-  VSMUL_VMVNRR    =   8'b00_100_111, // .vv,.vx: vsmul; .vi: vmvnrr 
+  VSMUL_VMVNRR    =   8'b00_100_111, // .vv,.vx: vsmul; .vi: vmvnrr
 
   VSSRL           =   8'b00_101_010,
   VSSRA           =   8'b00_101_011,
@@ -167,7 +167,7 @@ typedef enum logic [7:0] {
   VWSUBU_W        =   8'b01_110_110,
   VWSUB_W         =   8'b01_110_111,
 
-  VXUNARY0        =   8'b01_010_010,  // VZEXT/VSEXT 
+  VXUNARY0        =   8'b01_010_010,  // VZEXT/VSEXT
 
   VMUL            =   8'b01_100_101,
   VMULH           =   8'b01_100_111,
@@ -191,7 +191,7 @@ typedef enum logic [7:0] {
   VWMACCU         =   8'b01_111_100,
   VWMACC          =   8'b01_111_101,
   VWMACCUS        =   8'b01_111_110,
-  VWMACCSU        =   8'b01_111_111,  
+  VWMACCSU        =   8'b01_111_111,
 
   VAADDU          =   8'b01_001_000,
   VAADD           =   8'b01_001_001,
@@ -218,7 +218,7 @@ typedef enum logic [7:0] {
 
 
   VMUNARY0        =   8'b01_010_100,     // it could be vmsbf, vmsof, vmsif, viota, vid. They can be distinguished by vs1 field(inst_encoding[19:15]).
-// Vector Permutation Operations in OPM 
+// Vector Permutation Operations in OPM
   //VMV             =   8'b01_010_000,
   VSLIDE1UP       =   8'b01_001_110,
   VSLIDE1DOWN     =   8'b01_001_111,
@@ -234,7 +234,7 @@ typedef enum logic [4:0] {
   VZEXT_VF4       =   5'b00100,
   VSEXT_VF4       =   5'b00101,
   VZEXT_VF2       =   5'b00110,
-  VSEXT_VF2       =   5'b00111,  
+  VSEXT_VF2       =   5'b00111,
   VXUNARY0_NONE   =   5'b11111
 } vxunary0_e;
 
@@ -277,13 +277,13 @@ typedef enum logic [2:0] {
 } lsu_nf_e;
 
 typedef enum logic [2:0] {
-  NR1 = 3'b000,  
-  NR2 = 3'b001,  
-  NR3 = 3'b010,  
+  NR1 = 3'b000,
+  NR2 = 3'b001,
+  NR3 = 3'b010,
   NR4 = 3'b011,
-  NR5 = 3'b100,  
-  NR6 = 3'b101,  
-  NR7 = 3'b110,  
+  NR5 = 3'b100,
+  NR6 = 3'b101,
+  NR7 = 3'b110,
   NR8 = 3'b111
 } lsu_nr_e;
 
