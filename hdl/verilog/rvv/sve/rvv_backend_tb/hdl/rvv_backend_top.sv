@@ -1,6 +1,12 @@
 `ifndef RVV_TOP__SV
 `define RVV_TOP__SV
 
+// Testbench-wide design parameters, visible to the DUT instance and to the
+// interfaces/classes pulled in below (their macros take VLEN/XLEN/PC_WIDTH).
+localparam int unsigned VLEN     = `VLEN;
+localparam int unsigned XLEN     = `XLEN;
+localparam int unsigned PC_WIDTH = `PC_WIDTH;
+
 `include "rvv_backend_poke.svh"
 `include "rvv_backend_tb_mod.sv"
 module rvv_backend_top();
@@ -37,8 +43,13 @@ module rvv_backend_top();
   rvv_intern_interface rvv_intern_if(clk,rst_n);
 
   rvv_backend_tb_mod test();
-  
-  rvv_backend DUT (
+
+  rvv_backend#(
+    .N(`ISSUE_LANE),
+    .VLEN(`VLEN),
+    .RegDataT(logic [31:0]),
+    .PC_WIDTH(PC_WIDTH)
+  ) DUT (
     .clk(clk),
     .rst_n(rst_n),
 
@@ -46,10 +57,10 @@ module rvv_backend_top();
     .insts_rvs2cq             (rvs_if.insts_rvs2cq          ),
     .insts_ready_cq2rvs       (rvs_if.insts_ready_cq2rvs    ),
     .remaining_count_cq2rvs   (),
-    
-    .rt_xrf_rvv2rvs           (rvs_if.rt_xrf_rvv2rvs        ),
+
+    .rt_rvs_rvv2rvs           (rvs_if.rt_xrf_rvv2rvs        ),
     .rt_xrf_valid_rvv2rvs     (rvs_if.rt_xrf_valid_rvv2rvs  ),
-    .rt_xrf_ready_rvs2rvv     (rvs_if.rt_xrf_ready_rvs2rvv  ),
+    .rt_rvs_ready_rvs2rvv     (rvs_if.rt_xrf_ready_rvs2rvv  ),
 
     .uop_lsu_valid_rvv2lsu    (lsu_if.uop_lsu_valid_rvv2lsu ),
     .uop_lsu_rvv2lsu          (lsu_if.uop_lsu_rvv2lsu       ),
@@ -89,44 +100,50 @@ module rvv_backend_top();
   generate
     genvar gv_i;
     for(gv_i=0; gv_i<`NUM_DE_INST; gv_i++) begin
-      assign rvs_if.inst_correct[gv_i] = `DECODE_PATH.pop_de2cq[gv_i] &&  (|`DECODE_PATH.uop_valid_de2uq[gv_i]);
-      assign rvs_if.inst_discard[gv_i] = `DECODE_PATH.pop_de2cq[gv_i] && !(|`DECODE_PATH.uop_valid_de2uq[gv_i]);
+      // DE1 pops the CQ; a legal command goes to the LCQ, a reserved/nop
+      // instruction (lcmd_valid==0) is retired directly (de2rt).
+      assign rvs_if.inst_correct[gv_i] = `DECODE_PATH.pop_de2cq[gv_i] &&  `DECODE_PATH.lcmd_valid_de2lcq[gv_i];
+      assign rvs_if.inst_discard[gv_i] = `DECODE_PATH.pop_de2cq[gv_i] && !`DECODE_PATH.lcmd_valid_de2lcq[gv_i];
     end
   endgenerate
-  assign rvs_if.inst_pkg_cq2de = `DECODE_PATH.inst_pkg_cq2de;
-  
+  assign rvs_if.inst_pkg_cq2de = `DECODE_PATH.inst_cq2de;
+
   // ROB dataout
   assign rvs_if.rd_valid_rob2rt = DUT.rd_valid_rob2rt;
   assign rvs_if.rd_rob2rt       = DUT.rd_rob2rt      ;
   assign rvs_if.rd_ready_rt2rob = DUT.rd_ready_rt2rob;
 
 
-  // VRF retire
+  // VRF retire, observed per instruction (before the retire stage's WAW merge).
+  // When two instructions retiring in the same cycle write the same register,
+  // the DUT masks the earlier lane in rt2vrf_write_valid/data (~hit_waw) and
+  // carries the merged result on the later lane. The reference model, and so the
+  // scoreboard, counts one write per instruction, so use the pre-merge signals.
   always_comb begin
     for(int i=0; i<`NUM_RT_UOP; i++) begin
-      rvs_if.rt_vrf_valid_rob2rt[i] = `RT_VRF_PATH.rt2vrf_write_valid[i];
+      rvs_if.rt_vrf_valid_rob2rt[i] = `RT_VRF_PATH.w_vrf_valid[i] & `RT_VRF_PATH.rt2rob_write_ready[i];
 `ifdef TB_SUPPORT
-      rvs_if.rt_vrf_data_rob2rt[i].uop_pc   = `RT_VRF_PATH.rt2vrf_write_data[i].uop_pc;
+      rvs_if.rt_vrf_data_rob2rt[i].uop_pc   = `RT_VRF_PATH.rob2rt_write_data[i].uop_pc;
 `endif
-      rvs_if.rt_vrf_data_rob2rt[i].rt_data  = `RT_VRF_PATH.rt2vrf_write_data[i].rt_data;
-      rvs_if.rt_vrf_data_rob2rt[i].rt_index = `RT_VRF_PATH.rt2vrf_write_data[i].rt_index;
+      rvs_if.rt_vrf_data_rob2rt[i].rt_data  = `RT_VRF_PATH.w_data[i];
+      rvs_if.rt_vrf_data_rob2rt[i].rt_index = `RT_VRF_PATH.w_addr[i];
     end
   end
-  assign rvs_if.rt_vrf_data_rob2rt[0].rt_strobe  = `RT_VRF_PATH.w_enB0;
-  assign rvs_if.rt_vrf_data_rob2rt[1].rt_strobe  = `RT_VRF_PATH.w_enB1;
-  assign rvs_if.rt_vrf_data_rob2rt[2].rt_strobe  = `RT_VRF_PATH.w_enB2;
-  assign rvs_if.rt_vrf_data_rob2rt[3].rt_strobe  = `RT_VRF_PATH.w_enB3;
+  assign rvs_if.rt_vrf_data_rob2rt[0].rt_strobe  = `RT_VRF_PATH.w_strobe[0];
+  assign rvs_if.rt_vrf_data_rob2rt[1].rt_strobe  = `RT_VRF_PATH.w_strobe[1];
+  assign rvs_if.rt_vrf_data_rob2rt[2].rt_strobe  = `RT_VRF_PATH.w_strobe[2];
+  assign rvs_if.rt_vrf_data_rob2rt[3].rt_strobe  = `RT_VRF_PATH.w_strobe[3];
 
-  assign rvs_if.wr_vxsat_valid[0] = `RT_VXSAT_PATH.w_valid0_chkTrap & `RT_VXSAT_PATH.w_vxsat0;
-  assign rvs_if.wr_vxsat_valid[1] = `RT_VXSAT_PATH.w_valid1_chkTrap & `RT_VXSAT_PATH.w_vxsat1;
-  assign rvs_if.wr_vxsat_valid[2] = `RT_VXSAT_PATH.w_valid2_chkTrap & `RT_VXSAT_PATH.w_vxsat2;
-  assign rvs_if.wr_vxsat_valid[3] = `RT_VXSAT_PATH.w_valid3_chkTrap & `RT_VXSAT_PATH.w_vxsat3;
+  assign rvs_if.wr_vxsat_valid[0] = `RT_VXSAT_PATH.w_valid_chkTrap[0] & `RT_VXSAT_PATH.w_vxsat[0];
+  assign rvs_if.wr_vxsat_valid[1] = `RT_VXSAT_PATH.w_valid_chkTrap[1] & `RT_VXSAT_PATH.w_vxsat[1];
+  assign rvs_if.wr_vxsat_valid[2] = `RT_VXSAT_PATH.w_valid_chkTrap[2] & `RT_VXSAT_PATH.w_vxsat[2];
+  assign rvs_if.wr_vxsat_valid[3] = `RT_VXSAT_PATH.w_valid_chkTrap[3] & `RT_VXSAT_PATH.w_vxsat[3];
 
-  assign rvs_if.wr_vxsat[0] = `RT_VXSAT_PATH.w_vxsat0;
-  assign rvs_if.wr_vxsat[1] = `RT_VXSAT_PATH.w_vxsat1;
-  assign rvs_if.wr_vxsat[2] = `RT_VXSAT_PATH.w_vxsat2;
-  assign rvs_if.wr_vxsat[3] = `RT_VXSAT_PATH.w_vxsat3;
-    
+  assign rvs_if.wr_vxsat[0] = `RT_VXSAT_PATH.w_vxsat[0];
+  assign rvs_if.wr_vxsat[1] = `RT_VXSAT_PATH.w_vxsat[1];
+  assign rvs_if.wr_vxsat[2] = `RT_VXSAT_PATH.w_vxsat[2];
+  assign rvs_if.wr_vxsat[3] = `RT_VXSAT_PATH.w_vxsat[3];
+
 // lsu interface -----------------------------------------------------
   // trap pc tracer
   logic             [31:0]        trap_pc;
@@ -152,7 +169,7 @@ module rvv_backend_top();
       vrf_if.vreg[i] = `VRF_PATH.vrf_rd_data_full[i];
     end
     for(int i=0; i<32; i++) begin
-      for(int j=0; j<`VLENB; j++) begin
+      for(int j=0; j<`VLENB(VLEN); j++) begin
         vrf_if.vrf_wr_wenb_full[i][j*`BYTE_WIDTH +: `BYTE_WIDTH] = {`BYTE_WIDTH{`VRF_PATH.vrf_wr_wen_full[i][j]}};
       end
     end
@@ -170,8 +187,8 @@ module rvv_backend_top();
   assign rvv_intern_if.rt2rob_write_ready = DUT.u_retire.rt2rob_write_ready;
 
   // Decode to UOPs queue
-  assign rvv_intern_if.uop_valid_de2uq  = DUT.u_decode.uop_valid_de2uq;
-  
+  assign rvv_intern_if.uop_valid_de2uq  = DUT.u_decode_de2.de_uop_valid;
+
   // Disptach to each rs
   /* Dispatch unit to ALU reservation station */
   assign rvv_intern_if.rs_valid_dp2alu = DUT.u_dispatch.rs_valid_dp2alu;
@@ -220,7 +237,7 @@ module rvv_backend_top();
   /* vrf */
   always_comb begin
     for(int i=0; i<32; i++) begin
-      for(int j=0; j<`VLENB; j++) begin
+      for(int j=0; j<`VLENB(VLEN); j++) begin
         rvv_intern_if.vrf_wr_wenb_full[i][j*`BYTE_WIDTH +: `BYTE_WIDTH] = {`BYTE_WIDTH{`VRF_PATH.vrf_wr_wen_full[i][j]}};
       end
     end
@@ -241,7 +258,13 @@ module rvv_backend_top();
     .rvs_if(rvs_if)
   );
 
-
+`ifdef TRACE_ON
+  // Opt-in waveform of the DUT only (build with `make TRACE=1`).
+  initial begin
+    $dumpfile("waves.fst");
+    $dumpvars(0, DUT);
+  end
+`endif
 
 endmodule: rvv_backend_top
 

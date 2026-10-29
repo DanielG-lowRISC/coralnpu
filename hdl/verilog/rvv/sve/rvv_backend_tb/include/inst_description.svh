@@ -22,7 +22,7 @@ import delay_mode_pkg::*;
 typedef logic [`REGFILE_INDEX_WIDTH-1:0] reg_idx_t;
 typedef logic [`XLEN-1:0] xrf_t;
 typedef logic [`VLEN-1:0] vrf_t;
-typedef logic [`VLENB-1:0] vrf_byte_t;
+typedef logic [`VLENB(VLEN)-1:0] vrf_byte_t;
 
 
 // typedef RVVSEW sew_e;
@@ -66,7 +66,7 @@ parameter real EMUL4     = 4.00;
 parameter real EMUL8     = 8.00;
 
 typedef struct packed {
-  logic [31] vill;
+  logic vill;
   logic [30:8] rsv;
   agnostic_e vma;
   agnostic_e vta;
