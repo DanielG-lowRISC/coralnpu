@@ -31,13 +31,13 @@ module rvv_backend_freduction(
   output  logic       result_valid;
   output  PU2ROB_t    result;
   input   logic       result_ready;
-  
+
   // trap-flush
   input   logic                     trap_flush_rvv;
 
 
   //internal declaration
-  
+
   logic         set_busy;
   logic         clear_busy;
   logic         next_state;
@@ -62,7 +62,7 @@ module rvv_backend_freduction(
   logic         sub_rdtadd_result_vld;
   logic  [31:0] sub_rdtadd_result;
   fpnew_pkg::status_t sub_rdtadd_status;
-  
+
 
   logic         sub_rdtcmp_in_vld;
   logic         sub_rdtcmp_in_rdy;
@@ -109,7 +109,7 @@ module rvv_backend_freduction(
                                                          cmp_in_vld_reg && (vs2_type_reg[vld_ctr] == BODY_ACTIVE) && sub_rdtcmp_in_rdy;
   assign sub_rnd           = uop.uop_funct6.ari_funct6[2]? sub_cmp_rnd: sub_add_rnd;
   assign sub_rnd_in        =(uop_valid && uop_ready)? sub_rnd: sub_rnd_reg;
-  assign mask_cur          = uop_valid && (uop.vs2_type[0] != BODY_ACTIVE) && !(add_in_vld_reg | cmp_in_vld_reg) || 
+  assign mask_cur          = uop_valid && (uop.vs2_type[0] != BODY_ACTIVE) && !(add_in_vld_reg | cmp_in_vld_reg) ||
                             (add_in_vld_reg | cmp_in_vld_reg) && (vs2_type_reg[vld_ctr] != BODY_ACTIVE);
   assign sub_rdtadd_in_rdy = sub_busy? sub_result_vld && sub_result_rdy: 1'b1;
   assign sub_rdtcmp_in_rdy = sub_busy? sub_result_vld && sub_result_rdy: 1'b1;
@@ -287,7 +287,7 @@ module rvv_backend_freduction(
         tag_reg <= {uop.last_uop_valid, uop.rob_entry};
       `endif
       end
-      if(trap_flush_rvv) begin 
+      if(trap_flush_rvv) begin
         vld_ctr       <= '0;
         mask_cur_reg  <= 1'b0;
         sub_busy      <= 1'b0;

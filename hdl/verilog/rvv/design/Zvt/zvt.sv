@@ -3,7 +3,7 @@
 `endif
 `ifdef ASSERT_ON
 `include "rvv_backend_sva.svh"
-`endif 
+`endif
 
 module zvt (
   clk,
@@ -57,7 +57,7 @@ module zvt (
   output logic                    fpexpVld;
   output RVFEXP_t                 fpexp;
   input  logic                    fpexpRdy;
-  // control&status  
+  // control&status
   input  logic                    flush;
   output logic                    zvtBusy;
 
@@ -77,7 +77,7 @@ module zvt (
   // PE array
   logic [`ZVT_LMUL-1:0] peCmdVld;
   logic [`ZVT_LMUL-1:0] peCmdRdy;
-  logic                 peBusy;  
+  logic                 peBusy;
 `ifdef TB_SUPPORT
   logic [`NUM_BLK-1:0][`PC_WIDTH-1:0]                               peReadPc;
   logic [`NUM_BLK-1:0][`PC_WIDTH-1:0]                               peWritePc;
@@ -134,14 +134,14 @@ module zvt (
     .peReadPc         (peReadPc),
     .peWritePc        (peWritePc),
   `endif
-    .peWriteEn        (peWriteEn),  
+    .peWriteEn        (peWriteEn),
     .peWriteMtIdx     (peWriteMtIdx),
     .peWriteSubIdx    (peWriteSubIdx),
-    .peWriteData      (peWriteData),  
+    .peWriteData      (peWriteData),
     .readMtIdx        (readMtIdx),
     .readSubIdx       (readSubIdx),
     .readData         (readData),
-    .writeEn          (writeEn), 
+    .writeEn          (writeEn),
     .writeMtIdx       (writeMtIdx),
     .writeSubIdx      (writeSubIdx),
     .writeData        (writeData),
@@ -224,7 +224,7 @@ module zvt (
     .readPc       (peReadPc),
     .writePc      (peWritePc),
   `endif
-    .writeEn      (peWriteEn),  
+    .writeEn      (peWriteEn),
     .writeMtIdx   (peWriteMtIdx),
     .writeSubIdx  (peWriteSubIdx),
     .writeData    (peWriteData),
@@ -249,7 +249,7 @@ module zvt (
     .T            (VME_RTCMD_t),
     .M            (1),
     .N            (1),
-    .DEPTH        (8),       
+    .DEPTH        (8),
     .ASYNC_RSTN   (1'b1)
   ) rtCmdRs (
     .clk          (clk),
@@ -257,7 +257,7 @@ module zvt (
     .push         (rtCmdVld),
     .datain       (rtCmd),
     .pushRdy      (rtCmdRdy),
-    .pop          (vmeRtVld&vmeRtRdy),   
+    .pop          (vmeRtVld&vmeRtRdy),
     .dataout      (vmeRtCmd),
     .full         (),
     .almost_full  (),
@@ -337,10 +337,10 @@ module zvt (
     if(miscRtVldD1) begin
       case(vmeRtCmd.eew_mt)
         EEW8: begin
-          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1; 
+          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1;
 
           for(int i=0;i<`TE/8;i++) begin
             for(int j=0;j<`TE/8;j++) begin
@@ -354,17 +354,17 @@ module zvt (
               rvviSubIdx[BLKID2][0][i*`TE/8+j] = i*`TE/4 + `TE*`TE/32 + j;
               rvviSubIdx[BLKID3][0][i*`TE/8+j] = i*`TE/4 + `TE*`TE/32 + `TE/8 + j;
             end
-          end 
+          end
         end
         EEW16: begin
-          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID0][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID1][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID2][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID3][1] = miscRtMtIdxD1 + 'd1; 
+          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID0][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID1][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID2][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID3][1] = miscRtMtIdxD1 + 'd1;
 
           for(int i=0;i<`TE/8;i++) begin
             for(int j=0;j<`TE/8;j++) begin
@@ -386,25 +386,25 @@ module zvt (
               rvviSubIdx[BLKID3][0][i*`TE/8+j] = i*`TE/4 + `TE*`TE/32 + `TE/8 + j;
               rvviSubIdx[BLKID3][1][i*`TE/8+j] = i*`TE/4 + `TE*`TE/32 + `TE/8 + j;
             end
-          end        
+          end
         end
         default: begin // EEW32
-          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID0][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID0][2] = miscRtMtIdxD1 + 'd2; 
-          rvviMtIdx[BLKID0][3] = miscRtMtIdxD1 + 'd3; 
-          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID1][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID1][2] = miscRtMtIdxD1 + 'd2; 
-          rvviMtIdx[BLKID1][3] = miscRtMtIdxD1 + 'd3; 
-          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID2][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID2][2] = miscRtMtIdxD1 + 'd2; 
-          rvviMtIdx[BLKID2][3] = miscRtMtIdxD1 + 'd3; 
-          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1; 
-          rvviMtIdx[BLKID3][1] = miscRtMtIdxD1 + 'd1; 
-          rvviMtIdx[BLKID3][2] = miscRtMtIdxD1 + 'd2; 
-          rvviMtIdx[BLKID3][3] = miscRtMtIdxD1 + 'd3; 
+          rvviMtIdx[BLKID0][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID0][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID0][2] = miscRtMtIdxD1 + 'd2;
+          rvviMtIdx[BLKID0][3] = miscRtMtIdxD1 + 'd3;
+          rvviMtIdx[BLKID1][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID1][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID1][2] = miscRtMtIdxD1 + 'd2;
+          rvviMtIdx[BLKID1][3] = miscRtMtIdxD1 + 'd3;
+          rvviMtIdx[BLKID2][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID2][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID2][2] = miscRtMtIdxD1 + 'd2;
+          rvviMtIdx[BLKID2][3] = miscRtMtIdxD1 + 'd3;
+          rvviMtIdx[BLKID3][0] = miscRtMtIdxD1;
+          rvviMtIdx[BLKID3][1] = miscRtMtIdxD1 + 'd1;
+          rvviMtIdx[BLKID3][2] = miscRtMtIdxD1 + 'd2;
+          rvviMtIdx[BLKID3][3] = miscRtMtIdxD1 + 'd3;
 
           for(int i=0;i<`TE/4;i++) begin
             for(int j=0;j<`TE/8;j++) begin
@@ -433,10 +433,10 @@ module zvt (
     else begin
       if(blkRtVld[0]) begin
         // default: EEW32
-        rvviMtIdx[BLKID0][0] = blk0RtMtIdx; 
-        rvviMtIdx[BLKID0][1] = blk0RtMtIdx + 'd1; 
-        rvviMtIdx[BLKID0][2] = blk0RtMtIdx + 'd2; 
-        rvviMtIdx[BLKID0][3] = blk0RtMtIdx + 'd3; 
+        rvviMtIdx[BLKID0][0] = blk0RtMtIdx;
+        rvviMtIdx[BLKID0][1] = blk0RtMtIdx + 'd1;
+        rvviMtIdx[BLKID0][2] = blk0RtMtIdx + 'd2;
+        rvviMtIdx[BLKID0][3] = blk0RtMtIdx + 'd3;
 
         for(int i=0;i<`TE/4;i++) begin
           for(int j=0;j<`TE/8;j++) begin
@@ -451,14 +451,14 @@ module zvt (
 
       if(blkRtVld[1] || blkRtVld[2]) begin
         // default: EEW32
-        rvviMtIdx[BLKID1][0] = blk1RtMtIdx; 
-        rvviMtIdx[BLKID1][1] = blk1RtMtIdx + 'd1; 
-        rvviMtIdx[BLKID1][2] = blk1RtMtIdx + 'd2; 
-        rvviMtIdx[BLKID1][3] = blk1RtMtIdx + 'd3; 
-        rvviMtIdx[BLKID2][0] = blk1RtMtIdx; 
-        rvviMtIdx[BLKID2][1] = blk1RtMtIdx + 'd1; 
-        rvviMtIdx[BLKID2][2] = blk1RtMtIdx + 'd2; 
-        rvviMtIdx[BLKID2][3] = blk1RtMtIdx + 'd3; 
+        rvviMtIdx[BLKID1][0] = blk1RtMtIdx;
+        rvviMtIdx[BLKID1][1] = blk1RtMtIdx + 'd1;
+        rvviMtIdx[BLKID1][2] = blk1RtMtIdx + 'd2;
+        rvviMtIdx[BLKID1][3] = blk1RtMtIdx + 'd3;
+        rvviMtIdx[BLKID2][0] = blk1RtMtIdx;
+        rvviMtIdx[BLKID2][1] = blk1RtMtIdx + 'd1;
+        rvviMtIdx[BLKID2][2] = blk1RtMtIdx + 'd2;
+        rvviMtIdx[BLKID2][3] = blk1RtMtIdx + 'd3;
 
         for(int i=0;i<`TE/4;i++) begin
           for(int j=0;j<`TE/8;j++) begin
@@ -477,10 +477,10 @@ module zvt (
 
       if(blkRtVld[3]) begin
         // default: EEW32
-        rvviMtIdx[BLKID3][0] = blk3RtMtIdx; 
-        rvviMtIdx[BLKID3][1] = blk3RtMtIdx + 'd1; 
-        rvviMtIdx[BLKID3][2] = blk3RtMtIdx + 'd2; 
-        rvviMtIdx[BLKID3][3] = blk3RtMtIdx + 'd3; 
+        rvviMtIdx[BLKID3][0] = blk3RtMtIdx;
+        rvviMtIdx[BLKID3][1] = blk3RtMtIdx + 'd1;
+        rvviMtIdx[BLKID3][2] = blk3RtMtIdx + 'd2;
+        rvviMtIdx[BLKID3][3] = blk3RtMtIdx + 'd3;
 
         for(int i=0;i<`TE/4;i++) begin
           for(int j=0;j<`TE/8;j++) begin
@@ -506,17 +506,17 @@ module zvt (
     .rvviMtIdx      (rvviMtIdx),
     .rvviSubIdx     (rvviSubIdx),
     .rvviReadData   (rvviMtData),
-  `endif 
-    .writeEn        (writeEn), 
+  `endif
+    .writeEn        (writeEn),
     .writeMtIdx     (writeMtIdx),
     .writeSubIdx    (writeSubIdx),
-    .writeData      (writeData) 
+    .writeData      (writeData)
   );
-  
+
   // res info queue of each block
   MT_INFO_t [`NUM_BLK-1:0] mtInfo;
   logic     [`NUM_BLK-1:0] mtInfoRdy;
-  logic     [`NUM_BLK-1:0] mtRtInfoVld;  
+  logic     [`NUM_BLK-1:0] mtRtInfoVld;
   MT_INFO_t [`NUM_BLK-1:0] mtRtInfo;
   logic     [`NUM_BLK-1:0] mtInfoAempty;
 
@@ -545,8 +545,8 @@ module zvt (
       .rst_n        (rst_n),
       .push         (mtInfo[i].Vld),
       .datain       (mtInfo[i]),
-      .pushRdy      (mtInfoRdy[i]),      
-      .pop          (vmeRtVld&vmeRtRdy),  
+      .pushRdy      (mtInfoRdy[i]),
+      .pop          (vmeRtVld&vmeRtRdy),
       .dataout      (mtRtInfo[i]),
       .full         (),
       .almost_full  (),
@@ -577,15 +577,15 @@ module zvt (
   // mt_index
   always_comb begin
     case(vmeRtCmd.eew_mt)
-      EEW8: begin   
+      EEW8: begin
         vmeRt.mtIdxVld = vmeRtCmd.isStore ? 'b0 : 4'b0001;
       end
-      EEW16: begin  
+      EEW16: begin
         if(vmeRtCmd.isStore)
           vmeRt.mtIdxVld = 'b0;
         else if(vmeRtCmd.isMv2Vme && !vmeRtCmd.tssPattern)
           vmeRt.mtIdxVld = vmeRtCmd.tssIndex[1] ? 4'b0010 : 4'b0001;
-        else 
+        else
           vmeRt.mtIdxVld = 4'b0011;
       end
       default: begin
@@ -615,7 +615,7 @@ module zvt (
   // data remap
   always_comb begin
     vmeRt.mtData = 'x;
-    
+
     for (int i=0;i<4;i++) begin: retire_each_mt
       for (int j=0;j<`NUM_BLK;j++) begin: retire_each_block
         for (int h=0;h<`NUM_SUBTILE/2;h++) begin: retire_block_each_port

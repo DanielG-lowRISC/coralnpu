@@ -2,9 +2,9 @@
 `define ALU_DEFINE_SVH
 
 typedef enum logic [0:0]{
-  ADDSUB_VADD, 
+  ADDSUB_VADD,
   ADDSUB_VSUB
-} ADDSUB_e;   
+} ADDSUB_e;
 
 typedef union packed {
   logic   [`VLEN-1:0]             v0;  

@@ -19,7 +19,7 @@ module rvv_backend_decode_unit
   // CQ to Decoder unit signals
   input   logic                 inst_valid;
   input   RVVCmd                inst;
-  
+
   // Decoder unit to VCQ
   output  logic                 lcmd_valid;
   output  LCMD_t                lcmd;
@@ -42,8 +42,8 @@ module rvv_backend_decode_unit
   // decode opcode
   assign valid_lsu    = inst_valid & ((inst.opcode==LOAD) | (inst.opcode==STORE));
   assign valid_ari    = inst_valid & (inst.opcode==RVV);
-  
-  // decode LSU instruction 
+
+  // decode LSU instruction
   rvv_backend_decode_unit_lsu u_lsu_decode
   (
     .inst_valid        (valid_lsu),
@@ -62,16 +62,16 @@ module rvv_backend_decode_unit
   );
 
   // output
-  always_comb begin 
+  always_comb begin
     lcmd_valid     = 'b0;
     lcmd           = 'b0;
-    
+
     case(1'b1)
       valid_lsu: begin
         lcmd_valid = lcmd_valid_lsu;
         lcmd       = lcmd_lsu;
       end
-  
+
       valid_ari: begin
         lcmd_valid = lcmd_valid_ari;
         lcmd       = lcmd_ari;

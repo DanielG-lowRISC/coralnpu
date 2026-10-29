@@ -60,9 +60,9 @@ module rvv_backend_fdiv_unit(
         op_type = fpnew_pkg::DIV;
         src2    = fdiv_uop.vs2_data;
 
-        if(fdiv_uop.uop_funct3==OPFVV) 
+        if(fdiv_uop.uop_funct3==OPFVV)
           src1  = fdiv_uop.vs1_data;
-        else 
+        else
           src1  = {`VLENW{fdiv_uop.vs1_data[`WORD_WIDTH-1:0]}};
       end
       VFRDIV: begin
@@ -76,7 +76,7 @@ module rvv_backend_fdiv_unit(
       end
     endcase
   end
-  
+
   // FDIV is busy
   assign fdiv_busy_c = result_valid && result_ready || trap_flush_rvv;
   assign fdiv_valid  = !fdiv_busy && fdiv_uop_valid && (&fdiv_ready);
@@ -85,7 +85,7 @@ module rvv_backend_fdiv_unit(
 
   cdffr busy(.q(fdiv_busy), .clk(clk), .rst_n(rst_n), .c(fdiv_busy_c), .e(fdiv_valid), .d(1'b1));
 
-  // register information 
+  // register information
 `ifdef TB_SUPPORT
   assign uop_info.uop_pc    = fdiv_uop.uop_pc;
 `endif
@@ -136,7 +136,7 @@ module rvv_backend_fdiv_unit(
       .tag_o              (),
       .mask_o             (),
       .aux_o              (),
-      // Output handshake 
+      // Output handshake
       .out_valid_o        (sub_result_vld[i]),
       .out_ready_i        (result_valid&result_ready),
       // Indication of valid data in flight
@@ -150,7 +150,7 @@ module rvv_backend_fdiv_unit(
   // submit result to ROB
     assign result.fpexp[i*4+:4] = {4{sub_fpexp[i]}};
   end
-    
+
   assign result_valid     = &sub_result_vld;
 `ifdef TB_SUPPORT
   assign result.uop_pc    = uop_info_q.uop_pc;

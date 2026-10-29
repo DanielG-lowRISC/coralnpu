@@ -1,7 +1,7 @@
 // description:
 // 1. Dispatch unit receives uop instructions from uop queue
-// 2. Dispatch unit check rules to determine if the uops are sent to reservation stations(RS). 
-//    There are two ways to solve: 
+// 2. Dispatch unit check rules to determine if the uops are sent to reservation stations(RS).
+//    There are two ways to solve:
 //     a. stall pipeline
 //     b. foreward data from ROB
 // 3. Dispatch unit read vector data from VRF for uops.
@@ -52,11 +52,11 @@ module rvv_backend_dispatch
     uop_dp2rob,
     uop_ready_rob2dp,
     rob_entry_rob2dp,
-    rd_index_dp2vrf,        
+    rd_index_dp2vrf,
     rd_data_vrf2dp,
     v0_mask_vrf2dp,
     rob_entry
-);  
+);
 // ---port definition-------------------------------------------------
 // global signal
     input  logic           clk;
@@ -103,7 +103,7 @@ module rvv_backend_dispatch
     input  logic          [`NUM_DP_UOP-1:0]       rs_ready_zvt2dp;
 `endif
 
-// Dispatch unit to LSU 
+// Dispatch unit to LSU
     // to LSU RS
     output logic          [`NUM_DP_UOP-1:0]       rs_valid_dp2lsu;
     output UOP_RVV2LSU_t  [`NUM_DP_UOP-1:0]       rs_dp2lsu;
@@ -113,7 +113,7 @@ module rvv_backend_dispatch
     output LSU_MAP_INFO_t [`NUM_DP_UOP-1:0]       mapinfo_dp2lsu;
     input  logic          [`NUM_DP_UOP-1:0]       mapinfo_ready_lsu2dp;
 
-// Dispatch unit pushes operations to ROB unit    
+// Dispatch unit pushes operations to ROB unit
     output logic          [`NUM_DP_UOP-1:0]       uop_valid_dp2rob;
     output DP2ROB_t       [`NUM_DP_UOP-1:0]       uop_dp2rob;
     input  logic          [`NUM_DP_UOP-1:0]       uop_ready_rob2dp;
@@ -122,7 +122,7 @@ module rvv_backend_dispatch
 // Dispatch unit sends read request to VRF for vector data.
 // Dispatch unit to VRF unit
 // rd_data would be return from VRF at the current cycle.
-    output logic [`NUM_DP_VRF-1:0][`REGIDX_WIDTH-1:0] rd_index_dp2vrf;          
+    output logic [`NUM_DP_VRF-1:0][`REGIDX_WIDTH-1:0] rd_index_dp2vrf;
     input  logic [`NUM_DP_VRF-1:0][`VLEN-1:0]         rd_data_vrf2dp;
     input  logic [`VLEN-1:0]                          v0_mask_vrf2dp;
 
@@ -134,9 +134,9 @@ module rvv_backend_dispatch
     SUC_UOP_RAW_t       [`NUM_DP_UOP-1:0]   suc_uop;
     PRE_UOP_RAW_t       [`ROB_DEPTH-1:0]    pre_uop_rob;
     PRE_UOP_RAW_t       [`NUM_DP_UOP-2:0]   pre_uop_uop;
-    RAW_UOP_ROB_t       [`NUM_DP_UOP-1:0]   raw_uop_rob; 
+    RAW_UOP_ROB_t       [`NUM_DP_UOP-1:0]   raw_uop_rob;
     // uop0 is the first uop so no need raw check between uops for it
-    RAW_UOP_UOP_t       [`NUM_DP_UOP-1:1]   raw_uop_uop; 
+    RAW_UOP_UOP_t       [`NUM_DP_UOP-1:1]   raw_uop_uop;
 
     STRCT_UOP_t         [`NUM_DP_UOP-1:0]   strct_uop;
     ARCH_HAZARD_t                           arch_hazard;
@@ -320,10 +320,10 @@ module rvv_backend_dispatch
         .uop_ready_rob2dp       (uop_ready_rob2dp)
     );
 
-// determine the type for each byte in uop's vector operands 
+// determine the type for each byte in uop's vector operands
     generate
         for (i=0; i<`NUM_DP_UOP; i++) begin : gen_opr_bype_type
-            assign uop_info[i].uop_index  = (uop_uop2dp[i].uop_exe_unit==LSU)&(uop_uop2dp[i].uop_funct6.lsu_funct6.lsu_is_seg==IS_SEGMENT)? 
+            assign uop_info[i].uop_index  = (uop_uop2dp[i].uop_exe_unit==LSU)&(uop_uop2dp[i].uop_funct6.lsu_funct6.lsu_is_seg==IS_SEGMENT)?
                                             uop_uop2dp[i].seg_field_index : uop_uop2dp[i].uop_index[$clog2(`EMUL_MAX)-1:0];
             assign uop_info[i].uop_exe_unit = uop_uop2dp[i].uop_exe_unit;
             assign uop_info[i].vd_eew     = uop_uop2dp[i].vd_eew;
@@ -356,12 +356,12 @@ module rvv_backend_dispatch
 
           // ALU RS
           `ifdef TB_SUPPORT
-            assign rs_dp2alu[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2alu[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
-            assign rs_dp2alu[i].rob_entry       = rob_address[i]; 
+            assign rs_dp2alu[i].rob_entry       = rob_address[i];
             assign rs_dp2alu[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2alu[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
-            assign rs_dp2alu[i].is_cmp          = uop_uop2dp[i].uop_exe_unit==VEU_CMP; 
+            assign rs_dp2alu[i].is_cmp          = uop_uop2dp[i].uop_exe_unit==VEU_CMP;
             assign rs_dp2alu[i].vstart          = uop_uop2dp[i].vector_csr.vstart;
             assign rs_dp2alu[i].vl              = uop_uop2dp[i].vs_evl;
             assign rs_dp2alu[i].vm              = uop_uop2dp[i].vm;
@@ -384,10 +384,10 @@ module rvv_backend_dispatch
 
           // PMTRDT RS
           `ifdef TB_SUPPORT
-            assign rs_dp2pmtrdt[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2pmtrdt[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
-            assign rs_dp2pmtrdt[i].rob_entry       = rob_address[i]; 
-            assign rs_dp2pmtrdt[i].uop_exe_unit    = uop_uop2dp[i].uop_exe_unit; 
+            assign rs_dp2pmtrdt[i].rob_entry       = rob_address[i];
+            assign rs_dp2pmtrdt[i].uop_exe_unit    = uop_uop2dp[i].uop_exe_unit;
             assign rs_dp2pmtrdt[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2pmtrdt[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
             assign rs_dp2pmtrdt[i].vl              = uop_uop2dp[i].vs_evl;
@@ -410,12 +410,12 @@ module rvv_backend_dispatch
           `ifdef ZVE32F_ON
             assign rs_dp2pmtrdt[i].frm             = uop_uop2dp[i].vector_csr.frm;
           `endif
-            
+
           // MUL/MAC RS
           `ifdef TB_SUPPORT
-            assign rs_dp2mul[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2mul[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
-            assign rs_dp2mul[i].rob_entry       = rob_address[i]; 
+            assign rs_dp2mul[i].rob_entry       = rob_address[i];
             assign rs_dp2mul[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2mul[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
             assign rs_dp2mul[i].vxrm            = uop_uop2dp[i].vector_csr.xrm;
@@ -431,12 +431,12 @@ module rvv_backend_dispatch
 
           // DIV RS
           `ifdef TB_SUPPORT
-            assign rs_dp2div[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2div[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
-            assign rs_dp2div[i].rob_entry       = rob_address[i]; 
+            assign rs_dp2div[i].rob_entry       = rob_address[i];
             assign rs_dp2div[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2div[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
-            assign rs_dp2div[i].is_div          = uop_uop2dp[i].uop_exe_unit==VEU_DIV; 
+            assign rs_dp2div[i].is_div          = uop_uop2dp[i].uop_exe_unit==VEU_DIV;
             assign rs_dp2div[i].vs1_data        = uop_uop2dp[i].vs1_valid ? uop_operand[i].vs1 : (`VLEN)'(uop_uop2dp[i].rs1_data);
             assign rs_dp2div[i].vs1_data_valid  = uop_uop2dp[i].vs1_valid;
             assign rs_dp2div[i].rs1_data_valid  = uop_uop2dp[i].rs1_data_valid;
@@ -451,9 +451,9 @@ module rvv_backend_dispatch
           `ifdef ZVE32F_ON
           // FALU RS
           `ifdef TB_SUPPORT
-            assign rs_dp2falu[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2falu[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
-            assign rs_dp2falu[i].rob_entry       = rob_address[i]; 
+            assign rs_dp2falu[i].rob_entry       = rob_address[i];
             assign rs_dp2falu[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2falu[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
             assign rs_dp2falu[i].uop_exe_unit    = uop_uop2dp[i].uop_exe_unit;
@@ -474,16 +474,16 @@ module rvv_backend_dispatch
             assign rs_dp2falu[i].rs1_data        = uop_uop2dp[i].rs1_data;
             assign rs_dp2falu[i].rs1_data_valid  = uop_uop2dp[i].rs1_data_valid;
             assign rs_dp2falu[i].last_uop_valid  = uop_uop2dp[i].last_uop_valid;
-            assign rs_dp2falu[i].uop_index       = uop_uop2dp[i].uop_index[$clog2(`EMUL_MAX)-1:0];            
+            assign rs_dp2falu[i].uop_index       = uop_uop2dp[i].uop_index[$clog2(`EMUL_MAX)-1:0];
           `endif
 
           `ifdef ZVT_ON
           // ZVT RS
           `ifdef TB_SUPPORT
-            assign rs_dp2zvt[i].uop_pc          = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2zvt[i].uop_pc          = uop_uop2dp[i].uop_pc;
           `endif
             assign rs_dp2zvt[i].rob_tag         = uop_uop2dp[i].rob_tag;
-            assign rs_dp2zvt[i].rob_entry       = rob_address[i]; 
+            assign rs_dp2zvt[i].rob_entry       = rob_address[i];
             assign rs_dp2zvt[i].uop_funct6      = uop_uop2dp[i].uop_funct6;
             assign rs_dp2zvt[i].uop_funct3      = uop_uop2dp[i].uop_funct3;
             assign rs_dp2zvt[i].vs2             = uop_uop2dp[i].vs2_index;
@@ -511,12 +511,12 @@ module rvv_backend_dispatch
             assign rs_dp2zvt[i].dst_index       = uop_uop2dp[i].dst_index;
             assign rs_dp2zvt[i].first_uop_valid = uop_uop2dp[i].first_uop_valid;
             assign rs_dp2zvt[i].last_uop_valid  = uop_uop2dp[i].last_uop_valid;
-            assign rs_dp2zvt[i].uop_index       = uop_uop2dp[i].uop_index[$clog2(`EMUL_MAX)-1:0];            
+            assign rs_dp2zvt[i].uop_index       = uop_uop2dp[i].uop_index[$clog2(`EMUL_MAX)-1:0];
           `endif
 
           // LSU RS
           `ifdef TB_SUPPORT
-            assign rs_dp2lsu[i].uop_pc              = uop_uop2dp[i].uop_pc; 
+            assign rs_dp2lsu[i].uop_pc              = uop_uop2dp[i].uop_pc;
           `endif
             assign rs_dp2lsu[i].vidx_valid          = uop_uop2dp[i].vs2_valid;
             assign rs_dp2lsu[i].vidx_addr           = uop_uop2dp[i].vs2_index;
@@ -529,7 +529,7 @@ module rvv_backend_dispatch
 
           // LSU MAP INFO
           `ifdef TB_SUPPORT
-            assign mapinfo_dp2lsu[i].uop_pc              = uop_uop2dp[i].uop_pc; 
+            assign mapinfo_dp2lsu[i].uop_pc              = uop_uop2dp[i].uop_pc;
           `endif
             assign mapinfo_dp2lsu[i].valid               = mapinfo_valid_dp2lsu[i];
             assign mapinfo_dp2lsu[i].rob_entry           = rob_address[i];
@@ -538,13 +538,13 @@ module rvv_backend_dispatch
 
           // ROB
           `ifdef TB_SUPPORT
-            assign uop_dp2rob[i].uop_pc           = uop_uop2dp[i].uop_pc; 
+            assign uop_dp2rob[i].uop_pc           = uop_uop2dp[i].uop_pc;
           `endif
             assign uop_dp2rob[i].rob_tag          = uop_uop2dp[i].rob_tag;
-            assign uop_dp2rob[i].res_updating_end = uop_uop2dp[i].res_updating_end; 
+            assign uop_dp2rob[i].res_updating_end = uop_uop2dp[i].res_updating_end;
             assign uop_dp2rob[i].last_uop_valid   = uop_uop2dp[i].last_uop_valid;
             assign uop_dp2rob[i].w_index          = uop_uop2dp[i].dst_index;
-            assign uop_dp2rob[i].w_type           = uop_uop2dp[i].vd_valid ? VRF : 
+            assign uop_dp2rob[i].w_type           = uop_uop2dp[i].vd_valid ? VRF :
                                                   `ifdef ZVE32F_ON
                                                     uop_uop2dp[i].fd_valid ? FRF :
                                                   `endif

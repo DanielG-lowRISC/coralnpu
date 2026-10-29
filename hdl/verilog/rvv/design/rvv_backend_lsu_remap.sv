@@ -42,7 +42,7 @@ module rvv_backend_lsu_remap
   // submit trap to ROB
   output  logic                           trap_valid_rmp2rob;
   output  logic   [`ROB_DEPTH_WIDTH-1:0]  trap_rob_entry_rmp2rob;
-  input   logic                           trap_ready_rob2rmp;   
+  input   logic                           trap_ready_rob2rmp;
 
 //
 // internal signals
@@ -50,13 +50,13 @@ module rvv_backend_lsu_remap
   genvar                i;
 
 //
-// logic start 
+// logic start
 //
-  // result valid 
+  // result valid
   generate
     for(i=0;i<`NUM_LSU;i++) begin: RES_VALID
       assign result_valid[i] = mapinfo_valid[i]&lsu_res_valid[i]&mapinfo[i].valid&(!lsu_res[i].trap_valid)&(
-                               (!mapinfo[i].lsu_is_store) & lsu_res[i].uop_lsu2rvv.vregfile_write_valid || 
+                               (!mapinfo[i].lsu_is_store) & lsu_res[i].uop_lsu2rvv.vregfile_write_valid ||
                                 (mapinfo[i].lsu_is_store) & lsu_res[i].uop_lsu2rvv.lsu_vstore_last);
     end
   endgenerate

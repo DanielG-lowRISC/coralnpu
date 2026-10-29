@@ -26,7 +26,7 @@ module rvv_backend_dispatch_opr_byte_type
 // ---internal signal definition--------------------------------------
     EEW_e                               eew_max;
     logic  [1:0]                        eew_max_shift;
-    
+
     logic  [1:0]                        vs2_eew_shift;
     logic  [`VSTART_WIDTH-1:0]          uop_vs2_start;
     logic  [`VSTART_WIDTH-1:0]          uop_vs2_offset;
@@ -132,12 +132,12 @@ module rvv_backend_dispatch_opr_byte_type
             assign vs2_ele_index[i] = (`VL_WIDTH)'(uop_vs2_start) + (i >> vs2_eew_shift);
             always_comb begin
                 if (uop_info.ignore_vta&uop_info.ignore_vma)
-                    vs2[i] = BODY_ACTIVE;       
-                else if (vs2_ele_index[i] >= uop_info.vl) 
-                    vs2[i] = TAIL; 
-                else if (vs2_ele_index[i] < {1'b0, uop_info.vstart}) 
+                    vs2[i] = BODY_ACTIVE;
+                else if (vs2_ele_index[i] >= uop_info.vl)
+                    vs2[i] = TAIL;
+                else if (vs2_ele_index[i] < {1'b0, uop_info.vstart})
                     vs2[i] = NOT_CHANGE; // prestart
-                else begin 
+                else begin
                     vs2[i] = (vs2_enable[i] || uop_info.ignore_vma) ? BODY_ACTIVE : BODY_INACTIVE;
                 end
             end
@@ -154,7 +154,7 @@ module rvv_backend_dispatch_opr_byte_type
                 default:vd_eew_shift = 2'h0;
             endcase
         end
-        
+
         always_comb begin
           case({eew_max,uop_info.vd_eew})
             {EEW32,EEW32},
@@ -162,7 +162,7 @@ module rvv_backend_dispatch_opr_byte_type
             {EEW8,EEW8}: begin
               ele_start           = (`VSTART_WIDTH)'(uop_info.uop_index) << (VLENB_WIDTH - vd_eew_shift);
 
-              uop_v0_start_offset = 'b0; 
+              uop_v0_start_offset = 'b0;
               uop_v0_end_offset   = (`VLENB >> vd_eew_shift) - 1'b1;
               uop_v0_start        = ele_start;
               uop_v0_end          = ele_start + uop_v0_end_offset;
@@ -226,11 +226,11 @@ module rvv_backend_dispatch_opr_byte_type
               end
             end
             default: begin  // {EEW1,EEW1}
-              ele_start           = 'b0; 
+              ele_start           = 'b0;
 
               uop_v0_start_offset = 'b0;
               uop_v0_end_offset   = 'b0;
-              uop_v0_start        = uop_info.vstart; 
+              uop_v0_start        = uop_info.vstart;
               uop_v0_end          = uop_info.vl;
 
               uop_vd_start        = uop_v0_start;
@@ -250,13 +250,13 @@ module rvv_backend_dispatch_opr_byte_type
           always_comb begin
             if (uop_info.ignore_vta&uop_info.ignore_vma)
               v0_strobe[i] = 'b1;
-            else if (vd_ele_index[i] >= uop_info.vl) 
+            else if (vd_ele_index[i] >= uop_info.vl)
               v0_strobe[i] = 'b0;
-            else if ((vd_ele_index[i] < {1'b0, uop_info.vstart})||(vd_ele_index[i] < {1'b0, uop_v0_start})) 
+            else if ((vd_ele_index[i] < {1'b0, uop_info.vstart})||(vd_ele_index[i] < {1'b0, uop_v0_start}))
               v0_strobe[i] = 'b0;
-            else if (vd_ele_index[i] > {1'b0, uop_v0_end}) 
+            else if (vd_ele_index[i] > {1'b0, uop_v0_end})
               v0_strobe[i] = 'b0;
-            else 
+            else
               v0_strobe[i] = v0_enable[i] || uop_info.ignore_vma;
           end
 
@@ -274,14 +274,14 @@ module rvv_backend_dispatch_opr_byte_type
               end
               default:begin
                 if (uop_info.ignore_vta&uop_info.ignore_vma)
-                    vd[i] = BODY_ACTIVE;       
-                else if (vd_ele_index[i] >= uop_info.vl) 
-                    vd[i] = TAIL;       
-                else if ((vd_ele_index[i] < {1'b0, uop_info.vstart})||(vd_ele_index[i] < {1'b0, uop_vd_start})) 
+                    vd[i] = BODY_ACTIVE;
+                else if (vd_ele_index[i] >= uop_info.vl)
+                    vd[i] = TAIL;
+                else if ((vd_ele_index[i] < {1'b0, uop_info.vstart})||(vd_ele_index[i] < {1'b0, uop_vd_start}))
                     vd[i] = NOT_CHANGE;     // prestart
-                else if (vd_ele_index[i] > {1'b0, uop_vd_end}) 
+                else if (vd_ele_index[i] > {1'b0, uop_vd_end})
                     vd[i] = BODY_INACTIVE;
-                else 
+                else
                     vd[i] = (vd_enable[i] || uop_info.ignore_vma) ? BODY_ACTIVE : BODY_INACTIVE;
               end
             endcase

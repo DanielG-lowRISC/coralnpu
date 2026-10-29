@@ -18,7 +18,7 @@ module zvt_mt_reg (
   input  logic [`NUM_MT-1:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0] wdata;
   output logic [`NUM_MT-1:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0] mt;
 
-// -------------- code start --------------------    
+// -------------- code start --------------------
   genvar i,j,h;
   generate
     for (i=0; i<`NUM_MT; i++) begin: mt_addr
@@ -38,8 +38,8 @@ module zvt_mt_reg (
           else $error("MTREG: data is unknow at MTreg[%d][%d][%d:%d]",i,j,8*h+7,8*h);
         `endif //ASSERT_ON
         end
-      end 
-    end 
+      end
+    end
   endgenerate
 
 endmodule

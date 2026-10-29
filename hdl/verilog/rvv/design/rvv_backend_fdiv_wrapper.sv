@@ -49,7 +49,7 @@ module rvv_backend_fdiv_wrapper(
   logic [`VLENW-1:0]                  sub_result_vld;
   fpnew_pkg::status_t  [`VLENW-1:0]   sub_fpexp;
   genvar                              i;
-  
+
   // prepare source data
   always_comb begin
     op_type = fpnew_pkg::DIV;
@@ -61,9 +61,9 @@ module rvv_backend_fdiv_wrapper(
         op_type = fpnew_pkg::DIV;
         src2    = fdiv_uop.vs2_data;
 
-        if(fdiv_uop.uop_funct3==OPFVV) 
+        if(fdiv_uop.uop_funct3==OPFVV)
           src1  = fdiv_uop.vs1_data;
-        else 
+        else
           src1  = {`VLENW{fdiv_uop.vs1_data[`WORD_WIDTH-1:0]}};
       end
       VFRDIV: begin
@@ -94,7 +94,7 @@ module rvv_backend_fdiv_wrapper(
     .q      (fdiv_busy)
   );
 
-  // register information 
+  // register information
 `ifdef TB_SUPPORT
   assign uop_info.uop_pc    = fdiv_uop.uop_pc;
 `endif
@@ -158,7 +158,7 @@ module rvv_backend_fdiv_wrapper(
         .tag_o              (),
         .mask_o             (),
         .aux_o              (),
-        // Output handshake 
+        // Output handshake
         .out_valid_o        (sub_result_vld[i]),
         .out_ready_i        (result_valid&result_ready),
         // Indication of valid data in flight

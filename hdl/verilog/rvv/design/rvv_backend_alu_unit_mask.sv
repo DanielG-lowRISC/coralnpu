@@ -38,14 +38,14 @@ module rvv_backend_alu_unit_mask
   logic   [`VLEN-1:0]             v0_data;           
   logic   [`VLEN-1:0]             vd_data;           
   EEW_e                           vd_eew;
-  logic   [`REGIDX_WIDTH-1:0]     vs1_opcode;              
+  logic   [`REGIDX_WIDTH-1:0]     vs1_opcode;
   logic   [`VLEN-1:0]             vs1_data;           
   logic   [`VLEN-1:0]             vs2_data;	        
   EEW_e                           vs2_eew;
   logic   [`XLEN-1:0] 	          rs1_data;        
-  logic   [$clog2(`EMUL_MAX)-1:0] uop_index;          
+  logic   [$clog2(`EMUL_MAX)-1:0] uop_index;
 
-  // execute 
+  // execute
   logic   [`VLEN-1:0]             src2_data;
   logic   [`VLEN-1:0]             src2_data_sub1;
   logic   [`VLEN-1:0]             src1_data;
@@ -73,7 +73,7 @@ module rvv_backend_alu_unit_mask
   genvar                              h;
 
 //
-// prepare source data to calculate    
+// prepare source data to calculate
 //
   // split ALU_RS_t struct
   assign  rob_entry      = alu_uop.rob_entry;
@@ -91,9 +91,9 @@ module rvv_backend_alu_unit_mask
   assign  vs2_data       = alu_uop.vs2_data;
   assign  vs2_eew        = alu_uop.vs2_eew;
   assign  uop_index      = alu_uop.uop_index;
-  
-//  
-// prepare source data 
+
+//
+// prepare source data
 //
   // get tail mask
   //assign tail_mask = vl[`VL_WIDTH-1] ? '1 ((`VLEN)'('b1)<<vl[`VL_WIDTH-2:0]) - 1'b1;
@@ -180,7 +180,7 @@ module rvv_backend_alu_unit_mask
           VXOR: begin
             src2_data = vs2_data;
             for(int i=0;i<`VLEN/`WORD_WIDTH;i++) begin
-              case(vs2_eew) 
+              case(vs2_eew)
                 EEW8: begin
                   src1_data[i*`WORD_WIDTH +: `WORD_WIDTH] = {(`WORD_WIDTH/`BYTE_WIDTH){rs1_data[0 +: `BYTE_WIDTH]}};
                 end
@@ -192,7 +192,7 @@ module rvv_backend_alu_unit_mask
                 end
               endcase
             end
-          end 
+          end
         endcase
       end
       OPMVV: begin
@@ -214,7 +214,7 @@ module rvv_backend_alu_unit_mask
                 if (alu_uop.vm==1'b1)
                   src2_data = vs2_data&tail_mask;
                 else
-                  src2_data = vs2_data&tail_mask&v0_data; 
+                  src2_data = vs2_data&tail_mask&v0_data;
               end
             endcase
           end
@@ -226,7 +226,7 @@ module rvv_backend_alu_unit_mask
                 if (alu_uop.vm==1'b1)
                   src2_data = vs2_data&tail_mask;
                 else
-                  src2_data = vs2_data&tail_mask&v0_data; 
+                  src2_data = vs2_data&tail_mask&v0_data;
               end
               // no source operand for VID
             endcase
@@ -236,17 +236,17 @@ module rvv_backend_alu_unit_mask
     endcase
   end
 
-//    
+//
 // calculate the result
 //
-  assign result_data_and   = src2_data & src1_data;  
-  assign result_data_andn  = src2_data & (~src1_data);  
-  assign result_data_or    = src2_data | src1_data;  
-  assign result_data_xor   = src2_data ^ src1_data;  
-  assign result_data_orn   = src2_data | (~src1_data);  
-  assign result_data_nand  = ~(src2_data & src1_data);  
-  assign result_data_nor   = ~(src2_data | src1_data);  
-  assign result_data_xnor  = ~(src2_data ^ src1_data); 
+  assign result_data_and   = src2_data & src1_data;
+  assign result_data_andn  = src2_data & (~src1_data);
+  assign result_data_or    = src2_data | src1_data;
+  assign result_data_xor   = src2_data ^ src1_data;
+  assign result_data_orn   = src2_data | (~src1_data);
+  assign result_data_nand  = ~(src2_data & src1_data);
+  assign result_data_nor   = ~(src2_data | src1_data);
+  assign result_data_xnor  = ~(src2_data ^ src1_data);
   assign src2_data_sub1    = src2_data - 1'b1;
   assign result_data_vmsof = src2_data & (~src2_data_sub1);
   assign result_vmsif      = src2_data ^ src2_data_sub1;
@@ -256,8 +256,8 @@ module rvv_backend_alu_unit_mask
   // vfirst
   always_comb begin
     result_data_vfirst = 'b0;
-    
-    if (src2_data=='b0) 
+
+    if (src2_data=='b0)
       result_data_vfirst = {`VLEN{1'b1}};
     else begin
       for(int i=0;i<`VLEN;i++) begin
@@ -289,8 +289,8 @@ module rvv_backend_alu_unit_mask
   // get result_data
   always_comb begin
     // initial the data
-    result_data = 'b0; 
- 
+    result_data = 'b0;
+
     // calculate result data
     case(uop_funct3)
       OPIVV,
@@ -314,25 +314,25 @@ module rvv_backend_alu_unit_mask
             result_data = result_data_andn;
           end
           VMAND: begin
-            result_data = result_data_and; 
+            result_data = result_data_and;
           end
           VMOR: begin
-            result_data = result_data_or; 
+            result_data = result_data_or;
           end
           VMXOR: begin
-            result_data = result_data_xor; 
+            result_data = result_data_xor;
           end
           VMORN: begin
-            result_data = result_data_orn; 
+            result_data = result_data_orn;
           end
           VMNAND: begin
-            result_data = result_data_nand; 
+            result_data = result_data_nand;
           end
           VMNOR: begin
-            result_data = result_data_nor; 
+            result_data = result_data_nor;
           end
           VMXNOR: begin
-            result_data = result_data_xnor; 
+            result_data = result_data_xnor;
           end
           VWRXUNARY0: begin
             case(vs1_opcode)
@@ -430,7 +430,7 @@ module rvv_backend_alu_unit_mask
               VMSIF: begin
                 if (alu_uop.vm==1'b1)
                   result.w_data = (result_data & tail_mask) | (vd_data & (~tail_mask));
-                else 
+                else
                   result.w_data = (result_data & v0_data & tail_mask) | (vd_data & (~(v0_data & tail_mask)));
               end
               VID: begin
@@ -441,6 +441,6 @@ module rvv_backend_alu_unit_mask
         endcase
       end
     endcase
-  end   
+  end
 
 endmodule

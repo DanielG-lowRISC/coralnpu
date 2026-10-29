@@ -177,7 +177,7 @@ module rvv_backend_pmtrdt_unit_reduction
     endcase
   end
   cdffr #(.T(VM_STATE_e), .INIT(MSK0)) vm_state_reg (.q(vm_state), .d(next_vm_state), .c(trap_flush_rvv), .e(state_en&alu_t0_valid&alu_t0_ready), .clk(clk), .rst_n(rst_n));
-  
+
   // vm_cnt
   always_comb begin
     case (vm_state)
@@ -290,16 +290,16 @@ module rvv_backend_pmtrdt_unit_reduction
       // src2_t0 data
       always_comb begin
         src2_t0[i][0][7:0] = rdt_uop.vs2_data[8*(8*i)+:8]  ;
-        src2_t0[i][1][7:0] = rdt_uop.vs2_data[8*(8*i+1)+:8]; 
-        src2_t0[i][2][7:0] = rdt_uop.vs2_data[8*(8*i+2)+:8]; 
-        src2_t0[i][3][7:0] = rdt_uop.vs2_data[8*(8*i+3)+:8]; 
+        src2_t0[i][1][7:0] = rdt_uop.vs2_data[8*(8*i+1)+:8];
+        src2_t0[i][2][7:0] = rdt_uop.vs2_data[8*(8*i+2)+:8];
+        src2_t0[i][3][7:0] = rdt_uop.vs2_data[8*(8*i+3)+:8];
         case (rdt_uop.uop_funct6)
           VMUNARY0, // VIOTA
           VWRXUNARY0: begin // VCPOP
             src2_t0[i][0][7:0] = vm_vs2[8*(8*i)+:8]  ;
-            src2_t0[i][1][7:0] = vm_vs2[8*(8*i+1)+:8]; 
-            src2_t0[i][2][7:0] = vm_vs2[8*(8*i+2)+:8]; 
-            src2_t0[i][3][7:0] = vm_vs2[8*(8*i+3)+:8]; 
+            src2_t0[i][1][7:0] = vm_vs2[8*(8*i+1)+:8];
+            src2_t0[i][2][7:0] = vm_vs2[8*(8*i+2)+:8];
+            src2_t0[i][3][7:0] = vm_vs2[8*(8*i+3)+:8];
           end
           VWREDSUMU,
           VWREDSUM:begin
@@ -316,21 +316,21 @@ module rvv_backend_pmtrdt_unit_reduction
             case (rdt_uop.vs2_eew)
               EEW32:begin
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'h00;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h00; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h00;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80;
               end
               EEW16:begin
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'h00;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h80; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h80;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80;
               end
               default:begin // EEW8
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'h80;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h80; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h80; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h80;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h80;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h80;
               end
             endcase
           end
@@ -338,21 +338,21 @@ module rvv_backend_pmtrdt_unit_reduction
             case (rdt_uop.vs2_eew)
               EEW32:begin
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'hFF;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'hFF; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'hFF; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'hFF;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'hFF;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F;
               end
               EEW16:begin
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'hFF;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h7F; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'hFF; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h7F;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'hFF;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F;
               end
               default:begin // EEW8
                 if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'h7F;
-                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h7F; 
-                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h7F; 
-                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F; 
+                if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h7F;
+                if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h7F;
+                if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h7F;
               end
             endcase
           end
@@ -365,13 +365,13 @@ module rvv_backend_pmtrdt_unit_reduction
           end
           default:begin // VREDSUM, VREDMAXU, VREDOR, VREDXOR
             if (rdt_uop.vs2_type[8*i]   != BODY_ACTIVE) src2_t0[i][0][7:0] = 8'h00;
-            if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h00; 
-            if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00; 
-            if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h00; 
+            if (rdt_uop.vs2_type[8*i+1] != BODY_ACTIVE) src2_t0[i][1][7:0] = 8'h00;
+            if (rdt_uop.vs2_type[8*i+2] != BODY_ACTIVE) src2_t0[i][2][7:0] = 8'h00;
+            if (rdt_uop.vs2_type[8*i+3] != BODY_ACTIVE) src2_t0[i][3][7:0] = 8'h00;
           end
         endcase
       end
-  
+
       // src1_t0 data
       always_comb begin
         src1_t0[i][0][7:0] = rdt_uop.vs2_data[8*(8*i+4)+:8];
@@ -512,7 +512,7 @@ module rvv_backend_pmtrdt_unit_reduction
         .ctrl   (alu_ctrl_t0),
         .dst    (dst_t0[i])
       );
-  
+
       edff #(.T(logic[ALU_WIDTH-1:0])) rdt_data_t0_reg (.q(data_t1[i]), .d(dst_t0[i]), .e(alu_t0_valid&alu_t0_ready), .clk(clk), .rst_n(rst_n));
     end
   endgenerate
@@ -522,15 +522,15 @@ module rvv_backend_pmtrdt_unit_reduction
 
   always_comb begin
     for (int i=0; i<M_SUM_NUM; i++) vs2_m_sum_t0[i] = '0;
-    for (int i=1; i<M_SUM_NUM; i++) 
+    for (int i=1; i<M_SUM_NUM; i++)
       for (int j=0; j<VIOTA_STRIDE; j++) vs2_m_sum_t0[i] += vs2_m_t0[(i-1)*VIOTA_STRIDE+j];
-    for (int i=2; i<M_SUM_NUM; i=i+2) vs2_m_sum_t0[i] = vs2_m_sum_t0[i] + vs2_m_sum_t0[i-1]; 
+    for (int i=2; i<M_SUM_NUM; i=i+2) vs2_m_sum_t0[i] = vs2_m_sum_t0[i] + vs2_m_sum_t0[i-1];
     for (int i=3; i<M_SUM_NUM; i=i+4) vs2_m_sum_t0[i] = vs2_m_sum_t0[i] + vs2_m_sum_t0[i-1];
     for (int i=4; i<M_SUM_NUM; i=i+4) vs2_m_sum_t0[i] = vs2_m_sum_t0[i] + vs2_m_sum_t0[i-2];
   end
   edff #(.T(logic[M_SUM_NUM-1:0][`VSTART_WIDTH-1:0])) rdt_vs2_m_sum_t0_reg (.q(vs2_m_sum_t1), .d(vs2_m_sum_t0), .e(alu_t0_valid&alu_t0_ready), .clk(clk), .rst_n(rst_n));
 
-  handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t0_reg (.outdata(alu_ctrl_t1), .outvalid(alu_t1_valid), .outready(alu_t1_ready), 
+  handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t0_reg (.outdata(alu_ctrl_t1), .outvalid(alu_t1_valid), .outready(alu_t1_ready),
                                                      .indata(alu_ctrl_t0),  .invalid(alu_t0_valid),  .inready(alu_t0_ready),
                                                      .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
 
@@ -579,13 +579,13 @@ generate
     end
     edff #(.T(logic[M_SUM_NUM-1:0][`VSTART_WIDTH-1:0])) rdt_vs2_m_sum_t1_reg (.q(vs2_m_sum_t2), .d(vs2_m_sum_t1_tmp), .e(alu_t1_valid&alu_t1_ready), .clk(clk), .rst_n(rst_n));
 
-    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t1_reg (.outdata(alu_ctrl_t2), .outvalid(alu_t2_valid), .outready(alu_t2_ready), 
+    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t1_reg (.outdata(alu_ctrl_t2), .outvalid(alu_t2_valid), .outready(alu_t2_ready),
                                                        .indata(alu_ctrl_t1),  .invalid(alu_t1_valid),  .inready(alu_t1_ready),
                                                        .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
 
     edff #(.T(logic[ALU_WIDTH-1:0])) rdt_vs1_t1_reg (.q(vs1_t2), .d(vs1_t1), .e(alu_t1_valid&alu_t1_ready), .clk(clk), .rst_n(rst_n));
   end
-  
+
   if (ALU_STAGE_NUM > 5'd1) begin
     for (i=0; i<ALU_NUM_T2; i++) begin : gen_alu_t2
       // src2_t2 data
@@ -625,7 +625,7 @@ generate
     end
     edff #(.T(logic[M_SUM_NUM-1:0][`VSTART_WIDTH-1:0])) rdt_vs2_m_sum_t2_reg (.q(vs2_m_sum_t3), .d(vs2_m_sum_t2_tmp), .e(alu_t2_valid&alu_t2_ready), .clk(clk), .rst_n(rst_n));
 
-    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t2_reg (.outdata(alu_ctrl_t3), .outvalid(alu_t3_valid), .outready(alu_t3_ready), 
+    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t2_reg (.outdata(alu_ctrl_t3), .outvalid(alu_t3_valid), .outready(alu_t3_ready),
                                                        .indata(alu_ctrl_t2),  .invalid(alu_t2_valid),  .inready(alu_t2_ready),
                                                        .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
 
@@ -717,7 +717,7 @@ generate
     end
     edff #(.T(logic[M_SUM_NUM-1:0][`VSTART_WIDTH-1:0])) rdt_vs2_m_sum_t4_reg (.q(vs2_m_sum_t5), .d(vs2_m_sum_t4_tmp), .e(alu_t4_valid&alu_t4_ready), .clk(clk), .rst_n(rst_n));
 
-    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t4_reg (.outdata(alu_ctrl_t5), .outvalid(alu_t5_valid), .outready(alu_t5_ready), 
+    handshake_ff #(.T(RDT_ALU_t)) rdt_alu_ctrl_t4_reg (.outdata(alu_ctrl_t5), .outvalid(alu_t5_valid), .outready(alu_t5_ready),
                                                        .indata(alu_ctrl_t4),  .invalid(alu_t4_valid), .inready(alu_t4_ready),
                                                        .c(trap_flush_rvv), .clk(clk), .rst_n(rst_n));
 
@@ -808,7 +808,7 @@ generate
     assign viota_src2_t4 = f_vmsum2src2(vs2_m_sum_t4, vs2_m_t4, alu_ctrl_t4.vd_eew);
     edff #(.T(logic[`VLEN/ALU_WIDTH-1:0][ALU_BYTE-1:0][7:0])) viota_src2_t4_reg (.q(viota_src2_t5), .d(viota_src2_t4), .e(alu_t4_valid&alu_t4_ready), .clk(clk), .rst_n(rst_n));
   end
- 
+
 endgenerate
 
   assign rdt_vs2_32b = rdt_vs2;
@@ -978,7 +978,7 @@ endgenerate
         endcase
       //VREDSUM, VWREDSUMU, VWREDSUM, VREDMAXU, VREDMAX,
       //VREDMINU, VREDMIN, VREDAND, VREDOR, VREDXOR
-      default: 
+      default:
         if (first_uop_valid)
           f_mux_rdt_vm = vs1_rdt;
         else
@@ -1009,10 +1009,10 @@ endgenerate
     logic [`VLEN/ALU_WIDTH-1:0][ALU_BYTE/2-1:0][15:0] vs2_m_src2_16b;
     logic [`VLEN/ALU_WIDTH-1:0][ALU_BYTE-1:0][7:0]    vs2_m_src2_8b;
     begin
-      for (int i= 0; i<M_SUM_NUM; i++) begin 
-          vs2_m_src2[i*VIOTA_STRIDE] = vs2_m_sum[i]; 
+      for (int i= 0; i<M_SUM_NUM; i++) begin
+          vs2_m_src2[i*VIOTA_STRIDE] = vs2_m_sum[i];
         for (int j=1; j<VIOTA_STRIDE; j++) begin
-          vs2_m_src2[i*VIOTA_STRIDE+j] = vs2_m_src2[i*VIOTA_STRIDE+j-1] + vs2_m[i*VIOTA_STRIDE+j-1]; 
+          vs2_m_src2[i*VIOTA_STRIDE+j] = vs2_m_src2[i*VIOTA_STRIDE+j-1] + vs2_m[i*VIOTA_STRIDE+j-1];
         end
       end
 

@@ -211,10 +211,10 @@
   `ifdef ZVT_MAXCOMPUTING
     `define COMPRATIO         1/4
     `define PROCESS_DELAY     4
-  `else       
+  `else
     `define COMPRATIO         4/`TE
     `define PROCESS_DELAY     `TE/4
-  `endif 
+  `endif
 
   `define ZVT_LMUL            (`WORD_WIDTH*`TE/`VLEN)
   `define NUM_PE              (`TE*`TE*`COMPRATIO)

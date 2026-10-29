@@ -8,7 +8,7 @@
 
 module rvv_backend_decode_de2
 (
-  clk, 
+  clk,
   rst_n,
   lcmd_valid,
   lcmd,
@@ -16,7 +16,7 @@ module rvv_backend_decode_de2
   push,
   uop,
   uq_ready,
-  trap_flush_rvv 
+  trap_flush_rvv
 );
 //
 // interface signals
@@ -33,7 +33,7 @@ module rvv_backend_decode_de2
   output  UOP_QUEUE_t [`NUM_DE_UOP-1:0] uop;
   input   logic   [`NUM_DE_UOP-1:0]     uq_ready;
   // trap-flush
-  input   logic                         trap_flush_rvv;  
+  input   logic                         trap_flush_rvv;
 
 //
 // internal signals
@@ -58,8 +58,8 @@ module rvv_backend_decode_de2
     .uop_valid              (de_uop_valid[0]),
     .uop                    (de_uop[0])
   );
-   
-  generate 
+
+  generate
     for (i=1;i<`NUM_DE_INST;i=i+1) begin: DECODE_UNIT
       rvv_backend_decode_unit_de2 u_decode_unit_de2
       (
@@ -68,10 +68,10 @@ module rvv_backend_decode_de2
         .uop_index_remain   ({`UOP_INDEX_WIDTH{1'b0}}),
         .uop_valid          (de_uop_valid[i]),
         .uop                (de_uop[i])
-      );    
+      );
     end
   endgenerate
-  
+
   // decode controller
   rvv_backend_decode_ctrl u_decode_ctrl
   (

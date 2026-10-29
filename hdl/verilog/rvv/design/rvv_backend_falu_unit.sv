@@ -9,7 +9,7 @@
 //to FMA
 //VFADD, VFSUB, VFMUL, VFRSUB, VFMAC, VFNMAC, VFMSAC, VFNMSAC, VFMADD, VFNMADD, VFMSUB, VFNMSUB
 //to CMOP
-//VMIN, VMAX, VFSGNJ, VFSGNJN, VFSGNJX, VFCLASS, VFFEQ, VFFLE, VFFLT, VFFNE, VFFGT, VFFGE     
+//VMIN, VMAX, VFSGNJ, VFSGNJN, VFSGNJX, VFCLASS, VFFEQ, VFFLE, VFFLT, VFFNE, VFFGT, VFFGE
 //to CVT
 //VFCVT_F2I, VFCVT_F2I, VFCVT_F2IT, VFCVT_F2IT, VFCVT_I2F, VFCVT_I2F
 
@@ -57,13 +57,13 @@ module rvv_backend_falu_unit(
   //result to rob
   output  logic         falu_result_vld;
   output  PU2ROB_t      falu_result;
-  //rob ready 
+  //rob ready
   input   logic         falu_result_rdy;
 
 //
 // internal signals
 //
-  //sub unit 
+  //sub unit
   //input of sub unit
   logic                                     addmul_vld;
   logic                                     allcmp_vld;
@@ -174,7 +174,7 @@ module rvv_backend_falu_unit(
     src2 = falu_uop.vs2_data;
     src3 = falu_uop.vs3_data;
     addmul_NaNboxing = '1;
-    
+
     case(falu_uop.uop_funct3)
       OPFVF: begin
         src1 = {`VLENW{falu_uop.rs1_data}};
@@ -186,7 +186,7 @@ module rvv_backend_falu_unit(
               src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[`VLEN/2+i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
             end
             else begin
-              src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
+              src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
             end
           end
         end
@@ -194,7 +194,7 @@ module rvv_backend_falu_unit(
       end
       OPFVV: begin
         case(falu_uop.uop_funct6.ari_funct6)
-          VFUNARY0: begin 
+          VFUNARY0: begin
             case(falu_uop.vs1)
             `ifdef ZVFBFWMA_ON
               VFWCVTBF16,
@@ -205,7 +205,7 @@ module rvv_backend_falu_unit(
                   if(falu_uop.uop_index[0])
                     src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[`VLEN/2+i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
                   else
-                    src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
+                    src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
                 end
               end
             endcase
@@ -218,8 +218,8 @@ module rvv_backend_falu_unit(
                 src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[`VLEN/2+i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
               end
               else begin
-                src1[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs1_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
-                src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};    
+                src1[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs1_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
+                src2[i*`WORD_WIDTH+:`WORD_WIDTH] = {(`HWORD_WIDTH'('1)), falu_uop.vs2_data[i*`HWORD_WIDTH+:`HWORD_WIDTH]};
               end
             end
           end
@@ -242,28 +242,28 @@ module rvv_backend_falu_unit(
     src2_fmt  = fpnew_pkg::FP32;
     dst_fmt   = fpnew_pkg::FP32;
     int_fmt   = fpnew_pkg::INT32;
-    
+
     case(1'b1)
       addmul_vld: begin//ADDMUL
         case(falu_uop.uop_funct6.ari_funct6)
           VFADD: begin
             op_type   = fpnew_pkg::ADD;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src1[i*`WORD_WIDTH+:`WORD_WIDTH], src2[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0}; 
+              op_i[i] = {src1[i*`WORD_WIDTH+:`WORD_WIDTH], src2[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0};
             end
           end
           VFSUB: begin
             op_type = fpnew_pkg::ADD;
             op_mod  = 1'b1;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src1[i*`WORD_WIDTH+:`WORD_WIDTH], src2[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0}; 
+              op_i[i] = {src1[i*`WORD_WIDTH+:`WORD_WIDTH], src2[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0};
             end
           end
           VFRSUB: begin
             op_type = fpnew_pkg::ADD;
             op_mod  = 1'b1;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0}; 
+              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH], `WORD_WIDTH'b0};
             end
           end
           VFMUL: begin
@@ -286,27 +286,27 @@ module rvv_backend_falu_unit(
           VFMADD: begin
             op_type = fpnew_pkg::FMADD;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]}; 
+              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]};
             end
           end
           VFNMADD: begin
             op_type = fpnew_pkg::FNMSUB;
             op_mod  = 1'b1;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]}; 
+              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]};
             end
           end
           VFMSUB: begin
             op_type = fpnew_pkg::FMADD;
             op_mod  = 1'b1;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]}; 
+              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]};
             end
           end
           VFNMSUB: begin
             op_type = fpnew_pkg::FNMSUB;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]}; 
+              op_i[i] = {src2[i*`WORD_WIDTH+:`WORD_WIDTH], src3[i*`WORD_WIDTH+:`WORD_WIDTH], src1[i*`WORD_WIDTH+:`WORD_WIDTH]};
             end
           end
         `ifdef ZVFBFWMA_ON
@@ -325,28 +325,28 @@ module rvv_backend_falu_unit(
             op_type   = fpnew_pkg::CMP;
             rnd_mod_i = fpnew_pkg::RDN;
           end
-          VMFNE:begin 
+          VMFNE:begin
             op_type   = fpnew_pkg::CMP;
-            rnd_mod_i = fpnew_pkg::RDN; 
+            rnd_mod_i = fpnew_pkg::RDN;
             op_mod    = 1'b1;
           end
-          VMFLT: begin 
+          VMFLT: begin
             op_type   = fpnew_pkg::CMP;
-            rnd_mod_i = fpnew_pkg::RNE; 
+            rnd_mod_i = fpnew_pkg::RNE;
             op_mod    = 1'b1;
           end
-          VMFLE: begin 
+          VMFLE: begin
             op_type   = fpnew_pkg::CMP;
-            rnd_mod_i = fpnew_pkg::RTZ; 
+            rnd_mod_i = fpnew_pkg::RTZ;
             op_mod    = 1'b1;
           end
-          VMFGT: begin 
+          VMFGT: begin
             op_type   = fpnew_pkg::CMP;
-            rnd_mod_i = fpnew_pkg::RTZ; 
+            rnd_mod_i = fpnew_pkg::RTZ;
           end
-          VMFGE: begin 
+          VMFGE: begin
             op_type   = fpnew_pkg::CMP;
-            rnd_mod_i = fpnew_pkg::RNE; 
+            rnd_mod_i = fpnew_pkg::RNE;
           end
           VFSGNJ: begin
             op_type   = fpnew_pkg::SGNJ;
@@ -380,7 +380,7 @@ module rvv_backend_falu_unit(
           VFUNARY1: begin
             op_type   = fpnew_pkg::CLASSIFY;
             for(int i=0;i<`VLENW;i++) begin
-              op_i[i] = {`WORD_WIDTH'b0, `WORD_WIDTH'b0, src2[i*`WORD_WIDTH+:`WORD_WIDTH]}; 
+              op_i[i] = {`WORD_WIDTH'b0, `WORD_WIDTH'b0, src2[i*`WORD_WIDTH+:`WORD_WIDTH]};
             end
           end
         endcase
@@ -388,27 +388,27 @@ module rvv_backend_falu_unit(
       cvt_vld: begin//CVT
         case(falu_uop.vs1)
           VFCVT_XUFV: begin
-            op_type   = fpnew_pkg::F2I; 
+            op_type   = fpnew_pkg::F2I;
             op_mod    = 1'b1;
           end
           VFCVT_XFV: begin
-            op_type   = fpnew_pkg::F2I; 
+            op_type   = fpnew_pkg::F2I;
           end
           VFCVT_FXUV: begin
             op_type   = fpnew_pkg::I2F;
             op_mod    = 1'b1;
           end
-          VFCVT_FXV: begin 
-            op_type   = fpnew_pkg::I2F; 
+          VFCVT_FXV: begin
+            op_type   = fpnew_pkg::I2F;
           end
           VFCVT_RTZXUFV: begin
-            op_type   = fpnew_pkg::F2I; 
+            op_type   = fpnew_pkg::F2I;
             rnd_mod_i = fpnew_pkg::RTZ;
             op_mod    = 1'b1;
           end
           VFCVT_RTZXFV: begin
-            op_type   = fpnew_pkg::F2I; 
-            rnd_mod_i = fpnew_pkg::RTZ; 
+            op_type   = fpnew_pkg::F2I;
+            rnd_mod_i = fpnew_pkg::RTZ;
           end
           VFWCVTFXU: begin
             op_type   = fpnew_pkg::I2F;
@@ -506,15 +506,15 @@ module rvv_backend_falu_unit(
       .in_ready_o         (falu_uop_addmul_rdy),
       .flush_i            (trap_flush_rvv),
       // Output signals
-      .result_o           (addmul_result[0+:`WORD_WIDTH]), 
-      .status_o           (addmul_status_o[0]),          
+      .result_o           (addmul_result[0+:`WORD_WIDTH]),
+      .status_o           (addmul_status_o[0]),
       .extension_bit_o    (),
       .tag_o              (addmul_tag_o),
       .mask_o             (),
       .aux_o              (),
       // Output handshake
-      .out_valid_o        (addmul_result_vld),    
-      .out_ready_i        (addmul_result_rdy),    
+      .out_valid_o        (addmul_result_vld),
+      .out_ready_i        (addmul_result_rdy),
       // Indication of valid data in flight
       .busy_o             (),
       // External register enable override
@@ -522,7 +522,7 @@ module rvv_backend_falu_unit(
       // Early valid for external structural hazard generation
       .early_out_valid_o  ()
     );
-  
+
     fpnew_noncomp #(
       .FpFormat           (fpnew_pkg::FP32),
       .NumPipeRegs        (`FALU_PIPEREGS),
@@ -564,7 +564,7 @@ module rvv_backend_falu_unit(
       // Early valid for external structural hazard generation
       .early_out_valid_o  ()
     );
-  
+
     fpnew_cast_multi #(
       `ifdef ZVFBFWMA_ON
       .FpFmtConfig        (5'b10001),
@@ -612,7 +612,7 @@ module rvv_backend_falu_unit(
       // Early valid for external structural hazard generation
       .early_out_valid_o  ()
     );
-  
+
     rvv_backend_sqrt7_rec7 #(
       .TagType            (TAG_t)
     )
@@ -623,13 +623,13 @@ module rvv_backend_falu_unit(
       .operand_i          (src2[0+:`WORD_WIDTH]), // 1 operand
       .vs1_i              (falu_uop.vs1),
       .rnd_mode_i         (falu_uop.frm),
-      .tag_i              (tag_ftbl),         
+      .tag_i              (tag_ftbl),
       // Input Handshake
       .in_valid_i         (tbl_vld),
       .in_ready_o         (falu_uop_tbl_rdy),
       .flush_i            (trap_flush_rvv),
       // Output signals
-      .result_o           (tbl_result[0+:`WORD_WIDTH]),   
+      .result_o           (tbl_result[0+:`WORD_WIDTH]),
       .tbl_status_o       (tbl_status_o[0]),
       .tag_o              (tbl_tag_o),
       // Output handshake
@@ -667,15 +667,15 @@ module rvv_backend_falu_unit(
         .in_ready_o         (),
         .flush_i            (trap_flush_rvv),
         // Output signals
-        .result_o           (addmul_result[i*`WORD_WIDTH+:`WORD_WIDTH]), 
-        .status_o           (addmul_status_o[i]),          
+        .result_o           (addmul_result[i*`WORD_WIDTH+:`WORD_WIDTH]),
+        .status_o           (addmul_status_o[i]),
         .extension_bit_o    (),
         .tag_o              (),
         .mask_o             (),
         .aux_o              (),
         // Output handshake
-        .out_valid_o        (),    
-        .out_ready_i        (addmul_result_rdy),    
+        .out_valid_o        (),
+        .out_ready_i        (addmul_result_rdy),
         // Indication of valid data in flight
         .busy_o             (),
         // External register enable override
@@ -683,7 +683,7 @@ module rvv_backend_falu_unit(
         // Early valid for external structural hazard generation
         .early_out_valid_o  ()
       );
-  
+
       fpnew_noncomp #(
         .FpFormat           (fpnew_pkg::FP32),
         .NumPipeRegs        (`FALU_PIPEREGS),
@@ -724,7 +724,7 @@ module rvv_backend_falu_unit(
         // Early valid for external structural hazard generation
         .early_out_valid_o  ()
       );
-  
+
       fpnew_cast_multi #(
         `ifdef ZVFBFWMA_ON
         .FpFmtConfig        (5'b10001),
@@ -772,7 +772,7 @@ module rvv_backend_falu_unit(
         // Early valid for external structural hazard generation
         .early_out_valid_o  ()
       );
-  
+
       rvv_backend_sqrt7_rec7 #(
       )
       tbl (
@@ -788,7 +788,7 @@ module rvv_backend_falu_unit(
         .in_ready_o         (),
         .flush_i            (trap_flush_rvv),
         // Output signals
-        .result_o           (tbl_result[i*`WORD_WIDTH+:`WORD_WIDTH]),   
+        .result_o           (tbl_result[i*`WORD_WIDTH+:`WORD_WIDTH]),
         .tbl_status_o       (tbl_status_o[i]),
         .tag_o              (),
         // Output handshake
@@ -801,44 +801,44 @@ module rvv_backend_falu_unit(
   // register some extra information for FCMP instructions.
   assign info_vld[0][0]           = falu_uop_vld&(falu_uop.uop_exe_unit==VEU_FCMP);
   assign info_vld[0][1]           = falu_uop_vld&(falu_uop.uop_exe_unit==VEU_FNCMP);
-  assign info_rdy[`FALU_PIPEREGS] = allcmp_result_rdy_tmp; 
+  assign info_rdy[`FALU_PIPEREGS] = allcmp_result_rdy_tmp;
   assign cmp_info[0].vstart       = falu_uop.vstart;
-  assign cmp_info[0].vl           = falu_uop.vl;   
+  assign cmp_info[0].vl           = falu_uop.vl;
   assign cmp_info[0].vm           = falu_uop.vm;
   assign cmp_info[0].v0           = falu_uop.v0_data_valid ? falu_uop.v0_data : '1;
   assign cmp_info[0].vd           = falu_uop.vs3_data;
-  
+
   // info pipeline
   generate
     for(i=0;i<`FALU_PIPEREGS;i++) begin
       assign info_rdy[i] = !(|info_vld[i+1]) || info_rdy[i+1];
-      
+
       // vld
       cdffr #(
         .T            (logic [1:0])
-      ) fcmp_vld_pipe ( 
-        .q            (info_vld[i+1]), 
-        .clk          (clk), 
-        .rst_n        (rst_n),  
-        .c            (trap_flush_rvv), 
-        .e            (info_rdy[i]), 
-        .d            (info_vld[i]) 
+      ) fcmp_vld_pipe (
+        .q            (info_vld[i+1]),
+        .clk          (clk),
+        .rst_n        (rst_n),
+        .c            (trap_flush_rvv),
+        .e            (info_rdy[i]),
+        .d            (info_vld[i])
       );
       // info for FCMP
       edff # (
         .T            (FCMP_INFO_t)
-      ) fcmp_info_pipe ( 
-        .q            (cmp_info[i+1]), 
-        .clk          (clk), 
-        .rst_n        (rst_n),  
-        .e            (info_vld[i][0]&info_rdy[i]), 
-        .d            (cmp_info[i]) 
+      ) fcmp_info_pipe (
+        .q            (cmp_info[i+1]),
+        .clk          (clk),
+        .rst_n        (rst_n),
+        .e            (info_vld[i][0]&info_rdy[i]),
+        .d            (cmp_info[i])
       );
     end
-    
+
     always_comb begin
       for(int i=0;i<8;i++) begin
-        if(allcmp_tag_o.uop_index==i) begin 
+        if(allcmp_tag_o.uop_index==i) begin
           for(int j=0;j<`VLENW;j++) begin
             cmp[i*`VLENW+j]         = allcmp_unit_res[j*`WORD_WIDTH];
             cmp_status[i*`VLENW+j]  = allcmp_status_o[j];
@@ -850,29 +850,29 @@ module rvv_backend_falu_unit(
         end
       end
     end
-  
+
     for(i=0;i<7;i++) begin
       assign cmp_en[i] = allcmp_result_vld_tmp&allcmp_tag_o.is_fcmp&(!allcmp_tag_o.last_uop_valid)&(allcmp_tag_o.uop_index==i);
 
       cdffr # (
         .T            (logic [`VLENW-1:0])
-      ) fcmp_res ( 
+      ) fcmp_res (
         .q            (cmp_d1[i*`VLENW+:`VLENW]), 
-        .clk          (clk), 
-        .rst_n        (rst_n),  
-        .c            (allcmp_result_vld_tmp&allcmp_tag_o.is_fcmp&allcmp_tag_o.last_uop_valid&allcmp_result_rdy_tmp | trap_flush_rvv), 
-        .e            (cmp_en[i]), 
+        .clk          (clk),
+        .rst_n        (rst_n),
+        .c            (allcmp_result_vld_tmp&allcmp_tag_o.is_fcmp&allcmp_tag_o.last_uop_valid&allcmp_result_rdy_tmp | trap_flush_rvv),
+        .e            (cmp_en[i]),
         .d            (cmp[i*`VLENW+:`VLENW]) 
       );
 
       cdffr # (
         .T            (RVFEXP_t[`VLENW-1:0])
-      ) fcmp_exp ( 
+      ) fcmp_exp (
         .q            (cmp_status_d1[i*`VLENW+:`VLENW]),
-        .clk          (clk), 
-        .rst_n        (rst_n),  
-        .c            (allcmp_result_vld_tmp&allcmp_tag_o.is_fcmp&allcmp_tag_o.last_uop_valid&allcmp_result_rdy_tmp | trap_flush_rvv), 
-        .e            (cmp_en[i]), 
+        .clk          (clk),
+        .rst_n        (rst_n),
+        .c            (allcmp_result_vld_tmp&allcmp_tag_o.is_fcmp&allcmp_tag_o.last_uop_valid&allcmp_result_rdy_tmp | trap_flush_rvv),
+        .e            (cmp_en[i]),
         .d            (cmp_status[i*`VLENW+:`VLENW]) 
       );
     end
@@ -979,9 +979,9 @@ module rvv_backend_falu_unit(
         falu_result.w_valid    = 'b1;
         falu_result.vsaturate  = 'b0;
         for(int i=0;i<`VLENW;i++) begin
-          case(cvt_tag_o.eew_vd) 
+          case(cvt_tag_o.eew_vd)
             EEW16: begin
-              if(cvt_tag_o.uop_index) begin  
+              if(cvt_tag_o.uop_index) begin
                 falu_result.w_data[`VLEN/2+i*`HWORD_WIDTH+:`HWORD_WIDTH] = cvt_result[i*`WORD_WIDTH+:`HWORD_WIDTH];
                 falu_result.w_data[        i*`HWORD_WIDTH+:`HWORD_WIDTH] = 'b0;
                 falu_result.fpexp[`VLENB/2+2*i+:2]                       = {2{cvt_status_o[i]}};

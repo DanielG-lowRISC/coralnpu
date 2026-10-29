@@ -1,7 +1,7 @@
 `ifndef HDL_VERILOG_RVV_INC_FALU_SVH
 `define HDL_VERILOG_RVV_INC_FALU_SVH
 
-//FALU subunit struct, 
+//FALU subunit struct,
 typedef struct packed {   
   logic   [3:0]                       ftype;
 `ifdef TB_SUPPORT
@@ -56,8 +56,8 @@ typedef struct packed {
 // SUB stand for sub-unit in FMA
 // send SUB result to ROB
 typedef struct packed {
-  logic     [`WORD_WIDTH-1:0]         w_data;             
-  RVFEXP_t  [3:0]                     fpexp;
+  logic     [`WORD_WIDTH-1:0]         w_data;
+  RVFEXP_t    [3:0]                     fpexp;
 } SUB2ROB_t;
 
 `endif // HDL_VERILOG_RVV_INC_FALU_SVH

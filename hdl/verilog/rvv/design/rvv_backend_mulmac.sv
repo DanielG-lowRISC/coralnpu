@@ -1,4 +1,4 @@
-// description: 
+// description:
 // This is the top module of MUL/MAC wrapper
 // Contains instantiation of MUL_ex and MAC_ex
 // Contains ex arbiter
@@ -6,7 +6,7 @@
 // feature list:
 // 1. Instantiation of MUL ex and MAC ex
 // 2. Arbitration to uop0/1 to use MUL or MAC
-// 3. Pop MUL_RS 
+// 3. Pop MUL_RS
 
 
 `ifndef HDL_VERILOG_RVV_DESIGN_RVV_SVH
@@ -33,7 +33,7 @@ input   logic                     clk;
 input   logic                     rst_n;
 input   logic                     trap_flush_rvv;
 
-//MUL_RS to MUL_EX 
+//MUL_RS to MUL_EX
 input   logic     [`NUM_MUL-1:0]  uop_valid_rs2ex;
 input   MUL_RS_t  [`NUM_MUL-1:0]  mac_uop_rs2ex;
 output  logic     [`NUM_MUL-1:0]  pop;
@@ -105,9 +105,9 @@ generate
       .mac2rob_uop_valid  (res_valid_ex2rob[i]),
       .mac2rob_uop_data   (res_ex2rob[i]),
       // Inputs
-      .clk                (clk), 
-      .rst_n              (rst_n), 
-      .rs2mac_uop_valid   (mac_valid[i]), 
+      .clk                (clk),
+      .rst_n              (rst_n),
+      .rs2mac_uop_valid   (mac_valid[i]),
       .rs2mac_uop_data    (mac_uop[i]),
       .mac_pipe_vld_en    (mac_pipe_vld_en[i]),
       .mac_pipe_data_en   (mac_pipe_data_en[i]),

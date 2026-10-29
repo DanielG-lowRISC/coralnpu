@@ -57,11 +57,11 @@ typedef enum logic [2:0] {
 
 // Floating-point Exception
 typedef struct packed {
-  logic nv;   
-  logic dz; 
-  logic of;   
-  logic uf;   
-  logic nx;   
+  logic nv;
+  logic dz;
+  logic of;
+  logic uf;
+  logic nx;
 } RVFEXP_t;
 
 // The architectural configuration state of the RVV core.
@@ -81,9 +81,9 @@ typedef struct packed {
   RVVLMUL                       lmul_orig;
 `ifdef ZVT_ON
   // VME (Zvt) non-tile state. Packed mtype view assembled from {tm, tk,
-  // mtwiden} per ?5.1.1.2; widths follow the literal spec bit allocation
-  // (tk in [7:5] = 3 bits, mtwiden in [1:0] = 2 bits, tm in [23:10] = 14
-  // bits).
+// mtwiden} per ?5.1.1.2; widths follow the literal spec bit allocation
+// (tk in [7:5] = 3 bits, mtwiden in [1:0] = 2 bits, tm in [23:10] = 14
+// bits).
   logic                         altfmt;
   logic [1:0]                   mtwiden;
   logic [13:0]                  tm;
@@ -134,14 +134,14 @@ typedef enum logic [3:0] {
   EMUL5,
   EMUL6,
   EMUL7,
-  EMUL_NONE     // it means this is not supported 
+  EMUL_NONE     // it means this is not supported
 } EMUL_e;
 
 // Effective Element Width
 typedef enum logic [2:0] {
-  EEW_NONE,    // it means this is not supported 
+  EEW_NONE,    // it means this is not supported
   EEW1,
-  EEW8, 
+  EEW8,
   EEW16,
   EEW32,
   EEW64
@@ -213,10 +213,10 @@ typedef enum logic [1:0] {
   US_FF          // Faul-only-First load
 } LSU_UMOP_e;
 
-// segment load/store 
+// segment load/store
 typedef enum logic [0:0] {
   IS_SEGMENT,
-  NONE      
+  NONE
 } LSU_IS_SEG_e;
 
 // combine those signals to LSU_TYPE
@@ -312,8 +312,8 @@ typedef enum logic [1:0] {
 
 // trap handle
 typedef enum logic [1:0] {
-  TRAP_LSU,           
-  TRAP_LSU_FF       
+  TRAP_LSU,
+  TRAP_LSU_FF
 } TRAP_INFO_e;
 
 // the max number of byte in a vector register is VLENB
@@ -453,10 +453,10 @@ typedef struct packed {
   logic   [`VLEN-1:0]                 vregfile_read_data;   // vs3       
   logic                               v0_valid;
   logic   [`VLENB-1:0]                v0_data;              // byte strobe signal for mask load/store. 
-                                                            // v0[i]=1 means vd/vs3[8*i +: 8] data is valid. 
+//            v0[i]=1 means vd/vs3[8*i +: 8] data is valid.
 } UOP_RVV2LSU_t;    
 
- // FMA reservation station struct
+// FMA reservation station struct
 typedef struct packed {   
 `ifdef TB_SUPPORT
   logic   [`PC_WIDTH-1:0]             uop_pc;
@@ -486,7 +486,7 @@ typedef struct packed {
 } FALU_RS_t;  
 
 //
-// EX stage, 
+// EX stage,
 //
 // send PU's result to ROB
 typedef struct packed {
@@ -657,7 +657,7 @@ typedef struct packed {
 } TSS_t;
 
 typedef enum logic [1:0] {
-  FPMUL,        // src2 is fp 
+  FPMUL,        // src2 is fp
   INTMUL,       // src2 is signed int
   UINTMUL       // src2 is unsigned int
 } PEOPCODE_e;
@@ -803,6 +803,6 @@ typedef struct packed {
   logic [3:0][`NUM_SUBTILE-1:0][`SUBTILE_SIZE*8-1:0]  mtData;       
 `endif
 } VMERT_t;
-`endif  // ZVT_ON 
+`endif  // ZVT_ON
 
 `endif  // HDL_VERILOG_RVV_DESIGN_RVV_SVH
