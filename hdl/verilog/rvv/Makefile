@@ -26,6 +26,8 @@ else
 #   make lint                      lint the RTL only (no UVM needed)
 #   make build UVM_HOME=<path>     build the testbench simulator
 #   make sim   UVM_HOME=<path> test=<uvm_test> [seed=N]
+#   make -j<N> regress UVM_HOME=<path> [list=<file>] [seed=N]
+#                                  run every test in a regression list, N at a time
 #   make filelists                 only generate the filelists
 #   make show / make clean
 #
@@ -173,7 +175,7 @@ VFLAGS = --sv --timing -j $(JOBS) $(WARN_FLAGS) $(TB_WARN_FLAGS) \
 # ------------------------------------------------------------------
 # Targets
 # ------------------------------------------------------------------
-.PHONY: all build sim lint filelists show clean help
+.PHONY: all build sim regress lint filelists show clean help
 all: build
 
 filelists: $(BUILD_PATH)/rtl.f $(BUILD_PATH)/tb.f $(BUILD_PATH)/lint.f
@@ -228,6 +230,49 @@ sim: build
 	  +UVM_MAX_QUIT_COUNT=$(max_error),NO +UVM_TIMEOUT=$(timeout) \
 	  2>&1 | tee $(SIM_PATH)/test.log
 	@echo "Test log: $(SIM_PATH)/test.log"
+
+# ------------------------------------------------------------------
+# Regression
+# ------------------------------------------------------------------
+# make -j<N> regress runs every test in $(list) (blank lines and # comments are
+# skipped) against the same build as `sim`, N at a time, with seed $(seed)
+# (default 1). Each test logs to outfiles/<build>/<test>.<seed>/test.log; a test
+# passes if the simulator exits 0 and the UVM report shows no errors or fatals.
+# REGRESS_TIMEOUT (e.g. 1h) bounds the wall-clock time of each test.
+list            ?= $(TB_PATH)/regress.list
+REGRESS_TIMEOUT ?=
+REGRESS_SEED    := $(or $(seed),1)
+REGRESS_DIR      = $(subst build,outfiles,$(BUILD_PATH))
+REGRESS_TESTS   := $(shell grep -vE '^[[:space:]]*(\#|$$)' $(list) 2>/dev/null | awk '{print $$1}')
+REGRESS_RUNS    := $(addprefix regress/,$(REGRESS_TESTS))
+# Verilator's randomize() needs an SMT solver (z3 by default, or VERILATOR_SOLVER).
+REGRESS_SOLVER  := $(firstword $(or $(VERILATOR_SOLVER),z3))
+comma           := ,
+
+.PHONY: regress-check $(REGRESS_RUNS)
+regress-check:
+	@test -n "$(REGRESS_TESTS)" || { echo "error: no tests found in '$(list)'"; exit 1; }
+	@command -v $(REGRESS_SOLVER) >/dev/null || \
+	  { echo "error: '$(REGRESS_SOLVER)' not on PATH (needed by randomize(); set VERILATOR_SOLVER to override)"; exit 1; }
+
+$(REGRESS_RUNS): regress/%: build regress-check
+	@d=$(REGRESS_DIR)/$*.$(REGRESS_SEED); mkdir -p $$d; \
+	( cd $$d && $(if $(REGRESS_TIMEOUT),timeout $(REGRESS_TIMEOUT)) $(BUILD_PATH)/obj_dir/V$(TB_TOP) \
+	    +verilator+seed+$(REGRESS_SEED) +verilator+rand+reset+$(RAND_RESET) $(PLUS_ARGS) \
+	    +UVM_TESTNAME=$* +UVM_VERBOSITY=$(UVM_VERBOSITY) \
+	    +UVM_MAX_QUIT_COUNT=$(max_error),NO +UVM_TIMEOUT=$(timeout) > test.log 2>&1 ); rc=$$?; \
+	if [ $$rc = 0 ] && grep -qE 'UVM_ERROR :[[:space:]]*0$$' $$d/test.log \
+	               && grep -qE 'UVM_FATAL :[[:space:]]*0$$' $$d/test.log; then \
+	  echo "PASS $*"; \
+	else \
+	  echo "FAIL $* (exit $$rc$(if $(REGRESS_TIMEOUT),$(comma) 124 = timed out)): $$d/test.log"; \
+	fi | tee $$d/result
+
+regress: $(REGRESS_RUNS)
+	@r=$(REGRESS_DIR)/regress.$(REGRESS_SEED).txt; \
+	cat $(foreach t,$(REGRESS_TESTS),$(REGRESS_DIR)/$(t).$(REGRESS_SEED)/result) > $$r; \
+	echo "== $$(grep -c '^PASS' $$r) passed, $$(grep -c '^FAIL' $$r) failed (seed $(REGRESS_SEED)); summary in $$r"; \
+	! grep -q '^FAIL' $$r
 
 show:
 	@echo "scfg:     $(scfg)"
